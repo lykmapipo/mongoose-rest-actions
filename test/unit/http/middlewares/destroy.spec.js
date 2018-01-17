@@ -58,7 +58,8 @@ describe.only('destroy', function() {
   describe('Model.findByIdAndRemove', function() {
 
     //prepare schema
-    const Removable = mongoose.model('Removable', RemovableSchema);
+    const modelName = 'Removable' + Date.now();
+    const Removable = mongoose.model(modelName, RemovableSchema);
     const removable = {
       _id: new mongoose.Types.ObjectId(),
       type: 'Document'
