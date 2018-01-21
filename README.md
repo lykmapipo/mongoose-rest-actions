@@ -40,6 +40,11 @@ app.use(users);
 - [ ] add rate limit
 - [ ] add response time header
 - [ ] support background operation
+- [ ] plugin autopopulate
+- [ ] plugin exists
+- [ ] plugin autoset
+- [ ] plugin searchable
+- [ ] plugin hidden
 
 
 ## Testing
