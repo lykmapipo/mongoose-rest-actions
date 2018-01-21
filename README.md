@@ -1,6 +1,8 @@
 # mongoose-rest-actions(WIP)
 
 [![Build Status](https://travis-ci.org/lykmapipo/mongoose-rest-actions.svg?branch=master)](https://travis-ci.org/lykmapipo/mongoose-rest-actions)
+[![Dependency Status](https://img.shields.io/david/lykmapipo/mongoose-rest-actions.svg?style=flat)](https://david-dm.org/lykmapipo/mongoose-rest-actions)
+[![npm version](https://badge.fury.io/js/mongoose-rest-actions.svg)](https://badge.fury.io/js/mongoose-rest-actions)
 
 [mongoose](https://github.com/Automattic/mongoose) rest actions on top of [expressjs](https://github.com/strongloop/express/)
 
