@@ -18,46 +18,16 @@ const express = require('express');
 const mongoose = require('mongoose');
 const actions = require('mongoose-rest-actions');
 
-//load mongoose models
+//register & load mongoose models
 mongoose.connect(<url>);
 
 
 const app = express();
-const employees = actions({
-	mongoose: mongoose, //optional
-	mount: '/v1', //default to app package.json version
-	model: 'Employee', //model instance
-	update:{
-		protected: ['ssn'],
-		populate: 'employer'
-	},
-	delete:{
-		soft: true //default to remove
-	},
-	create:{
-		upsert: true,
-		protect
-	}
-});
-app.use(employees);
-
+const User = mongoose.model('User');
+const users = actions({ model: User });
+app.use(users);
 
 ....
-
-
-const Employee = new Schema({
-	employer:{
-		type: ObjectId,
-		ref: 'Employer',
-		protected: false,
-		upsert: true, //{finder: 'eid'}
-		autoset: true,
-		autpopulate: true
-		aggregate: true
-	}
-});
-
-
 ```
 
 ## TODO
