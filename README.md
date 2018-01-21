@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/lykmapipo/mongoose-rest-actions.svg?branch=master)](https://travis-ci.org/lykmapipo/mongoose-rest-actions)
 
-[mongoose]() rest actions on top of [expressjs](https://github.com/strongloop/express/)
+[mongoose](https://github.com/Automattic/mongoose) rest actions on top of [expressjs](https://github.com/strongloop/express/)
 
 
 ## Installation
