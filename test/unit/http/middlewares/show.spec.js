@@ -15,7 +15,7 @@ const middlewaresPath = path.join(libsPath, 'http', 'middlewares');
 const show = require(path.join(middlewaresPath, 'show'));
 
 
-describe.only('show', function() {
+describe('show', function() {
 
   describe('export', function() {
 
