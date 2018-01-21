@@ -15,7 +15,7 @@ const middlewaresPath = path.join(libsPath, 'http', 'middlewares');
 const destroy = require(path.join(middlewaresPath, 'destroy'));
 
 
-describe.only('destroy', function() {
+describe('destroy', function() {
 
   describe('export', function() {
 
@@ -110,7 +110,7 @@ describe.only('destroy', function() {
       type: 'Document'
     };
 
-    //mocked findByIdAndRemove
+    //mocked findByIdAndDestroy
     let remove;
 
 
