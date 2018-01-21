@@ -31,18 +31,14 @@ app.use(users);
 ```
 
 ## TODO
-- [ ] mocha test suite
-- [ ] expose `/aggregates` endpoint
-- [ ] expose `/frames` endpoint
-- [ ] support scopes and policies/permissions
-- [ ] support route versioning (v1.0.0) or ?version=1.0.1 or X-HTTP-Version : 1.0.0
-- [ ] support modified content only
+- [ ] support route versioning (`v1.0.0`) or `?version=1.0.1` or `X-HTTP-Version : 1.0.0`
 - [ ] support caching(only if model have cache strategy)
 - [ ] support sub resources(array of refs or reference refs)
-- [ ] provide schema details
+- [ ] provide schema details(swagger)
 - [ ] log request
+- [ ] log response
 - [ ] add rate limit
-- [ ] Add response time header
+- [ ] add response time header
 - [ ] support background operation
 
 
