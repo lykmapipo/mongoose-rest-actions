@@ -52,8 +52,8 @@
     "grunt-mocha-test": "^0.13.3",
     "jshint-stylish": "^2.2.1",
     "load-grunt-tasks": "^3.5.2",
-    "mocha": "^4.1.0",
-    "sinon": "^4.1.3",
+    "mocha": "^5.0.0",
+    "sinon": "^4.1.6",
     "sinon-chai": "^2.14.0",
     "sinon-mongoose": "^2.0.2",
     "supertest": "^3.0.0",
@@ -73,7 +73,7 @@
     "inflection": "^1.12.0",
     "lodash": "^4.17.4",
     "moment": "^2.20.1",
-    "mongoose": "^5.0.0-rc2",
+    "mongoose": "^5.0.1",
     "utils-copy-error": "^1.0.1"
   }
 }
