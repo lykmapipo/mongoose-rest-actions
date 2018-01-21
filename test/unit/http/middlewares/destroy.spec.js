@@ -13,9 +13,6 @@ const rootPath = path.join(__dirname, '..', '..', '..', '..');
 const libsPath = path.join(rootPath, 'lib');
 const middlewaresPath = path.join(libsPath, 'http', 'middlewares');
 const destroy = require(path.join(middlewaresPath, 'destroy'));
-const RemovableSchema = new Schema({
-  type: { type: String }
-});
 
 
 describe.only('destroy', function() {
@@ -50,20 +47,21 @@ describe.only('destroy', function() {
 
   });
 
-  describe('Model.findByIdAndDestroy', function() {
-
-  });
-
 
   describe('Model.findByIdAndRemove', function() {
 
     //prepare schema
+    const RemovableSchema = new Schema({
+      type: { type: String }
+    });
     const modelName = 'Removable' + Date.now();
     const Removable = mongoose.model(modelName, RemovableSchema);
     const removable = {
       _id: new mongoose.Types.ObjectId(),
       type: 'Document'
     };
+
+    //mocked findByIdAndRemove
     let remove;
 
 
@@ -89,7 +87,55 @@ describe.only('destroy', function() {
           expect(remove).to.have.been.called;
           expect(remove).to.have.been.calledOnce;
           expect(remove).to.have.been.calledWith(removable._id);
-          // expect(remove).to.have.always.returned({ _id: 1, name: 'Name' });
+          done(error, response);
+        });
+
+    });
+
+  });
+
+  describe('Model.findByIdAndDestroy', function() {
+
+    //prepare schema
+    const RemovableSchema = new Schema({
+      type: { type: String }
+    });
+    RemovableSchema.statics.findByIdAndDestroy = function(id, done) {
+      return this.findByIdAndRemove(id, done);
+    };
+    const modelName = 'Removable' + Date.now();
+    const Removable = mongoose.model(modelName, RemovableSchema);
+    const removable = {
+      _id: new mongoose.Types.ObjectId(),
+      type: 'Document'
+    };
+
+    //mocked findByIdAndRemove
+    let remove;
+
+
+    beforeEach(function() {
+      remove = sinon.mock(Removable)
+        .expects('findByIdAndDestroy')
+        .yields(null, removable);
+    });
+
+    afterEach(function() {
+      remove.restore();
+    });
+
+    it('should be able to remove', function(done) {
+
+      function setup(request, response, next) {
+        request.params = _.merge(request.params, { id: removable._id });
+        next();
+      }
+
+      run(setup, destroy({ model: Removable }),
+        function(error, request, response) {
+          expect(remove).to.have.been.called;
+          expect(remove).to.have.been.calledOnce;
+          expect(remove).to.have.been.calledWith(removable._id);
           done(error, response);
         });
 
