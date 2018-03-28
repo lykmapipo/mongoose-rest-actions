@@ -19,32 +19,89 @@ const mongoose = require('mongoose');
 const actions = require('mongoose-rest-actions');
 
 //register & load mongoose models
-mongoose.connect(<url>);
+mongoose.plugin(actions);
+mongoose.connect('<url>');
 
 
 const app = express();
 const User = mongoose.model('User');
-const users = actions({ model: User });
-app.use(users);
+
+app.get('/users', function(request, response, next) {
+
+  cost options = { page: request.query.page };
+
+  User
+    .get(options, function(error, results) {
+      ...handle error or reply
+    });
+
+});
+
+
+app.post('/users', function(request, response, next) {
+
+  cost body = request.body;
+
+  User
+    .post(body, function(error, user) {
+      ...handle error or reply
+    });
+
+});
+
+
+app.get('/users/:id', function(request, response, next) {
+
+  cost _id = request.params.id;
+
+  User
+    .getById(_id, function(error, user) {
+      ...handle error or reply
+    });
+
+});
+
+
+app.put('/users/:id', function(request, response, next) {
+
+  let updates = request.body;
+  updates._id = request.params.id;
+
+  User
+    .put(updates, function(error, user) {
+      ...handle error or reply
+    });
+
+});
+
+
+app.patch('/users/:id', function(request, response, next) {
+
+  let updates = request.body;
+  updates._id = request.params.id;
+
+  User
+    .patch(updates, function(error, user) {
+      ...handle error or reply
+    });
+
+});
+
+
+app.delet('/users/:id', function(request, response, next) {
+
+  const _id = request.params.id;
+
+  User
+    .del(_id, function(error, user) {
+      ...handle error or reply
+    });
+
+});
 
 ....
-```
 
-## TODO
-- [ ] support route versioning (`v1.0.0`) or `?version=1.0.1` or `X-HTTP-Version : 1.0.0`
-- [ ] support caching(only if model have cache strategy)
-- [ ] support sub resources(array of refs or reference refs)
-- [ ] provide schema details(swagger)
-- [ ] log request
-- [ ] log response
-- [ ] add rate limit
-- [ ] add response time header
-- [ ] support background operation
-- [ ] plugin autopopulate
-- [ ] plugin exists
-- [ ] plugin autoset
-- [ ] plugin searchable
-- [ ] plugin hidden
+```
 
 
 ## Testing
