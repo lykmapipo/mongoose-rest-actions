@@ -5,11 +5,11 @@
 const path = require('path');
 const _ = require('lodash');
 const mongoose = require('mongoose');
+const faker = require('faker');
 const Schema = mongoose.Schema;
 const sinon = require('sinon');
 const expect = require('chai').expect;
 const run = require('express-unit');
-const faker = require('faker');
 const rootPath = path.join(__dirname, '..', '..', '..', '..');
 const libsPath = path.join(rootPath, 'lib');
 const middlewaresPath = path.join(libsPath, 'http', 'middlewares');

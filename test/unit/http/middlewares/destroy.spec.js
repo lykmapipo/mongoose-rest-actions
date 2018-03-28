@@ -5,6 +5,7 @@
 const path = require('path');
 const _ = require('lodash');
 const mongoose = require('mongoose');
+const faker = require('faker');
 const Schema = mongoose.Schema;
 const sinon = require('sinon');
 const expect = require('chai').expect;
@@ -54,7 +55,7 @@ describe('destroy', function () {
     const RemovableSchema = new Schema({
       type: { type: String }
     });
-    const modelName = 'Removable' + Date.now();
+    const modelName = 'Removable' + faker.random.uuid();
     const Removable = mongoose.model(modelName, RemovableSchema);
     const removable = {
       _id: new mongoose.Types.ObjectId(),
@@ -103,7 +104,7 @@ describe('destroy', function () {
     RemovableSchema.statics.findByIdAndDestroy = function (id, done) {
       return this.findByIdAndRemove(id, done);
     };
-    const modelName = 'Removable' + Date.now();
+    const modelName = 'Removable' + faker.random.uuid();
     const Removable = mongoose.model(modelName, RemovableSchema);
     const removable = {
       _id: new mongoose.Types.ObjectId(),

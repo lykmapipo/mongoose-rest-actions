@@ -5,6 +5,7 @@
 const path = require('path');
 const _ = require('lodash');
 const mongoose = require('mongoose');
+const faker = require('faker');
 const Schema = mongoose.Schema;
 const sinon = require('sinon');
 const expect = require('chai').expect;
@@ -54,7 +55,7 @@ describe('create', function () {
     const CreatableSchema = new Schema({
       type: { type: String }
     });
-    const modelName = 'Creatable' + Date.now();
+    const modelName = 'Creatable' + faker.random.uuid();
     const Creatable = mongoose.model(modelName, CreatableSchema);
     const creatable = {
       _id: new mongoose.Types.ObjectId(),
@@ -103,7 +104,7 @@ describe('create', function () {
     CreatableSchema.statics.store = function (object, done) {
       return this.create(object, done);
     };
-    const modelName = 'Creatable' + Date.now();
+    const modelName = 'Creatable' + faker.random.uuid();
     const Creatable = mongoose.model(modelName, CreatableSchema);
     const creatable = {
       _id: new mongoose.Types.ObjectId(),
