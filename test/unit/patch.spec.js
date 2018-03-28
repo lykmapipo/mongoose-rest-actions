@@ -56,9 +56,8 @@ describe('patch plugin', function () {
     let afterPatch;
 
     beforeEach(function () {
-      save =
-        sinon.mock(patchable).expects('save').yields(null,
-          patchable);
+      save = sinon.mock(patchable)
+        .expects('save').yields(null, patchable);
       patch = sinon.spy(patchable, 'patch');
       beforePatch = sinon.spy(patchable, 'beforePatch');
       afterPatch = sinon.spy(patchable, 'afterPatch');
@@ -109,9 +108,8 @@ describe('patch plugin', function () {
     let patch;
 
     beforeEach(function () {
-      patch =
-        sinon.mock(Patchable).expects('patch').yields(null,
-          patchable);
+      patch = sinon.mock(Patchable)
+        .expects('patch').yields(null, patchable);
     });
 
     afterEach(function () {

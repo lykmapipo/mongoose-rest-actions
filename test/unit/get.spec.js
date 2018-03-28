@@ -44,9 +44,8 @@ describe('getete plugin', function () {
     let get;
 
     beforeEach(function () {
-      get =
-        sinon.mock(Getable).expects('getById').yields(null,
-          getetable);
+      get = sinon.mock(Getable)
+        .expects('getById').yields(null, getetable);
     });
 
     afterEach(function () {

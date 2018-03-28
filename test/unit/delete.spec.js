@@ -54,9 +54,8 @@ describe('delete plugin', function () {
     let afterDelete;
 
     beforeEach(function () {
-      remove =
-        sinon.mock(deletable).expects('remove').yields(null,
-          deletable);
+      remove = sinon.mock(deletable)
+        .expects('remove').yields(null, deletable);
       del = sinon.spy(deletable, 'del');
       beforeDelete = sinon.spy(deletable, 'beforeDelete');
       afterDelete = sinon.spy(deletable, 'afterDelete');
@@ -101,9 +100,8 @@ describe('delete plugin', function () {
     let del;
 
     beforeEach(function () {
-      del =
-        sinon.mock(Deletable).expects('del').yields(null,
-          deletable);
+      del = sinon.mock(Deletable)
+        .expects('del').yields(null, deletable);
     });
 
     afterEach(function () {
