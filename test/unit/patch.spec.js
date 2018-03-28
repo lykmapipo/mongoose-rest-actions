@@ -13,7 +13,7 @@ const rootPath = path.join(__dirname, '..', '..');
 const libsPath = path.join(rootPath, 'lib');
 const patch = require(path.join(libsPath, 'patch'));
 
-describe('patch plugin', function () {
+describe('unit#patch', function () {
 
   const PatchableSchema = new Schema({
     name: { type: String }

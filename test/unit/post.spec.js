@@ -13,7 +13,7 @@ const rootPath = path.join(__dirname, '..', '..');
 const libsPath = path.join(rootPath, 'lib');
 const post = require(path.join(libsPath, 'post'));
 
-describe('post plugin', function () {
+describe('unit#post', function () {
 
   const PostableSchema = new Schema({
     name: { type: String }

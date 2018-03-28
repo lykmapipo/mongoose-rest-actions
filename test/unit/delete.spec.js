@@ -12,7 +12,7 @@ const rootPath = path.join(__dirname, '..', '..');
 const libsPath = path.join(rootPath, 'lib');
 const del = require(path.join(libsPath, 'delete'));
 
-describe('delete plugin', function () {
+describe('unit#delete', function () {
 
   const DeletableSchema = new Schema({
     name: { type: String }

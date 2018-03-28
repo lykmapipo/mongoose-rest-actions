@@ -12,7 +12,7 @@ const rootPath = path.join(__dirname, '..', '..');
 const libsPath = path.join(rootPath, 'lib');
 const get = require(path.join(libsPath, 'get'));
 
-describe('getete plugin', function () {
+describe('unit#get', function () {
 
   const GetableSchema = new Schema({
     name: { type: String }

@@ -13,7 +13,7 @@ const rootPath = path.join(__dirname, '..', '..');
 const libsPath = path.join(rootPath, 'lib');
 const put = require(path.join(libsPath, 'put'));
 
-describe('put plugin', function () {
+describe('unit#put', function () {
 
   const PutableSchema = new Schema({
     name: { type: String }
