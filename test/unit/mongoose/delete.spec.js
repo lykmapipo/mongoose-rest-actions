@@ -13,7 +13,7 @@ const libsPath = path.join(rootPath, 'lib');
 const pluginsPath = path.join(libsPath, 'mongoose');
 const del = require(path.join(pluginsPath, 'delete'));
 
-describe.only('delete plugin', function () {
+describe('delete plugin', function () {
 
   const DeletableSchema = new Schema({
     name: { type: String }
