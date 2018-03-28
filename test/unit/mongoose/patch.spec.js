@@ -14,7 +14,7 @@ const libsPath = path.join(rootPath, 'lib');
 const pluginsPath = path.join(libsPath, 'mongoose');
 const patch = require(path.join(pluginsPath, 'patch'));
 
-describe.only('patch plugin', function () {
+describe('patch plugin', function () {
 
   const PatchableSchema = new Schema({
     name: { type: String }
