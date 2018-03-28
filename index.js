@@ -6,9 +6,9 @@ const path = require('path');
 const _ = require('lodash');
 
 //common plugins
-const mongooseSearch = require('mongoose-regex-search');
-const mongooseExist = require('mongoose-exists');
-const mongooseAutoset = require('mongoose-autoset');
+const search = require('mongoose-regex-search');
+const exist = require('mongoose-exists');
+const autoset = require('mongoose-autoset');
 
 
 //rest actions plugin
@@ -126,9 +126,9 @@ module.exports = exports = function restActions(schema, schemaOptns) {
   const schemaOptions = _.merge({}, schemaOptns);
 
   //common plugins
-  mongooseSearch(schema, schemaOptions);
-  mongooseExist(schema, schemaOptions);
-  mongooseAutoset(schema, schemaOptions);
+  search(schema, schemaOptions);
+  exist(schema, schemaOptions);
+  autoset(schema, schemaOptions);
 
   //rest actions plugin
   del(schema, schemaOptions);
