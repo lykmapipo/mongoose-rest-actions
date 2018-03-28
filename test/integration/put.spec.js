@@ -43,6 +43,20 @@ describe('integration#put', function () {
 
 
   it('should be able to update', function (done) {
+    const updates = { name: faker.name.findName() };
+    User
+      .put(father._id, updates, function (error, updated) {
+        expect(error).to.not.exist;
+        expect(updated).to.exist;
+        expect(updated._id).to.eql(father._id);
+        expect(updated.name).to.equal(updates.name);
+        expect(updated.name).to.not.be.equal(father.name);
+        done(error, updated);
+      });
+  });
+
+
+  it('should be able to update', function (done) {
     const updates = { _id: father._id, name: faker.name.findName() };
     User
       .put(updates, function (error, updated) {
@@ -53,7 +67,6 @@ describe('integration#put', function () {
         expect(updated.name).to.not.be.equal(father.name);
         done(error, updated);
       });
-
   });
 
   after(function (done) {

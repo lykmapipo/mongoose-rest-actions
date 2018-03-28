@@ -83,10 +83,10 @@ const put = require(path.join(__dirname, 'lib', 'put'));
  * app.put('/users/:id', function(request, response, next) {
  *
  *  let updates = request.body;
- *  updates._id = request.params.id;
+ *  const _id = request.params.id;
  *
  *  User
- *    .put(updates, function(error, user) {
+ *    .put(_id, updates, function(error, user) {
  *      ...handle error or reply
  *    });
  *
@@ -96,17 +96,17 @@ const put = require(path.join(__dirname, 'lib', 'put'));
  * app.patch('/users/:id', function(request, response, next) {
  *
  *  let updates = request.body;
- *  updates._id = request.params.id;
+ *  const _id = request.params.id;
  *
  *  User
- *    .patch(updates, function(error, user) {
+ *    .patch(_id, updates, function(error, user) {
  *      ...handle error or reply
  *    });
  *
  * });
  *
  *
- * app.delet('/users/:id', function(request, response, next) {
+ * app.delete('/users/:id', function(request, response, next) {
  *
  *  const _id = request.params.id;
  *
