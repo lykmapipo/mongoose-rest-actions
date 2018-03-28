@@ -17,9 +17,10 @@ $ npm install --save mongoose-rest-actions
 const express = require('express');
 const mongoose = require('mongoose');
 const actions = require('mongoose-rest-actions');
-
-//register & load mongoose models
 mongoose.plugin(actions);
+
+//... register & load mongoose models
+
 mongoose.connect('<url>');
 
 
@@ -99,7 +100,7 @@ app.delet('/users/:id', function(request, response, next) {
 
 });
 
-....
+...
 
 ```
 
