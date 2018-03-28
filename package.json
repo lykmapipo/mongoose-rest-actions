@@ -7,8 +7,6 @@
     "mongoose-plugin",
     "express",
     "connect",
-    "http",
-    "htttps",
     "blueprints",
     "rest",
     "actions",
@@ -16,7 +14,8 @@
     "post",
     "put",
     "patch",
-    "delete"
+    "delete",
+    "search"
   ],
   "main": "index.js",
   "scripts": {
