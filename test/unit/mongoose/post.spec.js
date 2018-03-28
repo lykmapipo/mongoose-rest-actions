@@ -14,7 +14,7 @@ const libsPath = path.join(rootPath, 'lib');
 const pluginsPath = path.join(libsPath, 'mongoose');
 const post = require(path.join(pluginsPath, 'post'));
 
-describe.only('post plugin', function () {
+describe('post plugin', function () {
 
   const PostableSchema = new Schema({
     name: { type: String }
