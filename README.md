@@ -6,15 +6,17 @@
 
 [mongoose](https://github.com/Automattic/mongoose) rest actions on top of [expressjs](https://github.com/strongloop/express/)
 
+*Note: You may install [express-mquery](https://github.com/lykmapipo/express-mquery) to have http query parameter parsed to valid mongoose query criteria*
 
 ## Installation
 ```sh
-$ npm install --save mongoose-rest-actions
+$ npm install --save mongoose-rest-actions express-mquery
 ```
 
 ## Usage
 ```js
 const express = require('express');
+const mquery = require('express-mquery');
 const mongoose = require('mongoose');
 const actions = require('mongoose-rest-actions');
 mongoose.plugin(actions);
@@ -25,11 +27,12 @@ mongoose.connect('<url>');
 
 
 const app = express();
+app.use(mquery({limit: 10, maxLimit: 50}));
 const User = mongoose.model('User');
 
 app.get('/users', function(request, response, next) {
 
-  cost options = { page: request.query.page };
+  cost options = request.mquery;
 
   User
     .get(options, function(error, results) {
