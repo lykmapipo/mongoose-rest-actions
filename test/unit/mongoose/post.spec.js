@@ -76,9 +76,11 @@ describe('post plugin', function () {
         expect(beforePost).to.have.been.called;
         expect(beforePost).to.have.been.calledOnce;
 
+        expect(save).to.have.been.called;
+        expect(save).to.have.been.calledOnce;
+
         expect(post).to.have.been.called;
         expect(post).to.have.been.calledOnce;
-
 
         expect(afterPost).to.have.been.called;
         expect(afterPost).to.have.been.calledOnce;

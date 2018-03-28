@@ -73,22 +73,24 @@ describe('patch plugin', function () {
     });
 
     it('should be able to patch(update)', function (done) {
-      patchable.patch(updates, function (error, created) {
+      patchable.patch(updates, function (error, updated) {
 
         expect(beforePatch).to.have.been.called;
         expect(beforePatch).to.have.been.calledOnce;
         expect(beforePatch).to.have.been.calledWith(updates);
 
+        expect(save).to.have.been.called;
+        expect(save).to.have.been.calledOnce;
+
         expect(patch).to.have.been.called;
         expect(patch).to.have.been.calledOnce;
         expect(patch).to.have.been.calledWith(updates);
-
 
         expect(afterPatch).to.have.been.called;
         expect(afterPatch).to.have.been.calledOnce;
         expect(afterPatch).to.have.been.calledWith(updates);
 
-        done(error, created);
+        done(error, updated);
 
       });
 

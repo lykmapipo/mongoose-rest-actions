@@ -72,11 +72,14 @@ describe('put plugin', function () {
     });
 
     it('should be able to put(update)', function (done) {
-      putable.put(updates, function (error, created) {
+      putable.put(updates, function (error, updated) {
 
         expect(beforePut).to.have.been.called;
         expect(beforePut).to.have.been.calledOnce;
         expect(beforePut).to.have.been.calledWith(updates);
+
+        expect(save).to.have.been.called;
+        expect(save).to.have.been.calledOnce;
 
         expect(put).to.have.been.called;
         expect(put).to.have.been.calledOnce;
@@ -87,7 +90,7 @@ describe('put plugin', function () {
         expect(afterPut).to.have.been.calledOnce;
         expect(afterPut).to.have.been.calledWith(updates);
 
-        done(error, created);
+        done(error, updated);
 
       });
 
@@ -117,13 +120,13 @@ describe('put plugin', function () {
 
     it('should be able to put(update)', function (done) {
       Putable
-        .put(updates, function (error, created) {
+        .put(updates, function (error, updated) {
 
           expect(put).to.have.been.called;
           expect(put).to.have.been.calledOnce;
           expect(put).to.have.been.calledWith(updates);
 
-          done(error, created);
+          done(error, updated);
 
         });
 
