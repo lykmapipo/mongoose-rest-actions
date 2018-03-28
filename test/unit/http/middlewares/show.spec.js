@@ -15,31 +15,31 @@ const middlewaresPath = path.join(libsPath, 'http', 'middlewares');
 const show = require(path.join(middlewaresPath, 'show'));
 
 
-describe('show', function() {
+describe('show', function () {
 
-  describe('export', function() {
+  describe('export', function () {
 
-    it('should be a function', function() {
+    it('should be a function', function () {
       expect(show).to.be.a('function');
     });
 
-    it('should have name show', function() {
+    it('should have name show', function () {
       expect(show.name).to.be.equal('show');
     });
 
-    it('should have length of 1', function() {
+    it('should have length of 1', function () {
       expect(show.length).to.be.equal(1);
     });
 
   });
 
-  describe('configure', function() {
+  describe('configure', function () {
 
-    it('should throw `Missing Model` if not exists', function() {
+    it('should throw `Missing Model` if not exists', function () {
       expect(() => { show(); }).to.throw('Missing Model');
     });
 
-    it('should throw `Missing Model` if not exists', function() {
+    it('should throw `Missing Model` if not exists', function () {
       const model = {};
       expect(() => { show({ model: model }); })
         .to.throw('Missing Remove Model Action');
@@ -48,7 +48,7 @@ describe('show', function() {
   });
 
 
-  describe('Model.findById', function() {
+  describe('Model.findById', function () {
 
     //prepare schema
     const ShowableSchema = new Schema({
@@ -65,17 +65,17 @@ describe('show', function() {
     let findById;
 
 
-    beforeEach(function() {
+    beforeEach(function () {
       findById = sinon.mock(Showable)
         .expects('findById')
         .yields(null, showable);
     });
 
-    afterEach(function() {
+    afterEach(function () {
       findById.restore();
     });
 
-    it('should be able to show', function(done) {
+    it('should be able to show', function (done) {
 
       function setup(request, response, next) {
         request.params = _.merge(request.params, { id: showable._id });
@@ -83,7 +83,7 @@ describe('show', function() {
       }
 
       run(setup, show({ model: Showable }),
-        function(error, request, response) {
+        function (error, request, response) {
           expect(findById).to.have.been.called;
           expect(findById).to.have.been.calledOnce;
           expect(findById).to.have.been.calledWith(showable._id);
@@ -94,13 +94,13 @@ describe('show', function() {
 
   });
 
-  describe('Model.show', function() {
+  describe('Model.show', function () {
 
     //prepare schema
     const ShowableSchema = new Schema({
       type: { type: String }
     });
-    ShowableSchema.statics.show = function(id, done) {
+    ShowableSchema.statics.show = function (id, done) {
       return this.findById(id, done);
     };
     const modelName = 'Showable' + Date.now();
@@ -114,17 +114,17 @@ describe('show', function() {
     let _show;
 
 
-    beforeEach(function() {
+    beforeEach(function () {
       _show = sinon.mock(Showable)
         .expects('show')
         .yields(null, showable);
     });
 
-    afterEach(function() {
+    afterEach(function () {
       _show.restore();
     });
 
-    it('should be able to show', function(done) {
+    it('should be able to show', function (done) {
 
       function setup(request, response, next) {
         request.params = _.merge(request.params, { id: showable._id });
@@ -132,7 +132,7 @@ describe('show', function() {
       }
 
       run(setup, show({ model: Showable }),
-        function(error, request, response) {
+        function (error, request, response) {
           expect(_show).to.have.been.called;
           expect(_show).to.have.been.calledOnce;
           expect(_show).to.have.been.calledWith(showable._id);

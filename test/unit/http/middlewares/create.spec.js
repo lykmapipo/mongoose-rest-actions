@@ -15,31 +15,31 @@ const middlewaresPath = path.join(libsPath, 'http', 'middlewares');
 const create = require(path.join(middlewaresPath, 'create'));
 
 
-describe('create', function() {
+describe('create', function () {
 
-  describe('export', function() {
+  describe('export', function () {
 
-    it('should be a function', function() {
+    it('should be a function', function () {
       expect(create).to.be.a('function');
     });
 
-    it('should have name create', function() {
+    it('should have name create', function () {
       expect(create.name).to.be.equal('create');
     });
 
-    it('should have length of 1', function() {
+    it('should have length of 1', function () {
       expect(create.length).to.be.equal(1);
     });
 
   });
 
-  describe('configure', function() {
+  describe('configure', function () {
 
-    it('should throw `Missing Model` if not exists', function() {
+    it('should throw `Missing Model` if not exists', function () {
       expect(() => { create(); }).to.throw('Missing Model');
     });
 
-    it('should throw `Missing Model` if not exists', function() {
+    it('should throw `Missing Model` if not exists', function () {
       const model = {};
       expect(() => { create({ model: model }); })
         .to.throw('Missing Remove Model Action');
@@ -48,7 +48,7 @@ describe('create', function() {
   });
 
 
-  describe('Model.create', function() {
+  describe('Model.create', function () {
 
     //prepare schema
     const CreatableSchema = new Schema({
@@ -65,17 +65,17 @@ describe('create', function() {
     let _create;
 
 
-    beforeEach(function() {
+    beforeEach(function () {
       _create = sinon.mock(Creatable)
         .expects('create')
         .yields(null, creatable);
     });
 
-    afterEach(function() {
+    afterEach(function () {
       _create.restore();
     });
 
-    it('should be able to create', function(done) {
+    it('should be able to create', function (done) {
 
       function setup(request, response, next) {
         request.body = _.merge(request.body, creatable);
@@ -83,7 +83,7 @@ describe('create', function() {
       }
 
       run(setup, create({ model: Creatable }),
-        function(error, request, response) {
+        function (error, request, response) {
           expect(_create).to.have.been.called;
           expect(_create).to.have.been.calledOnce;
           expect(_create).to.have.been.calledWith(creatable);
@@ -94,13 +94,13 @@ describe('create', function() {
 
   });
 
-  describe('Model.store', function() {
+  describe('Model.store', function () {
 
     //prepare schema
     const CreatableSchema = new Schema({
       type: { type: String }
     });
-    CreatableSchema.statics.store = function(object, done) {
+    CreatableSchema.statics.store = function (object, done) {
       return this.create(object, done);
     };
     const modelName = 'Creatable' + Date.now();
@@ -114,17 +114,17 @@ describe('create', function() {
     let store;
 
 
-    beforeEach(function() {
+    beforeEach(function () {
       store = sinon.mock(Creatable)
         .expects('store')
         .yields(null, creatable);
     });
 
-    afterEach(function() {
+    afterEach(function () {
       store.restore();
     });
 
-    it('should be able to create', function(done) {
+    it('should be able to create', function (done) {
 
       function setup(request, response, next) {
         request.body = _.merge(request.body, creatable);
@@ -132,7 +132,7 @@ describe('create', function() {
       }
 
       run(setup, create({ model: Creatable }),
-        function(error, request, response) {
+        function (error, request, response) {
           expect(store).to.have.been.called;
           expect(store).to.have.been.calledOnce;
           expect(store).to.have.been.calledWith(creatable);

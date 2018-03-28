@@ -16,31 +16,31 @@ const middlewaresPath = path.join(libsPath, 'http', 'middlewares');
 const update = require(path.join(middlewaresPath, 'update'));
 
 
-describe('update', function() {
+describe('update', function () {
 
-  describe('export', function() {
+  describe('export', function () {
 
-    it('should be a function', function() {
+    it('should be a function', function () {
       expect(update).to.be.a('function');
     });
 
-    it('should have name update', function() {
+    it('should have name update', function () {
       expect(update.name).to.be.equal('update');
     });
 
-    it('should have length of 1', function() {
+    it('should have length of 1', function () {
       expect(update.length).to.be.equal(1);
     });
 
   });
 
-  describe('configure', function() {
+  describe('configure', function () {
 
-    it('should throw `Missing Model` if not exists', function() {
+    it('should throw `Missing Model` if not exists', function () {
       expect(() => { update(); }).to.throw('Missing Model');
     });
 
-    it('should throw `Missing Model` if not exists', function() {
+    it('should throw `Missing Model` if not exists', function () {
       const model = {};
       expect(() => { update({ model: model }); })
         .to.throw('Missing Remove Model Action');
@@ -49,7 +49,7 @@ describe('update', function() {
   });
 
 
-  describe('Model.findByIdAndUpdate', function() {
+  describe('Model.findByIdAndUpdate', function () {
 
     //prepare schema
     const EditableSchema = new Schema({
@@ -66,17 +66,17 @@ describe('update', function() {
     let findByIdAndUpdate;
 
 
-    beforeEach(function() {
+    beforeEach(function () {
       findByIdAndUpdate = sinon.mock(Editable)
         .expects('findByIdAndUpdate')
         .yields(null, editable);
     });
 
-    afterEach(function() {
+    afterEach(function () {
       findByIdAndUpdate.restore();
     });
 
-    it('should be able to create', function(done) {
+    it('should be able to create', function (done) {
 
       function setup(request, response, next) {
         request.body = _.merge(request.body, editable);
@@ -85,7 +85,7 @@ describe('update', function() {
       }
 
       run(setup, update({ model: Editable }),
-        function(error, request, response) {
+        function (error, request, response) {
           expect(findByIdAndUpdate).to.have.been.called;
           expect(findByIdAndUpdate).to.have.been.calledOnce;
           expect(findByIdAndUpdate)
@@ -97,13 +97,13 @@ describe('update', function() {
 
   });
 
-  describe('Model.edit', function() {
+  describe('Model.edit', function () {
 
     //prepare schema
     const EditableSchema = new Schema({
       type: { type: String }
     });
-    EditableSchema.statics.edit = function() {
+    EditableSchema.statics.edit = function () {
       return this.findByIdAndUpdate.apply(this, arguments);
     };
     const modelName = 'Editable' + faker.random.uuid();
@@ -117,17 +117,17 @@ describe('update', function() {
     let edit;
 
 
-    beforeEach(function() {
+    beforeEach(function () {
       edit = sinon.mock(Editable)
         .expects('edit')
         .yields(null, editable);
     });
 
-    afterEach(function() {
+    afterEach(function () {
       edit.restore();
     });
 
-    it('should be able to create', function(done) {
+    it('should be able to create', function (done) {
 
       function setup(request, response, next) {
         request.body = _.merge(request.body, editable);
@@ -136,7 +136,7 @@ describe('update', function() {
       }
 
       run(setup, update({ model: Editable }),
-        function(error, request, response) {
+        function (error, request, response) {
           expect(edit).to.have.been.called;
           expect(edit).to.have.been.calledOnce;
           expect(edit)

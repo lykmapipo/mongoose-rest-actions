@@ -9,9 +9,9 @@ const libsPath = path.join(rootPath, 'lib');
 const middlewaresPath = path.join(libsPath, 'http', 'middlewares');
 const index = require(path.join(middlewaresPath, 'index'));
 
-describe('index', function() {
+describe('index', function () {
 
-  it('should be a function', function() {
+  it('should be a function', function () {
     expect(index).to.be.a('function');
   });
 

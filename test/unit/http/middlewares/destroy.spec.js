@@ -15,31 +15,31 @@ const middlewaresPath = path.join(libsPath, 'http', 'middlewares');
 const destroy = require(path.join(middlewaresPath, 'destroy'));
 
 
-describe('destroy', function() {
+describe('destroy', function () {
 
-  describe('export', function() {
+  describe('export', function () {
 
-    it('should be a function', function() {
+    it('should be a function', function () {
       expect(destroy).to.be.a('function');
     });
 
-    it('should have name destroy', function() {
+    it('should have name destroy', function () {
       expect(destroy.name).to.be.equal('destroy');
     });
 
-    it('should have length of 1', function() {
+    it('should have length of 1', function () {
       expect(destroy.length).to.be.equal(1);
     });
 
   });
 
-  describe('configure', function() {
+  describe('configure', function () {
 
-    it('should throw `Missing Model` if not exists', function() {
+    it('should throw `Missing Model` if not exists', function () {
       expect(() => { destroy(); }).to.throw('Missing Model');
     });
 
-    it('should throw `Missing Model` if not exists', function() {
+    it('should throw `Missing Model` if not exists', function () {
       const model = {};
       expect(() => { destroy({ model: model }); })
         .to.throw('Missing Remove Model Action');
@@ -48,7 +48,7 @@ describe('destroy', function() {
   });
 
 
-  describe('Model.findByIdAndRemove', function() {
+  describe('Model.findByIdAndRemove', function () {
 
     //prepare schema
     const RemovableSchema = new Schema({
@@ -65,17 +65,17 @@ describe('destroy', function() {
     let remove;
 
 
-    beforeEach(function() {
+    beforeEach(function () {
       remove = sinon.mock(Removable)
         .expects('findByIdAndRemove')
         .yields(null, removable);
     });
 
-    afterEach(function() {
+    afterEach(function () {
       remove.restore();
     });
 
-    it('should be able to remove', function(done) {
+    it('should be able to remove', function (done) {
 
       function setup(request, response, next) {
         request.params = _.merge(request.params, { id: removable._id });
@@ -83,7 +83,7 @@ describe('destroy', function() {
       }
 
       run(setup, destroy({ model: Removable }),
-        function(error, request, response) {
+        function (error, request, response) {
           expect(remove).to.have.been.called;
           expect(remove).to.have.been.calledOnce;
           expect(remove).to.have.been.calledWith(removable._id);
@@ -94,13 +94,13 @@ describe('destroy', function() {
 
   });
 
-  describe('Model.findByIdAndDestroy', function() {
+  describe('Model.findByIdAndDestroy', function () {
 
     //prepare schema
     const RemovableSchema = new Schema({
       type: { type: String }
     });
-    RemovableSchema.statics.findByIdAndDestroy = function(id, done) {
+    RemovableSchema.statics.findByIdAndDestroy = function (id, done) {
       return this.findByIdAndRemove(id, done);
     };
     const modelName = 'Removable' + Date.now();
@@ -114,17 +114,17 @@ describe('destroy', function() {
     let remove;
 
 
-    beforeEach(function() {
+    beforeEach(function () {
       remove = sinon.mock(Removable)
         .expects('findByIdAndDestroy')
         .yields(null, removable);
     });
 
-    afterEach(function() {
+    afterEach(function () {
       remove.restore();
     });
 
-    it('should be able to remove', function(done) {
+    it('should be able to remove', function (done) {
 
       function setup(request, response, next) {
         request.params = _.merge(request.params, { id: removable._id });
@@ -132,7 +132,7 @@ describe('destroy', function() {
       }
 
       run(setup, destroy({ model: Removable }),
-        function(error, request, response) {
+        function (error, request, response) {
           expect(remove).to.have.been.called;
           expect(remove).to.have.been.calledOnce;
           expect(remove).to.have.been.calledWith(removable._id);
