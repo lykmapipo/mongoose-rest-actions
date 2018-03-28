@@ -123,12 +123,6 @@ $ npm test
 It will be nice, if you open an issue first so that we can know what is going on, then, fork this repo and push in your ideas. Do not forget to add a bit of test(s) of what value you adding.
 
 
-## References
-- [http://jsonapi.org/](http://jsonapi.org/)
-- [unit-testing-express-middleware-behavior-in-ecmascript-2015](https://medium.com/@morrissinger/unit-testing-express-middleware-behavior-in-ecmascript-2015-f1641ebb8040)
-- [express-unit](https://github.com/thebearingedge/express-unit)
-
-
 ## Licence
 The MIT License (MIT)
 
