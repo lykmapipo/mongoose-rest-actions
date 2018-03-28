@@ -74,6 +74,9 @@
     "lodash": "^4.17.5",
     "moment": "^2.21.0",
     "mongoose": "^5.0.12",
+    "mongoose-autoset": "^0.1.0",
+    "mongoose-exists": "^0.2.0",
+    "mongoose-regex-search": "^0.4.2",
     "utils-copy-error": "^1.0.1"
   }
 }
