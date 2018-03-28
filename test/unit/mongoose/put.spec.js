@@ -14,7 +14,7 @@ const libsPath = path.join(rootPath, 'lib');
 const pluginsPath = path.join(libsPath, 'mongoose');
 const put = require(path.join(pluginsPath, 'put'));
 
-describe.only('put plugin', function () {
+describe('put plugin', function () {
 
   const PutableSchema = new Schema({
     name: { type: String }
