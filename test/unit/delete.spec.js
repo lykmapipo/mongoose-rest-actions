@@ -8,10 +8,9 @@ const Schema = mongoose.Schema;
 const sinon = require('sinon');
 const expect = require('chai').expect;
 
-const rootPath = path.join(__dirname, '..', '..', '..');
+const rootPath = path.join(__dirname, '..', '..');
 const libsPath = path.join(rootPath, 'lib');
-const pluginsPath = path.join(libsPath, 'mongoose');
-const del = require(path.join(pluginsPath, 'delete'));
+const del = require(path.join(libsPath, 'delete'));
 
 describe('delete plugin', function () {
 

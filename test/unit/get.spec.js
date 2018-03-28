@@ -8,12 +8,11 @@ const Schema = mongoose.Schema;
 const sinon = require('sinon');
 const expect = require('chai').expect;
 
-const rootPath = path.join(__dirname, '..', '..', '..');
+const rootPath = path.join(__dirname, '..', '..');
 const libsPath = path.join(rootPath, 'lib');
-const pluginsPath = path.join(libsPath, 'mongoose');
-const get = require(path.join(pluginsPath, 'get'));
+const get = require(path.join(libsPath, 'get'));
 
-describe.only('getete plugin', function () {
+describe('getete plugin', function () {
 
   const GetableSchema = new Schema({
     name: { type: String }
