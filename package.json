@@ -1,6 +1,6 @@
 {
   "name": "mongoose-rest-actions",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "mongoose rest actions on top of express",
   "keywords": [
     "mongoose",
@@ -35,12 +35,10 @@
     "url": "https://github.com/lykmapipo/mongoose-rest-actions/issues"
   },
   "homepage": "https://github.com/lykmapipo/mongoose-rest-actions",
-  "contributors": [
-    {
-      "name": "lykmapipo",
-      "github": "https://github.com/lykmapipo"
-    }
-  ],
+  "contributors": [{
+    "name": "lykmapipo",
+    "github": "https://github.com/lykmapipo"
+  }],
   "devDependencies": {
     "chai": "^4.1.2",
     "faker": "^4.1.0",
@@ -61,6 +59,7 @@
     "lodash": "^4.17.5",
     "mongoose": "^5.0.12",
     "mongoose-autoset": "^0.1.0",
+    "mongoose-beautiful-unique-validation": "^7.1.1",
     "mongoose-exists": "^0.2.0",
     "mongoose-regex-search": "^0.4.2"
   }

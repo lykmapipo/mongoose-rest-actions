@@ -2,6 +2,7 @@
 
 //dependencies
 const path = require('path');
+const async = require('async');
 const faker = require('faker');
 const chai = require('chai');
 const mongoose = require('mongoose');
@@ -16,7 +17,7 @@ describe('integration#post', function () {
 
   const modelName = faker.random.uuid();
   const User = mongoose.model(modelName, new Schema({
-    name: { type: String, searchable: true, index: true },
+    name: { type: String, searchable: true, unique: true },
     age: { type: Number, index: true },
     year: { type: Number, index: true },
     mother: { type: ObjectId, ref: modelName, index: true, autoset: true },
@@ -46,6 +47,36 @@ describe('integration#post', function () {
         expect(created.year).to.equal(father.year);
         done(error, created);
       });
+
+  });
+
+  it('should beautify unique error message', function (done) {
+
+    let father = { name: faker.name.firstName(), age: 58, year: 1960 };
+
+    async.waterfall([
+      //...take 1
+      function (next) {
+        User.post(father, next);
+      },
+
+      //...take 2
+      function (saved, next) {
+        User.post(father, next);
+      }
+    ], function (error, result) {
+      expect(error).to.exist;
+      expect(error.status).to.exist;
+      expect(error.name).to.exist;
+      expect(error.name).to.be.equal('ValidationError');
+      expect(error._message).to.exist;
+      expect(error.errors).to.exist;
+      expect(error.errors.name).to.exist;
+      expect(error.errors.name.kind).to.exist;
+      expect(error.errors.name.kind).to.be.equal('unique');
+      done(null, result);
+
+    });
 
   });
 

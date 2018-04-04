@@ -9,6 +9,7 @@ const _ = require('lodash');
 const search = require('mongoose-regex-search');
 const exist = require('mongoose-exists');
 const autoset = require('mongoose-autoset');
+const beautifyUnique = require('mongoose-beautiful-unique-validation');
 
 
 //rest actions plugin
@@ -129,6 +130,7 @@ module.exports = exports = function restActions(schema, schemaOptns) {
   search(schema, schemaOptions);
   exist(schema, schemaOptions);
   autoset(schema, schemaOptions);
+  beautifyUnique(schema, schemaOptions);
 
   //rest actions plugin
   del(schema, schemaOptions);
