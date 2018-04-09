@@ -16,7 +16,7 @@ describe('integration#getById', function () {
 
   mongoose.plugin(actions);
 
-  const modelName = faker.random.uuid();
+  const modelName = 'GetByIdIntegration';
   const User = mongoose.model(modelName, new Schema({
     name: { type: String, searchable: true, index: true },
     age: { type: Number, index: true },

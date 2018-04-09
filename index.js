@@ -126,6 +126,39 @@ module.exports = exports = function restActions(schema, schemaOptns) {
   //normalize options
   const schemaOptions = _.merge({}, schemaOptns);
 
+  //ensure indexed timestamps fields
+  //currently mongoose does not index them
+  //see https://github.com/Automattic/mongoose/blob/master/lib/schema.js#L758
+  const hasTimeStamps = _.get(schema, 'options.timestamps', false);
+  if (hasTimeStamps) {
+
+    //obtain timestamps paths
+    const createdAtField =
+      (_.isBoolean(hasTimeStamps) ? 'createdAt' : hasTimeStamps.createdAt);
+
+    const updatedAtField =
+      (_.isBoolean(hasTimeStamps) ? 'updatedAt' : hasTimeStamps.updatedAt);
+
+
+    //ensure index on create timestamp path if not exists
+    if (schema.paths[createdAtField]) {
+      schema.paths[createdAtField].options.index = true;
+      schema.index({
+        [createdAtField]: 1
+      });
+    }
+
+    //ensure index on update timestamp path if not exists
+    if (schema.paths[updatedAtField]) {
+      schema.paths[updatedAtField].options.index = true;
+      schema.index({
+        [updatedAtField]: 1
+      });
+    }
+
+  }
+
+
   //common plugins
   search(schema, schemaOptions);
   exist(schema, schemaOptions);

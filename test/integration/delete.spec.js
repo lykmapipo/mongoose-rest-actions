@@ -14,14 +14,14 @@ describe('integration#delete', function () {
 
   mongoose.plugin(actions);
 
-  const modelName = faker.random.uuid();
+  const modelName = 'DeletableIntegration';
   const User = mongoose.model(modelName, new Schema({
     name: { type: String, searchable: true, index: true },
     age: { type: Number, index: true },
     year: { type: Number, index: true },
     mother: { type: ObjectId, ref: modelName, index: true, autoset: true },
     father: { type: ObjectId, ref: modelName, index: true, autoset: true }
-  }));
+  }, { timestamps: true }));
 
   let father = { name: faker.name.firstName(), age: 58, year: 1960 };
 

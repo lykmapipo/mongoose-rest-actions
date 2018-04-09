@@ -14,7 +14,7 @@ describe('integration#put', function () {
 
   mongoose.plugin(actions);
 
-  const modelName = faker.random.uuid();
+  const modelName = 'PutableIntegration';
   const User = mongoose.model(modelName, new Schema({
     name: { type: String, searchable: true, index: true },
     age: { type: Number, index: true },

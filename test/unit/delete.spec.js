@@ -16,7 +16,7 @@ describe('unit#delete', function () {
 
   const DeletableSchema = new Schema({
     name: { type: String }
-  });
+  }, { timestamps: true });
 
   DeletableSchema.methods.beforeDelete = function (done) {
     done();

@@ -1,6 +1,6 @@
 {
   "name": "mongoose-rest-actions",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "mongoose rest actions on top of express",
   "keywords": [
     "mongoose",
@@ -59,7 +59,7 @@
   "dependencies": {
     "async": "^2.6.0",
     "lodash": "^4.17.5",
-    "mongoose": "^5.0.12",
+    "mongoose": "^5.0.14",
     "mongoose-autoset": "^0.1.0",
     "mongoose-beautiful-unique-validation": "^7.1.1",
     "mongoose-exists": "^0.2.0",

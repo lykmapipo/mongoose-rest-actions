@@ -15,7 +15,7 @@ describe('integration#post', function () {
 
   mongoose.plugin(actions);
 
-  const modelName = faker.random.uuid();
+  const modelName = 'PostableIntegration';
   const User = mongoose.model(modelName, new Schema({
     name: { type: String, searchable: true, unique: true },
     age: { type: Number, index: true },
