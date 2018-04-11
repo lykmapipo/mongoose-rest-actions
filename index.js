@@ -27,6 +27,8 @@ const put = require(path.join(__dirname, 'lib', 'put'));
  * @description mongoose schema plugins to support http verb(s)
  * @param {Schema} schema valid mongoose schema
  * @param {Object} [schemaOptns] valid delete plugin options
+ * @param {String} [schemaOptns.root] a field name to use to hold results.
+ *                                    default to `data`
  * @version 0.1.0 
  * @since 0.1.0
  * @author lally elias<lallyelias87@gmail.com> 
@@ -124,7 +126,7 @@ const put = require(path.join(__dirname, 'lib', 'put'));
 module.exports = exports = function restActions(schema, schemaOptns) {
 
   //normalize options
-  const schemaOptions = _.merge({}, schemaOptns);
+  const schemaOptions = _.merge({}, { root: 'data' }, schemaOptns);
 
   //ensure indexed timestamps fields
   //currently mongoose does not index them

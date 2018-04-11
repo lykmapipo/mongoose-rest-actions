@@ -32,7 +32,7 @@ describe('unit#get', function () {
     });
 
     it('should have length of 1', function () {
-      expect(get.length).to.be.equal(1);
+      expect(get.length).to.be.equal(2);
     });
   });
 
