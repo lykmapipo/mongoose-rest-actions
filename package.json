@@ -1,6 +1,6 @@
 {
   "name": "mongoose-rest-actions",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "mongoose rest actions on top of express",
   "keywords": [
     "mongoose",
@@ -63,6 +63,6 @@
     "mongoose-autoset": "^0.1.0",
     "mongoose-beautiful-unique-validation": "^7.1.1",
     "mongoose-exists": "^0.2.0",
-    "mongoose-regex-search": "^0.4.3"
+    "mongoose-regex-search": "^0.4.4"
   }
 }
