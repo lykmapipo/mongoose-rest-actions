@@ -6,6 +6,7 @@ const path = require('path');
 const _ = require('lodash');
 
 //common plugins
+const fake = require('@lykmapipo/mongoose-faker');
 const search = require('mongoose-regex-search');
 const exist = require('mongoose-exists');
 const autoset = require('mongoose-autoset');
@@ -162,6 +163,7 @@ module.exports = exports = function restActions(schema, schemaOptns) {
 
 
   //common plugins
+  fake(schema, schemaOptions);
   search(schema, schemaOptions);
   exist(schema, schemaOptions);
   autoset(schema, schemaOptions);
