@@ -138,9 +138,11 @@ module.exports = exports = function restActions(schema, schemaOptns) {
     //obtain timestamps paths
     const createdAtField =
       (_.isBoolean(hasTimeStamps) ? 'createdAt' : hasTimeStamps.createdAt);
+    schema.statics.CREATED_AT_FIELD = createdAtField;
 
     const updatedAtField =
       (_.isBoolean(hasTimeStamps) ? 'updatedAt' : hasTimeStamps.updatedAt);
+    schema.statics.UPDATED_AT_FIELD = updatedAtField;
 
 
     //ensure index on create timestamp path if not exists

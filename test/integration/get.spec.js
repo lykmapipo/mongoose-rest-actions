@@ -82,6 +82,9 @@ describe('integration#get', function () {
         expect(results.page).to.be.equal(1);
         expect(results.pages).to.exist;
         expect(results.pages).to.be.equal(4);
+        expect(results.lastModified).to.exist;
+        expect(_.maxBy(results.data, 'getUpdatedAt').getUpdatedAt)
+          .to.be.below(results.lastModified);
         done(error, results);
       });
 
@@ -106,6 +109,9 @@ describe('integration#get', function () {
         expect(results.page).to.be.equal(1);
         expect(results.pages).to.exist;
         expect(results.pages).to.be.equal(2);
+        expect(results.lastModified).to.exist;
+        expect(_.maxBy(results.data, 'getUpdatedAt').getUpdatedAt)
+          .to.be.below(results.lastModified);
         done(error, results);
       });
 
@@ -131,6 +137,9 @@ describe('integration#get', function () {
         expect(results.page).to.be.equal(1);
         expect(results.pages).to.exist;
         expect(results.pages).to.be.equal(1);
+        expect(results.lastModified).to.exist;
+        expect(_.maxBy(results.data, 'getUpdatedAt').getUpdatedAt)
+          .to.be.below(results.lastModified);
         done(error, results);
       });
 
@@ -155,8 +164,55 @@ describe('integration#get', function () {
         expect(results.page).to.be.equal(1);
         expect(results.pages).to.exist;
         expect(results.pages).to.be.equal(1);
+        expect(results.lastModified).to.exist;
+        expect(_.maxBy(results.data, 'getUpdatedAt').getUpdatedAt)
+          .to.be.below(results.lastModified);
         done(error, results);
       });
+
+  });
+
+  describe('headers', function () {
+    let lastModified;
+
+    beforeEach(function (done) {
+      User
+        .findOne({}, { getUpdatedAt: 1 })
+        .sort({ getUpdatedAt: -1 })
+        .exec(function (error, latest) {
+          lastModified = latest;
+          done(error, latest);
+        });
+    });
+
+    it('should be able to get only latest modified', function (done) {
+
+      const options =
+        ({ headers: { ifModifiedSince: lastModified.getUpdatedAt } });
+
+      User
+        .get(options, function (error, results) {
+          expect(error).to.not.exist;
+          expect(results).to.exist;
+          expect(results.data).to.exist;
+          expect(results.data).to.have.length(0);
+          expect(results.total).to.exist;
+          expect(results.total).to.be.equal(0);
+          expect(results.limit).to.exist;
+          expect(results.limit).to.be.equal(10);
+          expect(results.skip).to.exist;
+          expect(results.skip).to.be.equal(0);
+          expect(results.page).to.exist;
+          expect(results.page).to.be.equal(1);
+          expect(results.pages).to.exist;
+          expect(results.pages).to.be.equal(1);
+          expect(results.lastModified).to.exist;
+          expect(results.lastModified)
+            .to.be.eql(lastModified.getUpdatedAt);
+          done(error, results);
+        });
+
+    });
 
   });
 
