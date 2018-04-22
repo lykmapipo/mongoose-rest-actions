@@ -84,7 +84,7 @@ describe('integration#get', function () {
         expect(results.pages).to.be.equal(4);
         expect(results.lastModified).to.exist;
         expect(_.maxBy(results.data, 'getUpdatedAt').getUpdatedAt)
-          .to.be.below(results.lastModified);
+          .to.be.at.most(results.lastModified);
         done(error, results);
       });
 
@@ -111,7 +111,7 @@ describe('integration#get', function () {
         expect(results.pages).to.be.equal(2);
         expect(results.lastModified).to.exist;
         expect(_.maxBy(results.data, 'getUpdatedAt').getUpdatedAt)
-          .to.be.below(results.lastModified);
+          .to.be.at.most(results.lastModified);
         done(error, results);
       });
 
@@ -139,7 +139,7 @@ describe('integration#get', function () {
         expect(results.pages).to.be.equal(1);
         expect(results.lastModified).to.exist;
         expect(_.maxBy(results.data, 'getUpdatedAt').getUpdatedAt)
-          .to.be.below(results.lastModified);
+          .to.be.at.most(results.lastModified);
         done(error, results);
       });
 
@@ -166,7 +166,7 @@ describe('integration#get', function () {
         expect(results.pages).to.be.equal(1);
         expect(results.lastModified).to.exist;
         expect(_.maxBy(results.data, 'getUpdatedAt').getUpdatedAt)
-          .to.be.below(results.lastModified);
+          .to.be.at.most(results.lastModified);
         done(error, results);
       });
 

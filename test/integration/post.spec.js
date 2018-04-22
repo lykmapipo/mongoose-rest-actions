@@ -17,7 +17,7 @@ describe('integration#post', function () {
 
   const modelName = 'PostableIntegration';
   const User = mongoose.model(modelName, new Schema({
-    name: { type: String, searchable: true, unique: true },
+    name: { type: String, searchable: true, unique: true, fake: true },
     age: { type: Number, index: true },
     year: { type: Number, index: true },
     mother: { type: ObjectId, ref: modelName, index: true, autoset: true },
@@ -35,7 +35,24 @@ describe('integration#post', function () {
 
   it('should be able to post', function (done) {
 
-    let father = { name: faker.name.firstName(), age: 58, year: 1960 };
+    const father = { name: faker.name.firstName(), age: 58, year: 1960 };
+
+    User
+      .post(father, function (error, created) {
+        expect(error).to.not.exist;
+        expect(created).to.exist;
+        expect(created._id).to.exist;
+        expect(created.name).to.equal(father.name);
+        expect(created.age).to.equal(father.age);
+        expect(created.year).to.equal(father.year);
+        done(error, created);
+      });
+
+  });
+
+  it('should be able to post instance', function (done) {
+
+    const father = User.fake();
 
     User
       .post(father, function (error, created) {
@@ -52,7 +69,7 @@ describe('integration#post', function () {
 
   it('should beautify unique error message', function (done) {
 
-    let father = { name: faker.name.firstName(), age: 58, year: 1960 };
+    const father = { name: faker.name.firstName(), age: 58, year: 1960 };
 
     async.waterfall([
       //...take 1
