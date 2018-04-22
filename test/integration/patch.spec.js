@@ -16,7 +16,7 @@ describe('integration#patch', function () {
 
   const modelName = 'PatchableIntegration';
   const User = mongoose.model(modelName, new Schema({
-    name: { type: String, searchable: true, index: true },
+    name: { type: String, searchable: true, index: true, fake: true },
     age: { type: Number, index: true },
     year: { type: Number, index: true },
     mother: { type: ObjectId, ref: modelName, index: true, autoset: true },
@@ -55,6 +55,31 @@ describe('integration#patch', function () {
       });
   });
 
+  it('should be able to update an instance', function (done) {
+    const updates = father.fakeOnly('name');
+    User
+      .patch(updates, function (error, updated) {
+        expect(error).to.not.exist;
+        expect(updated).to.exist;
+        expect(updated._id).to.eql(father._id);
+        expect(updated.name).to.equal(updates.name);
+        expect(updated.name).to.be.equal(father.name);
+        done(error, updated);
+      });
+  });
+
+  it('should be able to update an instance', function (done) {
+    const updates = father.fakeOnly('name');
+    User
+      .patch(updates._id, updates, function (error, updated) {
+        expect(error).to.not.exist;
+        expect(updated).to.exist;
+        expect(updated._id).to.eql(father._id);
+        expect(updated.name).to.equal(updates.name);
+        expect(updated.name).to.be.equal(father.name);
+        done(error, updated);
+      });
+  });
 
   it('should be able to update', function (done) {
     const updates = { _id: father._id, name: faker.name.findName() };

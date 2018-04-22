@@ -18,7 +18,7 @@ describe('integration#get', function () {
 
   const modelName = 'GetableIntegration';
   const User = mongoose.model(modelName, new Schema({
-    name: { type: String, searchable: true, index: true },
+    name: { type: String, searchable: true, index: true, fake: true },
     age: { type: Number, index: true },
     year: { type: Number, index: true },
     mother: { type: ObjectId, ref: modelName, index: true, autoset: true },
