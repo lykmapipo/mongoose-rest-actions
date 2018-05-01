@@ -191,7 +191,7 @@ describe('integration#get', function () {
         ({ headers: { ifModifiedSince: lastModified.getUpdatedAt } });
 
       User
-        .get(options, function (error, results) {
+        .fresh(options, function (error, results) {
           expect(error).to.not.exist;
           expect(results).to.exist;
           expect(results.data).to.exist;
