@@ -205,7 +205,7 @@ describe('integration#get', function () {
           expect(results.page).to.exist;
           expect(results.page).to.be.equal(1);
           expect(results.pages).to.exist;
-          expect(results.pages).to.be.equal(1);
+          expect(results.pages).to.be.equal(0);
           expect(results.lastModified).to.exist;
           expect(results.lastModified)
             .to.be.eql(lastModified.getUpdatedAt);
