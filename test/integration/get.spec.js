@@ -172,6 +172,24 @@ describe('integration#get', function () {
 
   });
 
+  it('should throw if projection are not valid', function (done) {
+    const options = { select: { name: 1, age: 0 } };
+    User
+      .get(options, function (error, results) {
+        expect(error).to.exist;
+        expect(results).to.not.exist;
+        //assert error
+        expect(error.status).to.be.equal(400);
+        expect(error.name).to.be.equal('MongoError');
+        expect(error.message)
+          .to.be.equal(
+            'Projection cannot have a mix of inclusion and exclusion.'
+          );
+        done();
+      });
+
+  });
+
   describe('headers', function () {
     let lastModified;
 
