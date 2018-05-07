@@ -8,6 +8,7 @@ const _ = require('lodash');
 //common plugins
 const fake = require('@lykmapipo/mongoose-faker');
 const search = require('mongoose-regex-search');
+const autopopulate = require('mongoose-autopopulate');
 const exist = require('mongoose-exists');
 const autoset = require('mongoose-autoset');
 const beautifyUnique = require('mongoose-beautiful-unique-validation');
@@ -165,6 +166,7 @@ module.exports = exports = function restActions(schema, schemaOptns) {
 
 
   //common plugins
+  autopopulate(schema, schemaOptions);
   fake(schema, schemaOptions);
   search(schema, schemaOptions);
   exist(schema, schemaOptions);
