@@ -169,11 +169,7 @@ module.exports = exports = function restActions(schema, schemaOptns) {
   schema.add({
     deletedAt: {
       type: Date,
-      index: true,
-      fake: {
-        generator: 'date',
-        type: 'past'
-      }
+      index: true
     }
   });
 
