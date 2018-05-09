@@ -165,6 +165,19 @@ module.exports = exports = function restActions(schema, schemaOptns) {
   }
 
 
+  //extend schema with deletedAt timestamp
+  schema.add({
+    deletedAt: {
+      type: Date,
+      index: true,
+      fake: {
+        generator: 'date',
+        type: 'past'
+      }
+    }
+  });
+
+
   //common plugins
   autopopulate(schema, schemaOptions);
   fake(schema, schemaOptions);
