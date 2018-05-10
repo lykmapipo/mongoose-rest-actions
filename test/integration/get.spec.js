@@ -21,8 +21,20 @@ describe('integration#get', function () {
     name: { type: String, searchable: true, index: true, fake: true },
     age: { type: Number, index: true },
     year: { type: Number, index: true },
-    mother: { type: ObjectId, ref: modelName, index: true, autoset: true },
-    father: { type: ObjectId, ref: modelName, index: true, autoset: true }
+    mother: {
+      type: ObjectId,
+      ref: modelName,
+      index: true,
+      autoset: true,
+      autopopulate: true
+    },
+    father: {
+      type: ObjectId,
+      ref: modelName,
+      index: true,
+      autoset: true,
+      autopopulate: true
+    }
   }, { timestamps: { createdAt: 'getCreatedAt', updatedAt: 'getUpdatedAt' } }));
 
   const father = { name: faker.name.firstName(), age: 58, year: 1960 };
@@ -126,7 +138,7 @@ describe('integration#get', function () {
         expect(error).to.not.exist;
         expect(results).to.exist;
         expect(results.data).to.exist;
-        expect(results.data).to.have.length(1);
+        expect(results.data).to.have.length.at.least(1);
         expect(results.total).to.exist;
         expect(results.total).to.be.equal(1);
         expect(results.limit).to.exist;
@@ -195,7 +207,7 @@ describe('integration#get', function () {
 
     beforeEach(function (done) {
       User
-        .findOne({}, { getUpdatedAt: 1 })
+        .findOne({}, { getUpdatedAt: 1 }, { autopopulate: false })
         .sort({ getUpdatedAt: -1 })
         .exec(function (error, latest) {
           lastModified = latest;

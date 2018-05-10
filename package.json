@@ -1,6 +1,6 @@
 {
   "name": "mongoose-rest-actions",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "mongoose rest actions on top of express",
   "keywords": [
     "mongoose",
@@ -62,7 +62,7 @@
     "@lykmapipo/mongoose-faker": "^0.3.1",
     "async": "^2.6.0",
     "lodash": "^4.17.10",
-    "mongoose": "^5.0.17",
+    "mongoose": "^5.0.18",
     "mongoose-autopopulate": "^0.6.1",
     "mongoose-autoset": "^0.1.0",
     "mongoose-beautiful-unique-validation": "^7.1.1",
