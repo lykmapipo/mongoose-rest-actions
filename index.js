@@ -128,6 +128,11 @@ const put = require(path.join(__dirname, 'lib', 'put'));
  */
 module.exports = exports = function restActions(schema, schemaOptns) {
 
+  //ignore if already plugged-in
+  if (schema.statics.get) {
+    return;
+  }
+
   //normalize options
   const schemaOptions = _.merge({}, { root: 'data' }, {
     defaultHidden: {
@@ -182,7 +187,7 @@ module.exports = exports = function restActions(schema, schemaOptns) {
 
 
   //common plugins
-  hide(schema, schemaOptions);
+  hide(schemaOptions)(schema, schemaOptions);
   autopopulate(schema, schemaOptions);
   fake(schema, schemaOptions);
   search(schema, schemaOptions);
