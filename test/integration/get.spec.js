@@ -140,7 +140,7 @@ describe('integration#get', function () {
         expect(results.data).to.exist;
         expect(results.data).to.have.length.at.least(1);
         expect(results.total).to.exist;
-        expect(results.total).to.be.equal(1);
+        expect(results.total).to.be.at.least(1);
         expect(results.limit).to.exist;
         expect(results.limit).to.be.equal(10);
         expect(results.skip).to.exist;

@@ -8,6 +8,7 @@ const _ = require('lodash');
 //common plugins
 const fake = require('@lykmapipo/mongoose-faker');
 const search = require('mongoose-regex-search');
+const hide = require('mongoose-hidden');
 const autopopulate = require('mongoose-autopopulate');
 const exist = require('mongoose-exists');
 const autoset = require('mongoose-autoset');
@@ -128,7 +129,13 @@ const put = require(path.join(__dirname, 'lib', 'put'));
 module.exports = exports = function restActions(schema, schemaOptns) {
 
   //normalize options
-  const schemaOptions = _.merge({}, { root: 'data' }, schemaOptns);
+  const schemaOptions = _.merge({}, { root: 'data' }, {
+    defaultHidden: {
+      password: true,
+      __v: true,
+      __t: true
+    }
+  }, schemaOptns);
 
   //ensure indexed timestamps fields
   //currently mongoose does not index them
@@ -175,6 +182,7 @@ module.exports = exports = function restActions(schema, schemaOptns) {
 
 
   //common plugins
+  hide(schema, schemaOptions);
   autopopulate(schema, schemaOptions);
   fake(schema, schemaOptions);
   search(schema, schemaOptions);
