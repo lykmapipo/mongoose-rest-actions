@@ -1,6 +1,6 @@
 {
   "name": "mongoose-rest-actions",
-  "version": "0.12.2",
+  "version": "0.13.0",
   "description": "mongoose rest actions on top of express",
   "keywords": [
     "mongoose",
@@ -59,7 +59,7 @@
     "time-grunt": "^1.4.0"
   },
   "dependencies": {
-    "@lykmapipo/mongoose-faker": "^0.4.1",
+    "@lykmapipo/mongoose-faker": "^0.5.0",
     "async": "^2.6.1",
     "lodash": "^4.17.10",
     "mongoose": "^5.1.4",
