@@ -10,7 +10,7 @@
 
 ## Installation
 ```sh
-$ npm install --save mongoose-rest-actions express-mquery
+$ npm install --save mongoose mongoose-rest-actions express-mquery
 ```
 
 ## Usage
