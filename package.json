@@ -1,6 +1,6 @@
 {
   "name": "mongoose-rest-actions",
-  "version": "0.15.1",
+  "version": "0.15.2",
   "description": "mongoose rest actions on top of express",
   "keywords": [
     "lykmapipo",
@@ -54,18 +54,18 @@
     "jshint-stylish": "^2.2.1",
     "load-grunt-tasks": "^4.0.0",
     "mocha": "^5.2.0",
-    "sinon": "^6.1.2",
+    "sinon": "^6.1.3",
     "sinon-chai": "^3.2.0",
-    "sinon-mongoose": "^2.2.0",
+    "sinon-mongoose": "^2.2.1",
     "time-grunt": "^1.4.0",
-    "mongoose": "^5.2.1"
+    "mongoose": "^5.2.3"
   },
   "dependencies": {
     "@lykmapipo/mongoose-faker": "^0.6.0",
     "async": "^2.6.1",
     "lodash": "^4.17.10",
     "mongoose-autopopulate": "^0.8.0",
-    "mongoose-autorefresh": "^0.2.0",
+    "mongoose-autorefresh": "^0.3.0",
     "mongoose-autoset": "^0.2.0",
     "mongoose-beautiful-unique-validation": "^7.1.1",
     "mongoose-exists": "^0.4.0",
