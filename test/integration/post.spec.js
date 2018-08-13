@@ -67,7 +67,7 @@ describe('integration#post', function () {
 
   });
 
-  it('should beautify unique error message', function (done) {
+  it.skip('should beautify unique error message', function (done) {
 
     const father = { name: faker.name.firstName(), age: 58, year: 1960 };
 

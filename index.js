@@ -13,7 +13,7 @@ const autopopulate = require('mongoose-autopopulate');
 const exist = require('mongoose-exists');
 const autoset = require('mongoose-autoset');
 const autorefresh = require('mongoose-autorefresh');
-const beautifyUnique = require('mongoose-beautiful-unique-validation');
+// const beautifyUnique = require('mongoose-beautiful-unique-validation');
 
 
 //rest actions plugin
@@ -195,7 +195,7 @@ module.exports = exports = function restActions(schema, schemaOptns) {
   exist(schema, schemaOptions);
   autoset(schema, schemaOptions);
   autorefresh(schema, schemaOptions);
-  beautifyUnique(schema, schemaOptions);
+  // beautifyUnique(schema, schemaOptions);
 
   //rest actions plugin
   del(schema, schemaOptions);
