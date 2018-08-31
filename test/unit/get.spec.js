@@ -7,102 +7,109 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const sinon = require('sinon');
 const expect = require('chai').expect;
+const get = require(path.join(__dirname, '..', '..', 'lib', 'get'));
 
-const rootPath = path.join(__dirname, '..', '..');
-const libsPath = path.join(rootPath, 'lib');
-const get = require(path.join(libsPath, 'get'));
-
-describe('unit#get', function () {
+describe('unit#get', () => {
 
   const GetableSchema = new Schema({
     name: { type: String }
   });
 
-  GetableSchema.plugin(get);
+  GetableSchema.statics.beforeGet = (done) => {
+    done();
+  };
 
+  GetableSchema.statics.afterGet = (options, results, done) => {
+    done();
+  };
+
+  GetableSchema.plugin(get);
   const Getable = mongoose.model('Getable', GetableSchema);
 
-  describe('export', function () {
-    it('should be a function', function () {
+  describe('export', () => {
+
+    it('should be a function', () => {
       expect(get).to.be.a('function');
     });
 
-    it('should have name get', function () {
+    it('should have name get', () => {
       expect(get.name).to.be.equal('getPlugin');
     });
 
-    it('should have length of 1', function () {
+    it('should have length of 1', () => {
       expect(get.length).to.be.equal(2);
     });
+
   });
 
 
-  describe('static#getById', function () {
+  describe('static#getById', () => {
 
     const getetable = new Getable();
     const _id = getetable._id;
     let get;
 
-    beforeEach(function () {
+    beforeEach(() => {
       get = sinon.mock(Getable)
         .expects('getById').yields(null, getetable);
     });
 
-    afterEach(function () {
+    afterEach(() => {
       get.restore();
     });
 
-    it('should be able to getById', function (done) {
+    it('should be able to getById', (done) => {
       Getable
-        .getById(_id, function (error, found) {
-
+        .getById(_id, (error, found) => {
           expect(get).to.have.been.called;
           expect(get).to.have.been.calledOnce;
           expect(get).to.have.been.calledWith(_id);
-
           done(error, found);
-
         });
-
     });
 
   });
 
 
-  describe('static#get', function () {
+  describe('static#get', () => {
 
-    const options = { page: 1, limit: 10, filter: { name: { $regex: /^a/ } } };
+    const options =
+      ({ page: 1, limit: 10, filter: { name: { $regex: /^a/ } } });
+    const results = ({
+      data: [new Getable(), new Getable()],
+      total: 100,
+      size: 10,
+      limit: 10,
+      skip: 0,
+      page: 1,
+      pages: 10
+    });
     let get;
+    let afterGet;
 
-    beforeEach(function () {
+    beforeEach(() => {
       get =
-        sinon.mock(Getable).expects('get').yields(null, {
-          data: [new Getable(), new Getable()],
-          total: 100,
-          size: 10,
-          limit: 10,
-          skip: 0,
-          page: 1,
-          pages: 10
-        });
+        sinon.mock(Getable).expects('_get').yields(null, results);
+      afterGet = sinon.spy(Getable, 'afterGet');
     });
 
-    afterEach(function () {
+    afterEach(() => {
       get.restore();
+      afterGet.restore();
     });
 
-    it('should be able to getete(remove)', function (done) {
+    it('should be able to get', (done) => {
       Getable
-        .get(options, function (error, geteted) {
-
+        .get(options, (error, got) => {
           expect(get).to.have.been.called;
           expect(get).to.have.been.calledOnce;
           expect(get).to.have.been.calledWith(options);
-
-          done(error, geteted);
-
+          expect(afterGet).to.have.been.called;
+          expect(afterGet).to.have.been.calledOnce;
+          expect(afterGet)
+            .to.have.been.calledWith(options, results);
+          done(error, got);
         });
-
     });
 
   });
