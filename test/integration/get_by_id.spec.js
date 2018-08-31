@@ -12,7 +12,7 @@ const ObjectId = Schema.Types.ObjectId;
 const expect = chai.expect;
 const actions = require(path.join(__dirname, '..', '..'));
 
-describe('integration#getById', function () {
+describe('integration#getById', () => {
 
   mongoose.plugin(actions);
 
@@ -27,40 +27,40 @@ describe('integration#getById', function () {
 
   let father = { name: faker.name.firstName(), age: 58, year: 1960 };
   let mother = { name: faker.name.firstName(), age: 48, year: 1970 };
-  let kids = _.map(_.range(1, 3), function (age) {
+  let kids = _.map(_.range(1, 3), (age) => {
     return { name: faker.name.firstName(), age: age, year: 1980 + age };
   });
 
-  before(function (done) {
+  before((done) => {
     mongoose.connect('mongodb://localhost/mongoose-rest-actions', done);
   });
 
-  before(function (done) {
+  before((done) => {
     User.remove(done);
   });
 
-  //seed userh
-  before(function (done) {
+  //seed user
+  before((done) => {
     async.waterfall([
-      function (next) {
+      (next) => {
         async.parallel({
-          mother: function (next) {
+          mother: (next) => {
             User.create(mother, next);
           },
-          father: function (next) {
+          father: (next) => {
             User.create(father, next);
           }
         }, next);
       },
-      function (parents, next) {
+      (parents, next) => {
         mother = parents.mother;
         father = parents.father;
         User
           .create(
-            _.map(kids, function (kid) {
+            _.map(kids, (kid) => {
               return _.merge({}, kid, parents);
             }),
-            function (error, created) {
+            (error, created) => {
               kids = created;
               next(error, created);
             });
@@ -70,10 +70,10 @@ describe('integration#getById', function () {
   });
 
 
-  it('should be able to get by object id', function (done) {
+  it('should be able to get by object id', (done) => {
 
     User
-      .getById(father._id, function (error, found) {
+      .getById(father._id, (error, found) => {
         expect(error).to.not.exist;
         expect(found).to.exist;
         expect(found._id).to.eql(found._id);
@@ -82,7 +82,7 @@ describe('integration#getById', function () {
 
   });
 
-  it('should be able to get by options', function (done) {
+  it('should be able to get by options', (done) => {
 
     const kid = kids[0];
     const options = {
@@ -90,8 +90,9 @@ describe('integration#getById', function () {
       select: 'name',
       populate: [{ path: 'mother', select: 'name' }]
     };
+
     User
-      .getById(options, function (error, found) {
+      .getById(options, (error, found) => {
         expect(error).to.not.exist;
         expect(found).to.exist;
         expect(found._id).to.eql(kid._id);
@@ -106,7 +107,7 @@ describe('integration#getById', function () {
   });
 
 
-  after(function (done) {
+  after((done) => {
     User.remove(done);
   });
 

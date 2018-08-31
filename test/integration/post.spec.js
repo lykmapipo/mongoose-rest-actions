@@ -11,7 +11,7 @@ const ObjectId = Schema.Types.ObjectId;
 const expect = chai.expect;
 const actions = require(path.join(__dirname, '..', '..'));
 
-describe('integration#post', function () {
+describe('integration#post', () => {
 
   mongoose.plugin(actions);
 
@@ -25,20 +25,20 @@ describe('integration#post', function () {
   }));
 
 
-  before(function (done) {
+  before((done) => {
     mongoose.connect('mongodb://localhost/mongoose-rest-actions', done);
   });
 
-  before(function (done) {
+  before((done) => {
     User.remove(done);
   });
 
-  it('should be able to post', function (done) {
+  it('should be able to post', (done) => {
 
     const father = { name: faker.name.firstName(), age: 58, year: 1960 };
 
     User
-      .post(father, function (error, created) {
+      .post(father, (error, created) => {
         expect(error).to.not.exist;
         expect(created).to.exist;
         expect(created._id).to.exist;
@@ -50,12 +50,12 @@ describe('integration#post', function () {
 
   });
 
-  it('should be able to post instance', function (done) {
+  it('should be able to post instance', (done) => {
 
     const father = User.fake();
 
     User
-      .post(father, function (error, created) {
+      .post(father, (error, created) => {
         expect(error).to.not.exist;
         expect(created).to.exist;
         expect(created._id).to.exist;
@@ -67,21 +67,21 @@ describe('integration#post', function () {
 
   });
 
-  it.skip('should beautify unique error message', function (done) {
+  it.skip('should beautify unique error message', (done) => {
 
     const father = { name: faker.name.firstName(), age: 58, year: 1960 };
 
     async.waterfall([
       //...take 1
-      function (next) {
+      (next) => {
         User.post(father, next);
       },
 
       //...take 2
-      function (saved, next) {
+      (saved, next) => {
         User.post(father, next);
       }
-    ], function (error, result) {
+    ], (error, result) => {
       expect(error).to.exist;
       expect(error.status).to.exist;
       expect(error.name).to.exist;
@@ -97,7 +97,7 @@ describe('integration#post', function () {
 
   });
 
-  after(function (done) {
+  after((done) => {
     User.remove(done);
   });
 

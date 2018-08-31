@@ -104,7 +104,7 @@ describe('unit#delete', () => {
     });
 
     it('should be able to delete(remove)', (done) => {
-      Deletable.del(_id, function (error, deleted) {
+      Deletable.del(_id, (error, deleted) => {
         expect(del).to.have.been.called;
         expect(del).to.have.been.calledOnce;
         expect(del).to.have.been.calledWith(_id);

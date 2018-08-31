@@ -12,7 +12,7 @@ const ObjectId = Schema.Types.ObjectId;
 const expect = chai.expect;
 const actions = require(path.join(__dirname, '..', '..'));
 
-describe('integration#get', function () {
+describe('integration#get', () => {
 
   mongoose.plugin(actions);
 
@@ -43,28 +43,28 @@ describe('integration#get', function () {
     return { name: faker.name.firstName(), age: age, year: 1980 + age };
   });
 
-  before(function (done) {
+  before((done) => {
     mongoose.connect('mongodb://localhost/mongoose-rest-actions', done);
   });
 
-  before(function (done) {
+  before((done) => {
     User.remove(done);
   });
 
-  //seed userh
-  before(function (done) {
+  //seed user
+  before((done) => {
     async.waterfall([
-      function (next) {
+      (next) => {
         async.parallel({
-          mother: function (next) {
+          mother: (next) => {
             User.create(mother, next);
           },
-          father: function (next) {
+          father: (next) => {
             User.create(father, next);
           }
         }, next);
       },
-      function (parents, next) {
+      (parents, next) => {
         User
           .create(
             _.map(kids, (kid) => { return _.merge({}, kid, parents); }),
@@ -76,10 +76,10 @@ describe('integration#get', function () {
   });
 
 
-  it('should be able to get without options', function (done) {
+  it('should be able to get without options', (done) => {
 
     User
-      .get(function (error, results) {
+      .get((error, results) => {
         expect(error).to.not.exist;
         expect(results).to.exist;
         expect(results.data).to.exist;
@@ -102,11 +102,11 @@ describe('integration#get', function () {
 
   });
 
-  it('should be able to get with options', function (done) {
+  it('should be able to get with options', (done) => {
 
     const options = { page: 1, limit: 20 };
     User
-      .get(options, function (error, results) {
+      .get(options, (error, results) => {
         expect(error).to.not.exist;
         expect(results).to.exist;
         expect(results.data).to.exist;
@@ -130,11 +130,11 @@ describe('integration#get', function () {
   });
 
 
-  it('should be able to search with options', function (done) {
+  it('should be able to search with options', (done) => {
 
     const options = { filter: { q: father.name } };
     User
-      .get(options, function (error, results) {
+      .get(options, (error, results) => {
         expect(error).to.not.exist;
         expect(results).to.exist;
         expect(results.data).to.exist;
@@ -158,10 +158,10 @@ describe('integration#get', function () {
   });
 
 
-  it('should parse filter options', function (done) {
+  it('should parse filter options', (done) => {
     const options = { filter: { age: 10 } };
     User
-      .get(options, function (error, results) {
+      .get(options, (error, results) => {
         expect(error).to.not.exist;
         expect(results).to.exist;
         expect(results.data).to.exist;
@@ -184,10 +184,10 @@ describe('integration#get', function () {
 
   });
 
-  it('should throw if projection are not valid', function (done) {
+  it('should throw if projection are not valid', (done) => {
     const options = { select: { name: 1, age: 0 } };
     User
-      .get(options, function (error, results) {
+      .get(options, (error, results) => {
         expect(error).to.exist;
         expect(results).to.not.exist;
         //assert error
@@ -202,26 +202,26 @@ describe('integration#get', function () {
 
   });
 
-  describe('headers', function () {
+  describe('headers', () => {
     let lastModified;
 
-    beforeEach(function (done) {
+    beforeEach((done) => {
       User
         .findOne({}, { getUpdatedAt: 1 }, { autopopulate: false })
         .sort({ getUpdatedAt: -1 })
-        .exec(function (error, latest) {
+        .exec((error, latest) => {
           lastModified = latest;
           done(error, latest);
         });
     });
 
-    it('should be able to get only latest modified', function (done) {
+    it('should be able to get only latest modified', (done) => {
 
       const options =
         ({ headers: { ifModifiedSince: lastModified.getUpdatedAt } });
 
       User
-        .fresh(options, function (error, results) {
+        .fresh(options, (error, results) => {
           expect(error).to.not.exist;
           expect(results).to.exist;
           expect(results.data).to.exist;
@@ -247,7 +247,7 @@ describe('integration#get', function () {
   });
 
 
-  after(function (done) {
+  after((done) => {
     User.remove(done);
   });
 

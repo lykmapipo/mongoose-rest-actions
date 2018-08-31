@@ -13,17 +13,17 @@ const rootPath = path.join(__dirname, '..', '..');
 const libsPath = path.join(rootPath, 'lib');
 const put = require(path.join(libsPath, 'put'));
 
-describe('unit#put', function () {
+describe('unit#put', () => {
 
   const PutableSchema = new Schema({
     name: { type: String }
   });
 
-  PutableSchema.methods.beforePut = function (updates, done) {
+  PutableSchema.methods.beforePut = (updates, done) => {
     done();
   };
 
-  PutableSchema.methods.afterPut = function (updates, done) {
+  PutableSchema.methods.afterPut = (updates, done) => {
     done();
   };
 
@@ -31,21 +31,21 @@ describe('unit#put', function () {
 
   const Putable = mongoose.model('Putable', PutableSchema);
 
-  describe('export', function () {
-    it('should be a function', function () {
+  describe('export', () => {
+    it('should be a function', () => {
       expect(put).to.be.a('function');
     });
 
-    it('should have name put', function () {
+    it('should have name put', () => {
       expect(put.name).to.be.equal('putPlugin');
     });
 
-    it('should have length of 1', function () {
+    it('should have length of 1', () => {
       expect(put.length).to.be.equal(1);
     });
   });
 
-  describe('instance#put', function () {
+  describe('instance#put', () => {
 
     const updates = { name: faker.name.firstName() };
     const putable = new Putable({ name: faker.name.firstName() });
@@ -55,7 +55,7 @@ describe('unit#put', function () {
     let beforePut;
     let afterPut;
 
-    beforeEach(function () {
+    beforeEach(() => {
       save =
         sinon.mock(putable).expects('save').yields(null, putable);
       put = sinon.spy(putable, 'put');
@@ -63,15 +63,15 @@ describe('unit#put', function () {
       afterPut = sinon.spy(putable, 'afterPut');
     });
 
-    afterEach(function () {
+    afterEach(() => {
       save.restore();
       put.restore();
       beforePut.restore();
       afterPut.restore();
     });
 
-    it('should be able to put(update)', function (done) {
-      putable.put(updates, function (error, updated) {
+    it('should be able to put(update)', (done) => {
+      putable.put(updates, (error, updated) => {
 
         expect(beforePut).to.have.been.called;
         expect(beforePut).to.have.been.calledOnce;
@@ -98,7 +98,7 @@ describe('unit#put', function () {
   });
 
 
-  describe('static#put', function () {
+  describe('static#put', () => {
 
     const updates = {
       _id: new mongoose.Types.ObjectId(),
@@ -108,18 +108,18 @@ describe('unit#put', function () {
 
     let put;
 
-    beforeEach(function () {
+    beforeEach(() => {
       put =
         sinon.mock(Putable).expects('put').yields(null, putable);
     });
 
-    afterEach(function () {
+    afterEach(() => {
       put.restore();
     });
 
-    it('should be able to put(update)', function (done) {
+    it('should be able to put(update)', (done) => {
       Putable
-        .put(updates, function (error, updated) {
+        .put(updates, (error, updated) => {
 
           expect(put).to.have.been.called;
           expect(put).to.have.been.calledOnce;

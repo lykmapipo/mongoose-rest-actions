@@ -13,17 +13,17 @@ const rootPath = path.join(__dirname, '..', '..');
 const libsPath = path.join(rootPath, 'lib');
 const patch = require(path.join(libsPath, 'patch'));
 
-describe('unit#patch', function () {
+describe('unit#patch', () => {
 
   const PatchableSchema = new Schema({
     name: { type: String }
   });
 
-  PatchableSchema.methods.beforePatch = function (updates, done) {
+  PatchableSchema.methods.beforePatch = (updates, done) => {
     done();
   };
 
-  PatchableSchema.methods.afterPatch = function (updates, done) {
+  PatchableSchema.methods.afterPatch = (updates, done) => {
     done();
   };
 
@@ -31,21 +31,21 @@ describe('unit#patch', function () {
 
   const Patchable = mongoose.model('Patchable', PatchableSchema);
 
-  describe('export', function () {
-    it('should be a function', function () {
+  describe('export', () => {
+    it('should be a function', () => {
       expect(patch).to.be.a('function');
     });
 
-    it('should have name patch', function () {
+    it('should have name patch', () => {
       expect(patch.name).to.be.equal('patchPlugin');
     });
 
-    it('should have length of 1', function () {
+    it('should have length of 1', () => {
       expect(patch.length).to.be.equal(1);
     });
   });
 
-  describe('instance#patch', function () {
+  describe('instance#patch', () => {
 
     const updates = { name: faker.name.firstName() };
     const patchable = new Patchable({ name: faker.name.firstName() });
@@ -55,7 +55,7 @@ describe('unit#patch', function () {
     let beforePatch;
     let afterPatch;
 
-    beforeEach(function () {
+    beforeEach(() => {
       save = sinon.mock(patchable)
         .expects('save').yields(null, patchable);
       patch = sinon.spy(patchable, 'patch');
@@ -63,15 +63,15 @@ describe('unit#patch', function () {
       afterPatch = sinon.spy(patchable, 'afterPatch');
     });
 
-    afterEach(function () {
+    afterEach(() => {
       save.restore();
       patch.restore();
       beforePatch.restore();
       afterPatch.restore();
     });
 
-    it('should be able to patch(update)', function (done) {
-      patchable.patch(updates, function (error, updated) {
+    it('should be able to patch(update)', (done) => {
+      patchable.patch(updates, (error, updated) => {
 
         expect(beforePatch).to.have.been.called;
         expect(beforePatch).to.have.been.calledOnce;
@@ -97,7 +97,7 @@ describe('unit#patch', function () {
   });
 
 
-  describe('static#patch', function () {
+  describe('static#patch', () => {
 
     const updates = {
       _id: new mongoose.Types.ObjectId(),
@@ -107,18 +107,18 @@ describe('unit#patch', function () {
 
     let patch;
 
-    beforeEach(function () {
+    beforeEach(() => {
       patch = sinon.mock(Patchable)
         .expects('patch').yields(null, patchable);
     });
 
-    afterEach(function () {
+    afterEach(() => {
       patch.restore();
     });
 
-    it('should be able to patch(update)', function (done) {
+    it('should be able to patch(update)', (done) => {
       Patchable
-        .patch(updates, function (error, created) {
+        .patch(updates, (error, created) => {
 
           expect(patch).to.have.been.called;
           expect(patch).to.have.been.calledOnce;
