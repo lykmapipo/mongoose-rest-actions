@@ -9,7 +9,7 @@ const expect = require('chai').expect;
 
 const actions = require(path.join(__dirname, '..', '..'));
 
-describe('unit#index', function () {
+describe('unit#index', () => {
 
   const IndexableSchema = new Schema({
     name: {
@@ -36,7 +36,7 @@ describe('unit#index', function () {
   IndexableSchema.plugin(actions);
   const Indexable = mongoose.model('Indexable', IndexableSchema);
 
-  it('should be able to generate fake instance', function () {
+  it('should be able to generate fake instance', () => {
     expect(Indexable.fake).to.exist;
     expect(Indexable.fake).to.be.a('function');
 
@@ -46,7 +46,7 @@ describe('unit#index', function () {
     expect(index.password).to.exist;
   });
 
-  it('should be able to hide default properties', function () {
+  it('should be able to hide default properties', () => {
     let index = Indexable.fake();
     index = index.toJSON();
 
@@ -55,7 +55,7 @@ describe('unit#index', function () {
     expect(index.password).to.not.exist;
   });
 
-  it('should be able to hide default properties', function () {
+  it('should be able to hide default properties', () => {
     let index = Indexable.fake();
     index = index.toObject();
 
@@ -64,7 +64,7 @@ describe('unit#index', function () {
     expect(index.password).to.not.exist;
   });
 
-  it('should be able to hide base on field options', function () {
+  it('should be able to hide base on field options', () => {
     let index = Indexable.fake();
     index = index.toJSON();
 
@@ -73,7 +73,7 @@ describe('unit#index', function () {
     expect(index.address).to.not.exist;
   });
 
-  it('should be able to hide base on field options', function () {
+  it('should be able to hide base on field options', () => {
     let index = Indexable.fake();
     index = index.toObject();
 

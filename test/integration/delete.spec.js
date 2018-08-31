@@ -10,7 +10,7 @@ const ObjectId = Schema.Types.ObjectId;
 const expect = chai.expect;
 const actions = require(path.join(__dirname, '..', '..'));
 
-describe('integration#delete', function () {
+describe('integration#delete', () => {
 
   mongoose.plugin(actions);
 
@@ -25,26 +25,26 @@ describe('integration#delete', function () {
 
   let father = { name: faker.name.firstName(), age: 58, year: 1960 };
 
-  before(function (done) {
+  before((done) => {
     mongoose.connect('mongodb://localhost/mongoose-rest-actions', done);
   });
 
-  before(function (done) {
+  before((done) => {
     User.remove(done);
   });
 
-  //seed userh
-  before(function (done) {
-    User.create(father, function (error, created) {
+  //seed user
+  before((done) => {
+    User.create(father, (error, created) => {
       father = created;
       done(error, created);
     });
   });
 
 
-  it('should be able to delete', function (done) {
+  it('should be able to delete', (done) => {
     User
-      .del(father._id, function (error, deleted) {
+      .del(father._id, (error, deleted) => {
         expect(error).to.not.exist;
         expect(deleted).to.exist;
         expect(deleted._id).to.eql(father._id);
@@ -53,7 +53,7 @@ describe('integration#delete', function () {
 
   });
 
-  after(function (done) {
+  after((done) => {
     User.remove(done);
   });
 

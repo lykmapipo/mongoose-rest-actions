@@ -10,7 +10,7 @@ const ObjectId = Schema.Types.ObjectId;
 const expect = chai.expect;
 const actions = require(path.join(__dirname, '..', '..'));
 
-describe('integration#patch', function () {
+describe('integration#patch', () => {
 
   mongoose.plugin(actions);
 
@@ -25,16 +25,16 @@ describe('integration#patch', function () {
 
   let father = { name: faker.name.firstName(), age: 58, year: 1960 };
 
-  before(function (done) {
+  before((done) => {
     mongoose.connect('mongodb://localhost/mongoose-rest-actions', done);
   });
 
-  before(function (done) {
+  before((done) => {
     User.remove(done);
   });
 
-  //seed userh
-  before(function (done) {
+  //seed user
+  before((done) => {
     User.create(father, function (error, created) {
       father = created;
       done(error, created);
@@ -42,10 +42,10 @@ describe('integration#patch', function () {
   });
 
 
-  it('should be able to update', function (done) {
+  it('should be able to update', (done) => {
     const updates = { name: faker.name.findName() };
     User
-      .patch(father._id, updates, function (error, updated) {
+      .patch(father._id, updates, (error, updated) => {
         expect(error).to.not.exist;
         expect(updated).to.exist;
         expect(updated._id).to.eql(father._id);
@@ -55,10 +55,10 @@ describe('integration#patch', function () {
       });
   });
 
-  it('should be able to update an instance', function (done) {
+  it('should be able to update an instance', (done) => {
     const updates = father.fakeOnly('name');
     User
-      .patch(updates, function (error, updated) {
+      .patch(updates, (error, updated) => {
         expect(error).to.not.exist;
         expect(updated).to.exist;
         expect(updated._id).to.eql(father._id);
@@ -68,10 +68,10 @@ describe('integration#patch', function () {
       });
   });
 
-  it('should be able to update an instance', function (done) {
+  it('should be able to update an instance', (done) => {
     const updates = father.fakeOnly('name');
     User
-      .patch(updates._id, updates, function (error, updated) {
+      .patch(updates._id, updates, (error, updated) => {
         expect(error).to.not.exist;
         expect(updated).to.exist;
         expect(updated._id).to.eql(father._id);
@@ -81,10 +81,10 @@ describe('integration#patch', function () {
       });
   });
 
-  it('should be able to update', function (done) {
+  it('should be able to update', (done) => {
     const updates = { _id: father._id, name: faker.name.findName() };
     User
-      .patch(updates, function (error, updated) {
+      .patch(updates, (error, updated) => {
         expect(error).to.not.exist;
         expect(updated).to.exist;
         expect(updated._id).to.eql(updates._id);
@@ -94,7 +94,7 @@ describe('integration#patch', function () {
       });
   });
 
-  after(function (done) {
+  after((done) => {
     User.remove(done);
   });
 

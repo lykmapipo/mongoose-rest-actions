@@ -13,17 +13,17 @@ const rootPath = path.join(__dirname, '..', '..');
 const libsPath = path.join(rootPath, 'lib');
 const post = require(path.join(libsPath, 'post'));
 
-describe('unit#post', function () {
+describe('unit#post', () => {
 
   const PostableSchema = new Schema({
     name: { type: String }
   });
 
-  PostableSchema.methods.beforePost = function (done) {
+  PostableSchema.methods.beforePost = (done) => {
     done();
   };
 
-  PostableSchema.methods.afterPost = function (done) {
+  PostableSchema.methods.afterPost = (done) => {
     done();
   };
 
@@ -31,21 +31,21 @@ describe('unit#post', function () {
 
   const Postable = mongoose.model('Postable', PostableSchema);
 
-  describe('export', function () {
-    it('should be a function', function () {
+  describe('export', () => {
+    it('should be a function', () => {
       expect(post).to.be.a('function');
     });
 
-    it('should have name post', function () {
+    it('should have name post', () => {
       expect(post.name).to.be.equal('postPlugin');
     });
 
-    it('should have length of 1', function () {
+    it('should have length of 1', () => {
       expect(post.length).to.be.equal(1);
     });
   });
 
-  describe('instance#post', function () {
+  describe('instance#post', () => {
 
     const postable = new Postable({ name: faker.name.firstName() });
 
@@ -54,7 +54,7 @@ describe('unit#post', function () {
     let beforePost;
     let afterPost;
 
-    beforeEach(function () {
+    beforeEach(() => {
       save =
         sinon.mock(postable).expects('save').yields(null, postable);
       post = sinon.spy(postable, 'post');
@@ -62,15 +62,15 @@ describe('unit#post', function () {
       afterPost = sinon.spy(postable, 'afterPost');
     });
 
-    afterEach(function () {
+    afterEach(() => {
       save.restore();
       post.restore();
       beforePost.restore();
       afterPost.restore();
     });
 
-    it('should be able to post(save)', function (done) {
-      postable.post(function (error, created) {
+    it('should be able to post(save)', (done) => {
+      postable.post((error, created) => {
 
         expect(beforePost).to.have.been.called;
         expect(beforePost).to.have.been.calledOnce;
@@ -93,25 +93,25 @@ describe('unit#post', function () {
   });
 
 
-  describe('static#post', function () {
+  describe('static#post', () => {
 
     const body = { name: faker.name.firstName() };
     const postable = new Postable(body);
 
     let post;
 
-    beforeEach(function () {
+    beforeEach(() => {
       post =
         sinon.mock(Postable).expects('post').yields(null, postable);
     });
 
-    afterEach(function () {
+    afterEach(() => {
       post.restore();
     });
 
-    it('should be able to post(save)', function (done) {
+    it('should be able to post(save)', (done) => {
       Postable
-        .post(body, function (error, created) {
+        .post(body, (error, created) => {
 
           expect(post).to.have.been.called;
           expect(post).to.have.been.calledOnce;
