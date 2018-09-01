@@ -58,7 +58,7 @@
     "sinon-chai": "^3.2.0",
     "sinon-mongoose": "^2.2.1",
     "time-grunt": "^1.4.0",
-    "mongoose": "^5.2.7"
+    "mongoose": "^5.2.12"
   },
   "dependencies": {
     "@lykmapipo/mongoose-faker": "^0.6.0",
