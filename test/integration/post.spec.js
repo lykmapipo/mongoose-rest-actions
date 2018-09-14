@@ -30,7 +30,7 @@ describe('integration#post', () => {
   });
 
   before((done) => {
-    User.remove(done);
+    User.deleteMany(done);
   });
 
   it('should be able to post', (done) => {
@@ -98,7 +98,7 @@ describe('integration#post', () => {
   });
 
   after((done) => {
-    User.remove(done);
+    User.deleteMany(done);
   });
 
 });

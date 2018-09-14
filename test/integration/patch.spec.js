@@ -30,7 +30,7 @@ describe('integration#patch', () => {
   });
 
   before((done) => {
-    User.remove(done);
+    User.deleteMany(done);
   });
 
   //seed user
@@ -95,7 +95,7 @@ describe('integration#patch', () => {
   });
 
   after((done) => {
-    User.remove(done);
+    User.deleteMany(done);
   });
 
 });

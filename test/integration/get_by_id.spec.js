@@ -36,7 +36,7 @@ describe('integration#getById', () => {
   });
 
   before((done) => {
-    User.remove(done);
+    User.deleteMany(done);
   });
 
   //seed user
@@ -108,7 +108,7 @@ describe('integration#getById', () => {
 
 
   after((done) => {
-    User.remove(done);
+    User.deleteMany(done);
   });
 
 });
