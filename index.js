@@ -8,10 +8,25 @@ const _ = require('lodash');
 //common plugins
 const fake = require('@lykmapipo/mongoose-faker');
 const search = require('mongoose-regex-search');
-const hide = require('mongoose-hidden');
 const autopopulate = require('mongoose-autopopulate');
+const hide = require('mongoose-hidden');
 const exist = require('mongoose-exists');
 // const beautifyUnique = require('mongoose-beautiful-unique-validation');
+
+
+//constants
+const defaultHidden = ({
+  defaultHidden: {
+    password: true,
+    __v: true,
+    __t: true
+  },
+  virtuals: {
+    id: 'hideJSON',
+    runInBackgroundQueue: 'hide',
+    runInBackgroundOptions: 'hide'
+  }
+});
 
 
 //rest actions plugin
@@ -133,13 +148,7 @@ module.exports = exports = function restActions(schema, schemaOptns) {
   }
 
   //normalize options
-  const schemaOptions = _.merge({}, { root: 'data' }, {
-    defaultHidden: {
-      password: true,
-      __v: true,
-      __t: true
-    }
-  }, schemaOptns);
+  const schemaOptions = _.merge({}, { root: 'data' }, schemaOptns);
 
   //ensure indexed timestamps fields
   //currently mongoose does not index them
@@ -186,7 +195,7 @@ module.exports = exports = function restActions(schema, schemaOptns) {
 
 
   //common plugins
-  hide(schemaOptions)(schema, schemaOptions);
+  hide(defaultHidden)(schema, schemaOptions);
   autopopulate(schema, schemaOptions);
   fake(schema, schemaOptions);
   search(schema, schemaOptions);
