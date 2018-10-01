@@ -26,10 +26,6 @@ describe('integration#put', () => {
   let father = { name: faker.name.firstName(), age: 58, year: 1960 };
 
   before((done) => {
-    mongoose.connect('mongodb://localhost/mongoose-rest-actions', done);
-  });
-
-  before((done) => {
     User.deleteMany(done);
   });
 

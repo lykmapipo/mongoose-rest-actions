@@ -19,17 +19,11 @@ describe('unit#index', () => {
     address: {
       type: String,
       hide: true,
-      fake: {
-        generator: 'street',
-        type: 'streetAddress'
-      }
+      fake: { generator: 'street', type: 'streetAddress' }
     },
     password: {
       type: String,
-      fake: {
-        generator: 'internet',
-        type: 'password'
-      }
+      fake: { generator: 'internet', type: 'password' }
     }
   }, { timestamps: true });
 
@@ -80,6 +74,19 @@ describe('unit#index', () => {
     expect(index).to.exist;
     expect(index.name).to.exist;
     expect(index.address).to.not.exist;
+  });
+
+  it('should add path shortcut to get schema field', () => {
+    expect(Indexable.path).to.exist;
+    expect(Indexable.path).to.be.a('function');
+    expect(Indexable.path.name).to.be.equal('path');
+    expect(Indexable.path.length).to.be.equal(1);
+  });
+
+  it('should be able to get path', () => {
+    const name = Indexable.path('name');
+    expect(name).to.exist;
+    expect(name).to.be.instanceof(Schema.Types.String);
   });
 
 });

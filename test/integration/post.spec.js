@@ -24,11 +24,6 @@ describe('integration#post', () => {
     father: { type: ObjectId, ref: modelName, index: true, autoset: true }
   }));
 
-
-  before((done) => {
-    mongoose.connect('mongodb://localhost/mongoose-rest-actions', done);
-  });
-
   before((done) => {
     User.deleteMany(done);
   });

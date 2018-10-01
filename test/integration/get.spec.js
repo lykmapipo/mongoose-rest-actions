@@ -44,10 +44,6 @@ describe('integration#get', () => {
   });
 
   before((done) => {
-    mongoose.connect('mongodb://localhost/mongoose-rest-actions', done);
-  });
-
-  before((done) => {
     User.deleteMany(done);
   });
 

@@ -26,10 +26,6 @@ describe('integration#delete', () => {
   let father = { name: faker.name.firstName(), age: 58, year: 1960 };
 
   before((done) => {
-    mongoose.connect('mongodb://localhost/mongoose-rest-actions', done);
-  });
-
-  before((done) => {
     User.deleteMany(done);
   });
 
@@ -43,14 +39,12 @@ describe('integration#delete', () => {
 
 
   it('should be able to delete', (done) => {
-    User
-      .del(father._id, (error, deleted) => {
-        expect(error).to.not.exist;
-        expect(deleted).to.exist;
-        expect(deleted._id).to.eql(father._id);
-        done(error, deleted);
-      });
-
+    User.del(father._id, (error, deleted) => {
+      expect(error).to.not.exist;
+      expect(deleted).to.exist;
+      expect(deleted._id).to.eql(father._id);
+      done(error, deleted);
+    });
   });
 
   after((done) => {
