@@ -11,7 +11,7 @@ const search = require('mongoose-regex-search');
 const autopopulate = require('mongoose-autopopulate');
 const hide = require('mongoose-hidden');
 const exist = require('mongoose-exists');
-// const beautifyUnique = require('mongoose-beautiful-unique-validation');
+const beautifyUnique = require('mongoose-beautiful-unique-validation');
 
 
 //constants
@@ -118,14 +118,6 @@ module.exports = exports = function restActions(schema, schemaOptns) {
   });
 
 
-  //common plugins
-  hide(defaultHidden)(schema, schemaOptions);
-  autopopulate(schema, schemaOptions);
-  fake(schema, schemaOptions);
-  search(schema, schemaOptions);
-  exist(schema, schemaOptions);
-  // beautifyUnique(schema, schemaOptions);
-
   //rest actions plugin
   del(schema, schemaOptions);
   get(schema, schemaOptions);
@@ -140,5 +132,13 @@ module.exports = exports = function restActions(schema, schemaOptns) {
     const _path = utils.path(this.schema, pathName);
     return _path;
   };
+
+  //lastly common plugins
+  hide(defaultHidden)(schema, schemaOptions);
+  autopopulate(schema, schemaOptions);
+  fake(schema, schemaOptions);
+  search(schema, schemaOptions);
+  exist(schema, schemaOptions);
+  beautifyUnique(schema, schemaOptions);
 
 };
