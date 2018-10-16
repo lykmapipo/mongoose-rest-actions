@@ -11,7 +11,7 @@ const search = require('mongoose-regex-search');
 const autopopulate = require('mongoose-autopopulate');
 const hide = require('mongoose-hidden');
 const exist = require('mongoose-exists');
-const beautifyUnique = require('mongoose-beautiful-unique-validation');
+// const beautifyUnique = require('mongoose-beautiful-unique-validation');
 
 
 //constants
@@ -139,6 +139,6 @@ module.exports = exports = function restActions(schema, schemaOptns) {
   fake(schema, schemaOptions);
   search(schema, schemaOptions);
   exist(schema, schemaOptions);
-  beautifyUnique(schema, schemaOptions);
+  // beautifyUnique(schema, schemaOptions);
 
 };
