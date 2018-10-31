@@ -16,13 +16,15 @@ describe('integration#post', () => {
   mongoose.plugin(actions);
 
   const modelName = 'PostableIntegration';
-  const User = mongoose.model(modelName, new Schema({
-    name: { type: String, searchable: true, unique: true, fake: true },
+  const schema = new Schema({
+    name: { type: String, searchable: true, index: true, fake: true },
     age: { type: Number, index: true },
     year: { type: Number, index: true },
     mother: { type: ObjectId, ref: modelName, index: true, autoset: true },
     father: { type: ObjectId, ref: modelName, index: true, autoset: true }
-  }));
+  });
+  schema.index({ name: 1, age: -1 }, { unique: true });
+  const User = mongoose.model(modelName, schema);
 
   before((done) => {
     User.deleteMany(done);
@@ -62,9 +64,12 @@ describe('integration#post', () => {
 
   });
 
-  it.skip('should beautify unique error message', (done) => {
+  it('should beautify unique error message', (done) => {
 
     const father = { name: faker.name.firstName(), age: 58, year: 1960 };
+
+    // wait index
+    // User.on('index', () => {
 
     async.waterfall([
       //...take 1
@@ -89,6 +94,8 @@ describe('integration#post', () => {
       done(null, result);
 
     });
+
+    // });
 
   });
 
