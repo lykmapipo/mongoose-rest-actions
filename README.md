@@ -32,7 +32,7 @@ const User = mongoose.model('User');
 
 app.get('/users', function(request, response, next) {
 
-  cost options = request.mquery;
+  const options = request.mquery;
 
   User
     .get(options, function(error, results) {
@@ -44,7 +44,7 @@ app.get('/users', function(request, response, next) {
 
 app.post('/users', function(request, response, next) {
 
-  cost body = request.body;
+  const body = request.body;
 
   User
     .post(body, function(error, user) {
@@ -56,7 +56,7 @@ app.post('/users', function(request, response, next) {
 
 app.get('/users/:id', function(request, response, next) {
 
-  cost _id = request.params.id;
+  const _id = request.params.id;
 
   User
     .getById(_id, function(error, user) {
