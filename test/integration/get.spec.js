@@ -7,6 +7,7 @@ const async = require('async');
 const faker = require('faker');
 const chai = require('chai');
 const mongoose = require('mongoose');
+const { model } = require('@lykmapipo/mongoose-common');
 const Schema = mongoose.Schema;
 const ObjectId = Schema.Types.ObjectId;
 const expect = chai.expect;
@@ -14,10 +15,8 @@ const actions = require(path.join(__dirname, '..', '..'));
 
 describe('integration#get', () => {
 
-  mongoose.plugin(actions);
-
   const modelName = 'GetableIntegration';
-  const User = mongoose.model(modelName, new Schema({
+  const UserSchema = new Schema({
     name: { type: String, searchable: true, index: true, fake: true },
     age: { type: Number, index: true },
     year: { type: Number, index: true },
@@ -35,7 +34,9 @@ describe('integration#get', () => {
       autoset: true,
       autopopulate: true
     }
-  }, { timestamps: { createdAt: 'getCreatedAt', updatedAt: 'getUpdatedAt' } }));
+  }, { timestamps: { createdAt: 'getCreatedAt', updatedAt: 'getUpdatedAt' } });
+  UserSchema.plugin(actions);
+  const User = model(modelName, UserSchema);
 
   const father = { name: faker.name.firstName(), age: 58, year: 1960 };
   const mother = { name: faker.name.firstName(), age: 48, year: 1970 };
