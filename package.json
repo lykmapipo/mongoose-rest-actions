@@ -1,6 +1,6 @@
 {
   "name": "mongoose-rest-actions",
-  "version": "0.22.2",
+  "version": "0.22.3",
   "description": "mongoose rest actions on top of express",
   "keywords": [
     "lykmapipo",
@@ -45,7 +45,7 @@
     }
   ],
   "devDependencies": {
-    "@lykmapipo/mongoose-test-helpers": ">=0.2.3",
+    "@lykmapipo/mongoose-test-helpers": ">=0.2.4",
     "chai": "^4.2.0",
     "faker": "^4.1.0",
     "grunt": "^1.0.3",
@@ -64,7 +64,7 @@
   },
   "dependencies": {
     "@lykmapipo/include": "^0.1.0",
-    "@lykmapipo/mongoose-common": ">=0.4.1",
+    "@lykmapipo/mongoose-common": ">=0.4.2",
     "@lykmapipo/mongoose-faker": ">=0.8.2",
     "@lykmapipo/mongoose-taggable": ">=0.1.1",
     "async": ">=2.6.1",
