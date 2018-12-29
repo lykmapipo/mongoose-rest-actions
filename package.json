@@ -1,6 +1,6 @@
 {
   "name": "mongoose-rest-actions",
-  "version": "0.22.5",
+  "version": "0.22.6",
   "description": "mongoose rest actions on top of express",
   "keywords": [
     "lykmapipo",
@@ -71,7 +71,7 @@
     "inflection": ">=1.12.0",
     "lodash": ">=4.17.11",
     "mongoose-autopopulate": ">=0.9.0",
-    "mongoose-exists": ">=0.6.2",
+    "mongoose-exists": ">=0.6.3",
     "mongoose-hidden": ">=1.6.0",
     "mongoose-regex-search": ">=0.5.2"
   }
