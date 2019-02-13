@@ -181,6 +181,33 @@ describe('integration#get', () => {
 
   });
 
+  it('should be able to search and filter', (done) => {
+
+    const options = { filter: { q: father.name, age: { $eq: father.age } } };
+    User
+      .get(options, (error, results) => {
+        expect(error).to.not.exist;
+        expect(results).to.exist;
+        expect(results.data).to.exist;
+        expect(results.data).to.have.length.at.least(1);
+        expect(results.total).to.exist;
+        expect(results.total).to.be.at.least(1);
+        expect(results.limit).to.exist;
+        expect(results.limit).to.be.equal(10);
+        expect(results.skip).to.exist;
+        expect(results.skip).to.be.equal(0);
+        expect(results.page).to.exist;
+        expect(results.page).to.be.equal(1);
+        expect(results.pages).to.exist;
+        expect(results.pages).to.be.equal(1);
+        expect(results.lastModified).to.exist;
+        expect(_.maxBy(results.data, 'getUpdatedAt').getUpdatedAt)
+          .to.be.at.most(results.lastModified);
+        done(error, results);
+      });
+
+  });
+
   it('should throw if projection are not valid', (done) => {
     const options = { select: { name: 1, age: 0 } };
     User

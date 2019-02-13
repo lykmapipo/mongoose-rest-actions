@@ -126,11 +126,11 @@ module.exports = exports = function restActions(schema, schemaOptns) {
 
 
   //lastly common plugins
+  fake(schema, schemaOptions);
   exist(schema, schemaOptions);
   taggable(schema, schemaOptions);
-  hide(defaultHidden)(schema, schemaOptions);
-  autopopulate(schema, schemaOptions);
-  fake(schema, schemaOptions);
   search(schema, schemaOptions);
+  autopopulate(schema, schemaOptions);
+  hide(defaultHidden)(schema, schemaOptions);
 
 };
