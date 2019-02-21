@@ -65,7 +65,6 @@ describe('unit#delete', () => {
     });
 
     afterEach(() => {
-      console.log(remove);
       sinon.restore();
       del.restore();
       beforeDelete.restore();
@@ -86,7 +85,6 @@ describe('unit#delete', () => {
         done(error, deleted);
 
       });
-
     });
 
   });
@@ -96,6 +94,7 @@ describe('unit#delete', () => {
 
     const deletable = new Deletable();
     const _id = deletable._id;
+
 
     let del;
 
