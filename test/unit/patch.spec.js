@@ -16,7 +16,9 @@ const patch = require(path.join(libsPath, 'patch'));
 describe('unit#patch', () => {
 
   const PatchableSchema = new Schema({
-    name: { type: String }
+    name: {
+      type: String
+    }
   });
 
   PatchableSchema.methods.beforePatch = (updates, done) => {
@@ -47,8 +49,12 @@ describe('unit#patch', () => {
 
   describe('instance#patch', () => {
 
-    const updates = { name: faker.name.firstName() };
-    const patchable = new Patchable({ name: faker.name.firstName() });
+    const updates = {
+      name: faker.name.firstName()
+    };
+    const patchable = new Patchable({
+      name: faker.name.firstName()
+    });
 
     let save;
     let patch;
@@ -58,16 +64,16 @@ describe('unit#patch', () => {
     beforeEach(() => {
       save = sinon.mock(patchable)
         .expects('save').yields(null, patchable);
-      patch = sinon.spy(patchable, 'patch');
       beforePatch = sinon.spy(patchable, 'beforePatch');
+      patch = sinon.spy(patchable, 'patch');
       afterPatch = sinon.spy(patchable, 'afterPatch');
     });
 
     afterEach(() => {
-      save.restore();
       patch.restore();
       beforePatch.restore();
       afterPatch.restore();
+      sinon.restore();
     });
 
     it('should be able to patch(update)', (done) => {
@@ -113,7 +119,7 @@ describe('unit#patch', () => {
     });
 
     afterEach(() => {
-      patch.restore();
+      sinon.restore();
     });
 
     it('should be able to patch(update)', (done) => {

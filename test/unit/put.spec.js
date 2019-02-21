@@ -16,7 +16,9 @@ const put = require(path.join(libsPath, 'put'));
 describe('unit#put', () => {
 
   const PutableSchema = new Schema({
-    name: { type: String }
+    name: {
+      type: String
+    }
   });
 
   PutableSchema.methods.beforePut = (updates, done) => {
@@ -47,8 +49,12 @@ describe('unit#put', () => {
 
   describe('instance#put', () => {
 
-    const updates = { name: faker.name.firstName() };
-    const putable = new Putable({ name: faker.name.firstName() });
+    const updates = {
+      name: faker.name.firstName()
+    };
+    const putable = new Putable({
+      name: faker.name.firstName()
+    });
 
     let save;
     let put;
@@ -64,10 +70,10 @@ describe('unit#put', () => {
     });
 
     afterEach(() => {
-      save.restore();
       put.restore();
       beforePut.restore();
       afterPut.restore();
+      sinon.restore();
     });
 
     it('should be able to put(update)', (done) => {
@@ -114,7 +120,7 @@ describe('unit#put', () => {
     });
 
     afterEach(() => {
-      put.restore();
+      sinon.restore();
     });
 
     it('should be able to put(update)', (done) => {
