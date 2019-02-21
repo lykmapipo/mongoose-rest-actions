@@ -6,6 +6,7 @@ const async = require('async');
 const faker = require('faker');
 const chai = require('chai');
 const mongoose = require('mongoose');
+const { model } = require('@lykmapipo/mongoose-common');
 const Schema = mongoose.Schema;
 const ObjectId = Schema.Types.ObjectId;
 const expect = chai.expect;
@@ -13,18 +14,23 @@ const actions = require(path.join(__dirname, '..', '..'));
 
 describe('integration#post', () => {
 
-  mongoose.plugin(actions);
-
   const modelName = 'PostableIntegration';
-  const schema = new Schema({
-    name: { type: String, searchable: true, index: true, fake: true },
+  const UserSchema = new Schema({
+    name: {
+      type: String,
+      taggable: true,
+      searchable: true,
+      index: true,
+      fake: true
+    },
     age: { type: Number, index: true },
     year: { type: Number, index: true },
     mother: { type: ObjectId, ref: modelName, index: true, autoset: true },
     father: { type: ObjectId, ref: modelName, index: true, autoset: true }
   });
-  schema.index({ name: 1, age: -1 }, { unique: true });
-  const User = mongoose.model(modelName, schema);
+  UserSchema.index({ name: 1, age: -1 }, { unique: true });
+  UserSchema.plugin(actions);
+  const User = model(modelName, UserSchema);
 
   before((done) => {
     User.deleteMany(done);

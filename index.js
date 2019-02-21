@@ -2,8 +2,9 @@
 
 
 //dependencies
-const path = require('path');
 const _ = require('lodash');
+const { include } = require('@lykmapipo/include');
+require('@lykmapipo/mongoose-common');
 
 //common plugins
 const fake = require('@lykmapipo/mongoose-faker');
@@ -11,6 +12,7 @@ const search = require('mongoose-regex-search');
 const autopopulate = require('mongoose-autopopulate');
 const hide = require('mongoose-hidden');
 const exist = require('mongoose-exists');
+const taggable = require('@lykmapipo/mongoose-taggable');
 
 //constants
 const defaultHidden = ({
@@ -28,12 +30,11 @@ const defaultHidden = ({
 
 
 //rest actions plugin
-const utils = require(path.join(__dirname, 'lib', 'utils'));
-const del = require(path.join(__dirname, 'lib', 'delete'));
-const get = require(path.join(__dirname, 'lib', 'get'));
-const patch = require(path.join(__dirname, 'lib', 'patch'));
-const post = require(path.join(__dirname, 'lib', 'post'));
-const put = require(path.join(__dirname, 'lib', 'put'));
+const del = include(__dirname, 'lib', 'delete');
+const get = include(__dirname, 'lib', 'get');
+const patch = include(__dirname, 'lib', 'patch');
+const post = include(__dirname, 'lib', 'post');
+const put = include(__dirname, 'lib', 'put');
 
 
 /**
@@ -126,19 +127,12 @@ module.exports = exports = function restActions(schema, schemaOptns) {
   put(schema, schemaOptions);
 
 
-  //schema utils
-  //https://github.com/Automattic/mongoose/blob/master/test/schema.test.js
-  schema.statics.path = function path(pathName) {
-    const _path = utils.path(this.schema, pathName);
-    return _path;
-  };
-
   //lastly common plugins
-  hide(defaultHidden)(schema, schemaOptions);
-  autopopulate(schema, schemaOptions);
   fake(schema, schemaOptions);
-  search(schema, schemaOptions);
   exist(schema, schemaOptions);
-  utils.handleUniqueError(schema, schemaOptions);
+  taggable(schema, schemaOptions);
+  search(schema, schemaOptions);
+  autopopulate(schema, schemaOptions);
+  hide(defaultHidden)(schema, schemaOptions);
 
 };

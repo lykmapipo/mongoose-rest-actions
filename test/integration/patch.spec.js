@@ -5,6 +5,7 @@ const path = require('path');
 const faker = require('faker');
 const chai = require('chai');
 const mongoose = require('mongoose');
+const { model } = require('@lykmapipo/mongoose-common');
 const Schema = mongoose.Schema;
 const ObjectId = Schema.Types.ObjectId;
 const expect = chai.expect;
@@ -12,16 +13,16 @@ const actions = require(path.join(__dirname, '..', '..'));
 
 describe('integration#patch', () => {
 
-  mongoose.plugin(actions);
-
   const modelName = 'PatchableIntegration';
-  const User = mongoose.model(modelName, new Schema({
+  const UserSchema = new Schema({
     name: { type: String, searchable: true, index: true, fake: true },
     age: { type: Number, index: true },
     year: { type: Number, index: true },
     mother: { type: ObjectId, ref: modelName, index: true, autoset: true },
     father: { type: ObjectId, ref: modelName, index: true, autoset: true }
-  }));
+  });
+  UserSchema.plugin(actions);
+  const User = model(modelName, UserSchema);
 
   let father = { name: faker.name.firstName(), age: 58, year: 1960 };
 

@@ -7,6 +7,7 @@ const async = require('async');
 const faker = require('faker');
 const chai = require('chai');
 const mongoose = require('mongoose');
+const { model } = require('@lykmapipo/mongoose-common');
 const Schema = mongoose.Schema;
 const ObjectId = Schema.Types.ObjectId;
 const expect = chai.expect;
@@ -14,10 +15,8 @@ const actions = require(path.join(__dirname, '..', '..'));
 
 describe('integration#get', () => {
 
-  mongoose.plugin(actions);
-
   const modelName = 'GetableIntegration';
-  const User = mongoose.model(modelName, new Schema({
+  const UserSchema = new Schema({
     name: { type: String, searchable: true, index: true, fake: true },
     age: { type: Number, index: true },
     year: { type: Number, index: true },
@@ -35,7 +34,9 @@ describe('integration#get', () => {
       autoset: true,
       autopopulate: true
     }
-  }, { timestamps: { createdAt: 'getCreatedAt', updatedAt: 'getUpdatedAt' } }));
+  }, { timestamps: { createdAt: 'getCreatedAt', updatedAt: 'getUpdatedAt' } });
+  UserSchema.plugin(actions);
+  const User = model(modelName, UserSchema);
 
   const father = { name: faker.name.firstName(), age: 58, year: 1960 };
   const mother = { name: faker.name.firstName(), age: 48, year: 1970 };
@@ -164,6 +165,33 @@ describe('integration#get', () => {
         expect(results.data).to.have.length(1);
         expect(results.total).to.exist;
         expect(results.total).to.be.equal(1);
+        expect(results.limit).to.exist;
+        expect(results.limit).to.be.equal(10);
+        expect(results.skip).to.exist;
+        expect(results.skip).to.be.equal(0);
+        expect(results.page).to.exist;
+        expect(results.page).to.be.equal(1);
+        expect(results.pages).to.exist;
+        expect(results.pages).to.be.equal(1);
+        expect(results.lastModified).to.exist;
+        expect(_.maxBy(results.data, 'getUpdatedAt').getUpdatedAt)
+          .to.be.at.most(results.lastModified);
+        done(error, results);
+      });
+
+  });
+
+  it('should be able to search and filter', (done) => {
+
+    const options = { filter: { q: father.name, age: { $eq: father.age } } };
+    User
+      .get(options, (error, results) => {
+        expect(error).to.not.exist;
+        expect(results).to.exist;
+        expect(results.data).to.exist;
+        expect(results.data).to.have.length.at.least(1);
+        expect(results.total).to.exist;
+        expect(results.total).to.be.at.least(1);
         expect(results.limit).to.exist;
         expect(results.limit).to.be.equal(10);
         expect(results.skip).to.exist;
