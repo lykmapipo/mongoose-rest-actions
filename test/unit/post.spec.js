@@ -16,7 +16,9 @@ const post = require(path.join(libsPath, 'post'));
 describe('unit#post', () => {
 
   const PostableSchema = new Schema({
-    name: { type: String }
+    name: {
+      type: String
+    }
   });
 
   PostableSchema.methods.beforePost = (done) => {
@@ -47,7 +49,9 @@ describe('unit#post', () => {
 
   describe('instance#post', () => {
 
-    const postable = new Postable({ name: faker.name.firstName() });
+    const postable = new Postable({
+      name: faker.name.firstName()
+    });
 
     let save;
     let post;
@@ -63,10 +67,10 @@ describe('unit#post', () => {
     });
 
     afterEach(() => {
-      save.restore();
       post.restore();
       beforePost.restore();
       afterPost.restore();
+      sinon.restore();
     });
 
     it('should be able to post(save)', (done) => {
@@ -95,7 +99,9 @@ describe('unit#post', () => {
 
   describe('static#post', () => {
 
-    const body = { name: faker.name.firstName() };
+    const body = {
+      name: faker.name.firstName()
+    };
     const postable = new Postable(body);
 
     let post;
@@ -106,7 +112,7 @@ describe('unit#post', () => {
     });
 
     afterEach(() => {
-      post.restore();
+      sinon.restore();
     });
 
     it('should be able to post(save)', (done) => {

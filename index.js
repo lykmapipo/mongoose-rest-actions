@@ -71,7 +71,9 @@ module.exports = exports = function restActions(schema, schemaOptns) {
   }
 
   //normalize options
-  const schemaOptions = _.merge({}, { root: 'data' }, schemaOptns);
+  const schemaOptions = _.merge({}, {
+    root: 'data'
+  }, schemaOptns);
 
   //ensure indexed timestamps fields
   //currently mongoose does not index them
