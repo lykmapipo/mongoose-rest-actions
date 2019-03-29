@@ -13,6 +13,7 @@ const autopopulate = require('mongoose-autopopulate');
 const hide = require('mongoose-hidden');
 const exist = require('mongoose-exists');
 const taggable = require('@lykmapipo/mongoose-taggable');
+const aggregatable = require('@lykmapipo/mongoose-aggregatable');
 
 //constants
 const defaultHidden = ({
@@ -133,6 +134,7 @@ module.exports = exports = function restActions(schema, schemaOptns) {
   taggable(schema, schemaOptions);
   search(schema, schemaOptions);
   autopopulate(schema, schemaOptions);
+  aggregatable(schema, schemaOptions);
   hide(defaultHidden)(schema, schemaOptions);
 
 };
