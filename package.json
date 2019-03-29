@@ -48,31 +48,31 @@
     "@lykmapipo/mongoose-test-helpers": ">=0.3.0",
     "chai": "^4.2.0",
     "faker": "^4.1.0",
-    "grunt": "^1.0.3",
-    "grunt-contrib-jshint": "^2.0.0",
+    "grunt": "^1.0.4",
+    "grunt-contrib-jshint": "^2.1.0",
     "grunt-contrib-watch": "^1.1.0",
     "grunt-mocha-test": "^0.13.3",
     "jshint-stylish": "^2.2.1",
-    "mocha": "^5.2.0",
-    "mongoose": ">=5.4.12",
-    "sinon": "^7.2.3",
+    "mocha": "^6.0.2",
+    "mongoose": ">=5.4.20",
+    "sinon": "^7.3.1",
     "sinon-chai": "^3.3.0",
     "sinon-mongoose": "^2.2.1"
   },
   "peerDependencies": {
-    "mongoose": ">=5.4.12"
+    "mongoose": ">=5.4.20"
   },
   "dependencies": {
     "@lykmapipo/include": ">=0.2.0",
-    "@lykmapipo/mongoose-common": ">=0.11.0",
+    "@lykmapipo/mongoose-common": ">=0.16.0",
     "@lykmapipo/mongoose-faker": ">=0.9.0",
-    "@lykmapipo/mongoose-taggable": ">=0.3.0",
+    "@lykmapipo/mongoose-taggable": ">=0.4.0",
     "async": ">=2.6.2",
     "inflection": ">=1.12.0",
     "lodash": ">=4.17.11",
     "mongoose-autopopulate": ">=0.9.1",
     "mongoose-exists": ">=0.6.5",
-    "mongoose-hidden": ">=1.6.0",
+    "mongoose-hidden": ">=1.6.1",
     "mongoose-regex-search": ">=0.7.0"
   }
 }
