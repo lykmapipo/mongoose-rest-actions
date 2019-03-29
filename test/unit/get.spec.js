@@ -12,7 +12,9 @@ const get = require(path.join(__dirname, '..', '..', 'lib', 'get'));
 describe('unit#get', () => {
 
   const GetableSchema = new Schema({
-    name: { type: String }
+    name: {
+      type: String
+    }
   });
 
   GetableSchema.statics.beforeGet = (done) => {
@@ -55,7 +57,7 @@ describe('unit#get', () => {
     });
 
     afterEach(() => {
-      get.restore();
+      sinon.restore();
     });
 
     it('should be able to getById', (done) => {
@@ -74,7 +76,15 @@ describe('unit#get', () => {
   describe('static#get', () => {
 
     const options =
-      ({ page: 1, limit: 10, filter: { name: { $regex: /^a/ } } });
+      ({
+        page: 1,
+        limit: 10,
+        filter: {
+          name: {
+            $regex: /^a/
+          }
+        }
+      });
     const results = ({
       data: [new Getable(), new Getable()],
       total: 100,
@@ -94,7 +104,7 @@ describe('unit#get', () => {
     });
 
     afterEach(() => {
-      get.restore();
+      sinon.restore();
       afterGet.restore();
     });
 

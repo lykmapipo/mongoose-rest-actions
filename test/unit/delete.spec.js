@@ -13,8 +13,12 @@ const del = require(path.join(__dirname, '..', '..', 'lib', 'delete'));
 describe('unit#delete', () => {
 
   const DeletableSchema = new Schema({
-    name: { type: String }
-  }, { timestamps: true });
+    name: {
+      type: String
+    }
+  }, {
+    timestamps: true
+  });
 
   DeletableSchema.methods.beforeDelete = (done) => {
     done();
@@ -61,7 +65,7 @@ describe('unit#delete', () => {
     });
 
     afterEach(() => {
-      remove.restore();
+      sinon.restore();
       del.restore();
       beforeDelete.restore();
       afterDelete.restore();
@@ -81,7 +85,6 @@ describe('unit#delete', () => {
         done(error, deleted);
 
       });
-
     });
 
   });
@@ -92,6 +95,7 @@ describe('unit#delete', () => {
     const deletable = new Deletable();
     const _id = deletable._id;
 
+
     let del;
 
     beforeEach(() => {
@@ -100,7 +104,7 @@ describe('unit#delete', () => {
     });
 
     afterEach(() => {
-      del.restore();
+      sinon.restore();
     });
 
     it('should be able to delete(remove)', (done) => {

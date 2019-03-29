@@ -52,6 +52,8 @@
     "grunt-contrib-jshint": "^2.1.0",
     "grunt-contrib-watch": "^1.1.0",
     "grunt-mocha-test": "^0.13.3",
+    "js-beautify": "^1.9.1",
+    "jshint": "^2.10.2",
     "jshint-stylish": "^2.2.1",
     "mocha": "^6.0.2",
     "mongoose": ">=5.4.20",
