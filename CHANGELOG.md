@@ -1,3 +1,13 @@
+#### 0.24.1 (2019-04-16)
+
+##### Chores
+
+*  force latest dependencies ([970e2367](https://github.com/lykmapipo/mongoose-rest-actions/commit/970e2367a0b3654d78fafac82453aa7111c783f0))
+
+##### Documentation Changes
+
+*  add code of conduct and contributing guide ([a709ead2](https://github.com/lykmapipo/mongoose-rest-actions/commit/a709ead214cc4a3f0798e52207b1cea8e8d999c6))
+
 #### 0.24.0 (2019-03-29)
 
 ##### Chores
