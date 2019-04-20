@@ -1,100 +1,163 @@
 'use strict';
 
-//dependencies
-const path = require('path');
-const faker = require('faker');
-const chai = require('chai');
-const mongoose = require('mongoose');
-const { model } = require('@lykmapipo/mongoose-common');
-const Schema = mongoose.Schema;
-const ObjectId = Schema.Types.ObjectId;
-const expect = chai.expect;
-const actions = require(path.join(__dirname, '..', '..'));
+/* dependencies */
+const _ = require('lodash');
+const { expect } = require('chai');
+const { include } = require('@lykmapipo/include');
+const { ObjectId } = require('@lykmapipo/mongoose-common');
+const {
+  create,
+  clear,
+  createTestModel
+} = require('@lykmapipo/mongoose-test-helpers');
+const actions = include(__dirname, '..', '..');
 
-describe('integration#put', () => {
+describe('put', () => {
 
-  const modelName = 'PutableIntegration';
-  const UserSchema = new Schema({
-    name: { type: String, searchable: true, index: true, fake: true },
-    age: { type: Number, index: true },
-    year: { type: Number, index: true },
-    mother: { type: ObjectId, ref: modelName, index: true, autoset: true },
-    father: { type: ObjectId, ref: modelName, index: true, autoset: true }
-  });
-  UserSchema.plugin(actions);
-  const User = model(modelName, UserSchema);
+  const Guardian = createTestModel({
+    email: { type: String, unique: true, fake: f => f.internet.email() }
+  }, actions);
 
-  let father = { name: faker.name.firstName(), age: 58, year: 1960 };
+  const Child = createTestModel({
+    email: { type: String, unique: true, fake: f => f.internet.email() },
+    father: { type: ObjectId, ref: Guardian.modelName }
+  }, actions);
 
-  before((done) => {
-    User.deleteMany(done);
-  });
+  let father = Guardian.fake();
+  let child = Child.fake();
+  child.father = father;
 
-  //seed user
-  before((done) => {
-    User.create(father, (error, created) => {
-      father = created;
-      done(error, created);
+  before(done => clear(Guardian, Child, done));
+
+  before(done => create(father, done));
+
+  before(done => create(child, done));
+
+  it('should work using `put` static method', done => {
+    const updates = _.pick(Guardian.fake(), 'name');
+
+    Guardian.put(father._id, updates, (error, updated) => {
+      expect(error).to.not.exist;
+      expect(updated).to.exist;
+      expect(updated._id).to.exist.and.be.eql(father._id);
+      expect(updated.name).to.equal(updates.name);
+      expect(updated.email).to.equal(father.email);
+      expect(updated.createdAt).to.exist;
+      expect(updated.updatedAt).to.exist;
+      done(error, updated);
     });
   });
 
+  it('should work with object using `put` static method', done => {
+    const updates = father.fakeOnly('name').toObject();
 
-  it('should be able to update', (done) => {
-    const updates = { name: faker.name.findName() };
-    User
-      .put(father._id, updates, (error, updated) => {
-        expect(error).to.not.exist;
-        expect(updated).to.exist;
-        expect(updated._id).to.eql(father._id);
-        expect(updated.name).to.equal(updates.name);
-        expect(updated.name).to.not.be.equal(father.name);
-        done(error, updated);
-      });
+    Guardian.put(updates, (error, updated) => {
+      expect(error).to.not.exist;
+      expect(updated).to.exist;
+      expect(updated._id).to.exist.and.be.eql(father._id);
+      expect(updated.name).to.equal(updates.name);
+      expect(updated.email).to.equal(father.email);
+      expect(updated.createdAt).to.exist;
+      expect(updated.updatedAt).to.exist;
+      done(error, updated);
+    });
   });
 
-
-  it('should be able to update an instance', (done) => {
+  it('should work with instance using `put` static method', done => {
     const updates = father.fakeOnly('name');
-    User
-      .put(updates, (error, updated) => {
-        expect(error).to.not.exist;
-        expect(updated).to.exist;
-        expect(updated._id).to.eql(father._id);
-        expect(updated.name).to.equal(updates.name);
-        expect(updated.name).to.be.equal(father.name);
-        done(error, updated);
-      });
+    Guardian.put(father._id, updates, (error, updated) => {
+      expect(error).to.not.exist;
+      expect(updated).to.exist;
+      expect(updated._id).to.exist.and.be.eql(father._id);
+      expect(updated.name).to.equal(updates.name);
+      expect(updated.email).to.equal(father.email);
+      expect(updated.createdAt).to.exist;
+      expect(updated.updatedAt).to.exist;
+      done(error, updated);
+    });
   });
 
-  it('should be able to update an instance', (done) => {
+  it('should work with instance using `put` static method', done => {
     const updates = father.fakeOnly('name');
-    User
-      .put(updates._id, updates, (error, updated) => {
-        expect(error).to.not.exist;
-        expect(updated).to.exist;
-        expect(updated._id).to.eql(father._id);
-        expect(updated.name).to.equal(updates.name);
-        expect(updated.name).to.be.equal(father.name);
-        done(error, updated);
-      });
+    Guardian.put(updates, (error, updated) => {
+      expect(error).to.not.exist;
+      expect(updated).to.exist;
+      expect(updated._id).to.exist.and.be.eql(father._id);
+      expect(updated.name).to.equal(updates.name);
+      expect(updated.email).to.equal(father.email);
+      expect(updated.createdAt).to.exist;
+      expect(updated.updatedAt).to.exist;
+      done(error, updated);
+    });
   });
 
-
-  it('should be able to update', (done) => {
-    const updates = { _id: father._id, name: faker.name.findName() };
-    User
-      .put(updates, (error, updated) => {
-        expect(error).to.not.exist;
-        expect(updated).to.exist;
-        expect(updated._id).to.eql(updates._id);
-        expect(updated.name).to.equal(updates.name);
-        expect(updated.name).to.not.be.equal(father.name);
-        done(error, updated);
-      });
+  it('should work with refs using `put` static method', done => {
+    const updates = _.pick(Child.fake(), 'name');
+    Child.put(child._id, updates, (error, updated) => {
+      expect(error).to.not.exist;
+      expect(updated).to.exist;
+      expect(updated._id).to.exist.and.be.eql(child._id);
+      expect(updated.name).to.equal(updates.name);
+      expect(updated.email).to.equal(child.email);
+      expect(updated.createdAt).to.exist;
+      expect(updated.updatedAt).to.exist;
+      expect(updated.father).to.exist;
+      done(error, updated);
+    });
   });
 
-  after((done) => {
-    User.deleteMany(done);
+  it.skip('should work with refs using `put` static method', done => {
+    const updates = Child.fake('name');
+    Child.put(child._id, updates, (error, updated) => {
+      expect(error).to.not.exist;
+      expect(updated).to.exist;
+      expect(updated._id).to.exist.and.be.eql(child._id);
+      expect(updated.name).to.equal(updates.name);
+      expect(updated.email).to.equal(child.email);
+      expect(updated.createdAt).to.exist;
+      expect(updated.updatedAt).to.exist;
+      expect(updated.father).to.exist;
+      expect(updated.father._id).to.exist.and.be.eql(father._id);
+      expect(updated.father.name).to.equal(father.name);
+      expect(updated.father.email).to.equal(father.email);
+      done(error, updated);
+    });
   });
+
+  it('should work using `put` instance method', done => {
+    const updates = _.pick(Guardian.fake(), 'name');
+
+    father.put(updates, (error, updated) => {
+      expect(error).to.not.exist;
+      expect(updated).to.exist;
+      expect(updated._id).to.exist.and.be.eql(father._id);
+      expect(updated.name).to.equal(updates.name);
+      expect(updated.email).to.equal(father.email);
+      expect(updated.createdAt).to.exist;
+      expect(updated.updatedAt).to.exist;
+      done(error, updated);
+    });
+  });
+
+  it('should work with refs using `put` instance method', done => {
+    const updates = _.pick(Child.fake(), 'name');
+
+    child.put(updates, (error, updated) => {
+      expect(error).to.not.exist;
+      expect(updated).to.exist;
+      expect(updated._id).to.exist.and.be.eql(child._id);
+      expect(updated.name).to.equal(updates.name);
+      expect(updated.email).to.equal(child.email);
+      expect(updated.createdAt).to.exist;
+      expect(updated.updatedAt).to.exist;
+      expect(updated.father).to.exist;
+      expect(updated.father._id).to.exist.and.be.eql(father._id);
+      expect(updated.father.name).to.equal(father.name);
+      expect(updated.father.email).to.equal(father.email);
+      done(error, updated);
+    });
+  });
+
+  after(done => clear(Guardian, Child, done));
 
 });
