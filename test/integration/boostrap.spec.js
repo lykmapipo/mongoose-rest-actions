@@ -1,34 +1,17 @@
 'use strict';
 
 
-process.env.NODE_ENV = 'test';
-
-
 /* dependencies */
-const mongoose = require('mongoose');
-const MONGODB_URI = 'mongodb://localhost/mongoose-rest-actions';
-
-
-/* clean and restore database */
-const wipe = (done) => {
-  if (mongoose.connection && mongoose.connection.dropDatabase) {
-    mongoose.connection.dropDatabase(done);
-  } else {
-    done();
-  }
-};
+const { connect, clear, drop } = require('@lykmapipo/mongoose-test-helpers');
 
 
 /* setup database */
-before((done) => {
-  const options = { useNewUrlParser: true };
-  mongoose.connect(MONGODB_URI, options, done);
-});
+before(done => connect(done));
 
 
 /* clear database */
-before(wipe);
+before(done => clear(done));
 
 
-/* clear database */
-after(wipe);
+/* drop database */
+after(done => drop(done));
