@@ -35,8 +35,7 @@ describe.only('post', () => {
       expect(created).to.exist;
       expect(created._id).to.exist;
       expect(created.name).to.equal(father.name);
-      expect(created.age).to.equal(father.age);
-      expect(created.year).to.equal(father.year);
+      expect(created.email).to.equal(father.email);
       done(error, created);
     });
   });
