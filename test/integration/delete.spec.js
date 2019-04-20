@@ -1,46 +1,36 @@
 'use strict';
 
-//dependencies
+/* dependencies */
 const path = require('path');
-const faker = require('faker');
-const chai = require('chai');
-const mongoose = require('mongoose');
-const { model } = require('@lykmapipo/mongoose-common');
-const Schema = mongoose.Schema;
-const ObjectId = Schema.Types.ObjectId;
-const expect = chai.expect;
+const { expect } = require('chai');
+const { model, Schema } = require('@lykmapipo/mongoose-common');
+const { clear } = require('@lykmapipo/mongoose-test-helpers');
 const actions = require(path.join(__dirname, '..', '..'));
 
-describe('integration#delete', () => {
+describe('Delete Action', () => {
 
-  const modelName = 'DeletableIntegration';
   const UserSchema = new Schema({
     name: { type: String, searchable: true, index: true, fake: true },
-    age: { type: Number, index: true },
-    year: { type: Number, index: true },
-    mother: { type: ObjectId, ref: modelName, index: true, autoset: true },
-    father: { type: ObjectId, ref: modelName, index: true, autoset: true }
+    age: { type: Number, index: true, fake: true },
+    year: { type: Number, index: true, fake: true }
   }, { timestamps: true });
   UserSchema.plugin(actions);
-  const User = model(modelName, UserSchema);
+  const User = model(UserSchema);
 
-  let father = { name: faker.name.firstName(), age: 58, year: 1960 };
+  let father = User.fake();
 
-  before((done) => {
-    User.deleteMany(done);
-  });
+  before(done => clear(User, done));
 
-  //seed user
-  before((done) => {
-    User.create(father, (error, created) => {
+  before(done => {
+    father.save((error, created) => {
       father = created;
       done(error, created);
     });
   });
 
-
-  it('should be able to delete', (done) => {
+  it('should delete existing', done => {
     User.del(father._id, (error, deleted) => {
+      console.log(deleted);
       expect(error).to.not.exist;
       expect(deleted).to.exist;
       expect(deleted._id).to.eql(father._id);
@@ -48,8 +38,6 @@ describe('integration#delete', () => {
     });
   });
 
-  after((done) => {
-    User.deleteMany(done);
-  });
+  after(done => clear(User, done));
 
 });
