@@ -1,91 +1,87 @@
 'use strict';
 
-//dependencies
-const path = require('path');
+/* dependencies */
 const async = require('async');
-const faker = require('faker');
-const chai = require('chai');
-const mongoose = require('mongoose');
-const { model } = require('@lykmapipo/mongoose-common');
-const Schema = mongoose.Schema;
-const ObjectId = Schema.Types.ObjectId;
-const expect = chai.expect;
-const actions = require(path.join(__dirname, '..', '..'));
+const { expect } = require('chai');
+const { include } = require('@lykmapipo/include');
+const { ObjectId } = require('@lykmapipo/mongoose-common');
+const {
+  clear,
+  createTestModel
+} = require('@lykmapipo/mongoose-test-helpers');
+const actions = include(__dirname, '..', '..');
 
-describe('integration#post', () => {
+describe.only('post', () => {
 
-  const modelName = 'PostableIntegration';
-  const UserSchema = new Schema({
-    name: {
-      type: String,
-      taggable: true,
-      searchable: true,
-      index: true,
-      fake: true
-    },
-    age: { type: Number, index: true },
-    year: { type: Number, index: true },
-    mother: { type: ObjectId, ref: modelName, index: true, autoset: true },
-    father: { type: ObjectId, ref: modelName, index: true, autoset: true }
-  });
-  UserSchema.index({ name: 1, age: -1 }, { unique: true });
-  UserSchema.plugin(actions);
-  const User = model(modelName, UserSchema);
+  const Guardian = createTestModel({
+    email: { type: String, unique: true, fake: f => f.internet.email() }
+  }, actions);
 
-  before((done) => {
-    User.deleteMany(done);
-  });
+  const Child = createTestModel({
+    email: { type: String, unique: true, fake: f => f.internet.email() },
+    mother: {
+      type: ObjectId,
+      ref: Guardian.modelName,
+      fake: () => Guardian.fake()
+    }
+  }, actions);
 
-  it('should be able to post', (done) => {
+  before(done => clear(Guardian, Child, done));
 
-    const father = { name: faker.name.firstName(), age: 58, year: 1960 };
-
-    User
-      .post(father, (error, created) => {
-        expect(error).to.not.exist;
-        expect(created).to.exist;
-        expect(created._id).to.exist;
-        expect(created.name).to.equal(father.name);
-        expect(created.age).to.equal(father.age);
-        expect(created.year).to.equal(father.year);
-        done(error, created);
-      });
-
+  it('should work using `post` static method', done => {
+    const father = Guardian.fake();
+    Guardian.post(father, (error, created) => {
+      expect(error).to.not.exist;
+      expect(created).to.exist;
+      expect(created._id).to.exist;
+      expect(created.name).to.equal(father.name);
+      expect(created.age).to.equal(father.age);
+      expect(created.year).to.equal(father.year);
+      done(error, created);
+    });
   });
 
-  it('should be able to post instance', (done) => {
-
-    const father = User.fake();
-
-    User
-      .post(father, (error, created) => {
-        expect(error).to.not.exist;
-        expect(created).to.exist;
-        expect(created._id).to.exist;
-        expect(created.name).to.equal(father.name);
-        expect(created.age).to.equal(father.age);
-        expect(created.year).to.equal(father.year);
-        done(error, created);
-      });
-
+  it.skip('should work using `post` static method', done => {
+    const child = Child.fake();
+    Child.post(child, (error, created) => {
+      expect(error).to.not.exist;
+      expect(created).to.exist;
+      expect(created._id).to.exist;
+      expect(created.name).to.equal(child.name);
+      expect(created.age).to.equal(child.age);
+      expect(created.year).to.equal(child.year);
+      done(error, created);
+    });
   });
 
-  it('should beautify unique error message', (done) => {
+  it.skip('should be able to post instance', done => {
+    const father = Guardian.fake();
 
-    const father = { name: faker.name.firstName(), age: 58, year: 1960 };
+    Guardian.post(father, (error, created) => {
+      expect(error).to.not.exist;
+      expect(created).to.exist;
+      expect(created._id).to.exist;
+      expect(created.name).to.equal(father.name);
+      expect(created.age).to.equal(father.age);
+      done(error, created);
+    });
+  });
+
+  it.skip('should beautify unique error message', done => {
+    const father = Guardian.fake();
 
     // wait index
-    // User.on('index', () => {
+    // Guardian.on('index', () => {
 
     async.waterfall([
       //...take 1
       (next) => {
-        User.post(father, next);
+        Guardian.post(father, next);
       },
 
       //...take 2
       (saved, next) => {
-        User.post(father, next);
+        Guardian.post(father, next);
       }
     ], (error, result) => {
       expect(error).to.exist;
@@ -105,8 +101,6 @@ describe('integration#post', () => {
 
   });
 
-  after((done) => {
-    User.deleteMany(done);
-  });
+  before(done => clear(Guardian, Child, done));
 
 });
