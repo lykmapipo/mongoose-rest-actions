@@ -67,7 +67,7 @@
   "dependencies": {
     "@lykmapipo/include": ">=0.2.1",
     "@lykmapipo/mongoose-aggregatable": ">=0.2.2",
-    "@lykmapipo/mongoose-common": ">=0.17.0",
+    "@lykmapipo/mongoose-common": ">=0.18.1",
     "@lykmapipo/mongoose-faker": ">=0.9.1",
     "@lykmapipo/mongoose-taggable": ">=0.4.1",
     "async": ">=2.6.2",
