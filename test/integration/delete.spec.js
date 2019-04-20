@@ -3,41 +3,43 @@
 /* dependencies */
 const { expect } = require('chai');
 const { include } = require('@lykmapipo/include');
-const { clear, createTestModel } = require('@lykmapipo/mongoose-test-helpers');
+const {
+  clear,
+  create,
+  createTestModel
+} = require('@lykmapipo/mongoose-test-helpers');
 const actions = include(__dirname, '..', '..');
 
-// init
-const User = createTestModel({}, actions);
-let user = User.fake();
 
-// describe
-describe.only('delete action', () => {
+describe('delete', () => {
 
-  beforeEach(() => user = User.fake());
+  const User = createTestModel({}, actions);
+  let father = User.fake();
+  let mother = User.fake();
 
-  beforeEach(done => clear(User, done));
+  before(done => clear(User, done));
 
-  beforeEach(done => user.save(done));
+  before(done => create(father, mother, done));
 
-  it('should delete using `del` static method', done => {
-    User.del(user._id, (error, deleted) => {
+  it('should work using `del` static method', done => {
+    User.del(father._id, (error, deleted) => {
       expect(error).to.not.exist;
       expect(deleted).to.exist;
-      expect(deleted._id).to.eql(user._id);
+      expect(deleted._id).to.eql(father._id);
       done(error, deleted);
     });
   });
 
-  it('should delete using `del` instance method', done => {
-    user.del((error, deleted) => {
+  it('should work using `del` instance method', done => {
+    mother.del((error, deleted) => {
       expect(error).to.not.exist;
       expect(deleted).to.exist;
-      expect(deleted._id).to.eql(user._id);
+      expect(deleted._id).to.eql(mother._id);
       done(error, deleted);
     });
   });
 
-  it('should fail `del` static method if not exist', done => {
+  it('should fail using `del` static method if instance not exist', done => {
     const user = User.fake();
     User.del(user._id, error => {
       expect(error).to.exist;
@@ -45,10 +47,10 @@ describe.only('delete action', () => {
     });
   });
 
-  it.skip('should fail `del` instance method if not exist', done => {
+  it('should work using `del` instance method if instance not exist', done => {
     const user = User.fake();
     user.del(error => {
-      expect(error).to.exist;
+      expect(error).to.not.exist;
       done();
     });
   });
