@@ -2,7 +2,6 @@
 
 /* dependencies */
 const _ = require('lodash');
-const { waterfall } = require('async');
 const { expect } = require('chai');
 const { include } = require('@lykmapipo/include');
 const { ObjectId } = require('@lykmapipo/mongoose-common');
@@ -111,12 +110,8 @@ describe('post', () => {
   });
 
   it('should beautify unique error using `post` static method', done => {
-    const guardian = _.pick(Guardian.fake(), 'name', 'email');
-
-    waterfall([
-      next => Guardian.post(guardian, error => next(error)),
-      next => Guardian.post(guardian, error => next(error)),
-    ], error => {
+    const guardian = _.pick(father, 'name', 'email');
+    Guardian.post(guardian, error => {
       expect(error).to.exist;
       expect(error.status).to.exist;
       expect(error.name).to.exist;
@@ -132,12 +127,8 @@ describe('post', () => {
   });
 
   it('should beautify unique error using `post` instance method', done => {
-    const guardian = _.pick(Guardian.fake(), 'name', 'email');
-
-    waterfall([
-      next => new Guardian(guardian).post(error => next(error)),
-      next => new Guardian(guardian).post(error => next(error)),
-    ], error => {
+    const guardian = _.pick(father, 'name', 'email');
+    new Guardian(guardian).post(error => {
       expect(error).to.exist;
       expect(error.status).to.exist;
       expect(error.name).to.exist;
@@ -152,6 +143,6 @@ describe('post', () => {
     });
   });
 
-  before(done => clear(Guardian, Child, done));
+  after(done => clear(Guardian, Child, done));
 
 });
