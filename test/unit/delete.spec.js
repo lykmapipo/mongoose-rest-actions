@@ -1,120 +1,78 @@
 'use strict';
 
 
-//dependencies
-const path = require('path');
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-const { sinon, expect } = require('@lykmapipo/mongoose-test-helpers');
-const del = require(path.join(__dirname, '..', '..', 'lib', 'delete'));
+/* dependencies */
+const { include } = require('@lykmapipo/include');
+const {
+  sinon,
+  expect,
+  createTestModel,
+  mockModel,
+  mockInstance
+} = require('@lykmapipo/mongoose-test-helpers');
+const faker = require('@lykmapipo/mongoose-faker');
+const del = include(__dirname, '..', '..', 'lib', 'delete');
 
 
-describe('unit#delete', () => {
+describe('delete', () => {
 
-  const DeletableSchema = new Schema({
-    name: {
-      type: String
-    }
-  }, {
-    timestamps: true
+  it('should work using `del` static method', done => {
+
+    const User = createTestModel({}, schema => {
+      schema.methods.beforeDelete = done => done();
+      schema.methods.afterDelete = done => done();
+    }, del, faker);
+    const user = User.fake();
+
+    const Mock = mockModel(User);
+    const mock = mockInstance(user);
+
+    const findById = Mock.expects('findById').yields(null, user);
+    const remove = mock.expects('remove').yields(null, user);
+    const beforeDelete = sinon.spy(user, 'beforeDelete');
+    const afterDelete = sinon.spy(user, 'afterDelete');
+
+    User.del(user._id, (error, deleted) => {
+      Mock.verify();
+      Mock.restore();
+
+      mock.verify();
+      mock.restore();
+
+      expect(findById).to.have.been.calledOnce;
+      expect(findById).to.have.been.calledWith(user._id);
+      expect(remove).to.have.been.calledOnce;
+      expect(beforeDelete).to.have.been.calledOnce;
+      expect(afterDelete).to.have.been.calledOnce;
+
+      done(error, deleted);
+    });
   });
 
-  DeletableSchema.methods.beforeDelete = (done) => {
-    done();
-  };
+  it('should work using `del` instance method', done => {
 
-  DeletableSchema.methods.afterDelete = (done) => {
-    done();
-  };
+    const User = createTestModel({}, schema => {
+      schema.methods.beforeDelete = done => done();
+      schema.methods.afterDelete = done => done();
+    }, del, faker);
+    const user = User.fake();
 
-  DeletableSchema.plugin(del);
-  const Deletable = mongoose.model('Deletable', DeletableSchema);
+    const mock = mockInstance(user);
 
-  describe('export', () => {
+    const remove = mock.expects('remove').yields(null, user);
+    const beforeDelete = sinon.spy(user, 'beforeDelete');
+    const afterDelete = sinon.spy(user, 'afterDelete');
 
-    it('should be a function', () => {
-      expect(del).to.be.a('function');
+    user.del((error, deleted) => {
+      mock.verify();
+      mock.restore();
+
+      expect(remove).to.have.been.calledOnce;
+      expect(beforeDelete).to.have.been.calledOnce;
+      expect(afterDelete).to.have.been.calledOnce;
+
+      done(error, deleted);
     });
-
-    it('should have name del', () => {
-      expect(del.name).to.be.equal('deletePlugin');
-    });
-
-    it('should have length of 1', () => {
-      expect(del.length).to.be.equal(1);
-    });
-
-  });
-
-  describe('instance#del', () => {
-
-    const deletable = new Deletable();
-
-    let remove;
-    let del;
-    let beforeDelete;
-    let afterDelete;
-
-    beforeEach(() => {
-      remove = sinon.mock(deletable).expects('remove')
-        .yields(null, deletable);
-      del = sinon.spy(deletable, 'del');
-      beforeDelete = sinon.spy(deletable, 'beforeDelete');
-      afterDelete = sinon.spy(deletable, 'afterDelete');
-    });
-
-    afterEach(() => {
-      sinon.restore();
-      del.restore();
-      beforeDelete.restore();
-      afterDelete.restore();
-    });
-
-    it('should be able to delete(remove)', (done) => {
-      deletable.del((error, deleted) => {
-
-        expect(beforeDelete).to.have.been.called;
-        expect(beforeDelete).to.have.been.calledOnce;
-        expect(remove).to.have.been.called;
-        expect(remove).to.have.been.calledOnce;
-        expect(del).to.have.been.called;
-        expect(del).to.have.been.calledOnce;
-        expect(afterDelete).to.have.been.called;
-        expect(afterDelete).to.have.been.calledOnce;
-        done(error, deleted);
-
-      });
-    });
-
-  });
-
-
-  describe('static#del', () => {
-
-    const deletable = new Deletable();
-    const _id = deletable._id;
-
-
-    let del;
-
-    beforeEach(() => {
-      del =
-        sinon.mock(Deletable).expects('del').yields(null, deletable);
-    });
-
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('should be able to delete(remove)', (done) => {
-      Deletable.del(_id, (error, deleted) => {
-        expect(del).to.have.been.called;
-        expect(del).to.have.been.calledOnce;
-        expect(del).to.have.been.calledWith(_id);
-        done(error, deleted);
-      });
-    });
-
   });
 
 });

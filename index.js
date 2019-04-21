@@ -76,9 +76,10 @@ module.exports = exports = function restActions(schema, schemaOptns) {
     root: 'data'
   }, schemaOptns);
 
+
   //ensure indexed timestamps fields
   //currently mongoose does not index them
-  //see https://github.com/Automattic/mongoose/blob/master/lib/schema.js#L758
+  //see https://github.com/Automattic/mongoose/blob/master/lib/schema.js#L1002
   const hasTimeStamps = _.get(schema, 'options.timestamps', false);
   if (hasTimeStamps) {
 
