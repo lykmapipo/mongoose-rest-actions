@@ -5,8 +5,7 @@
 const path = require('path');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const sinon = require('sinon');
-const expect = require('chai').expect;
+const { sinon, expect } = require('@lykmapipo/mongoose-test-helpers');
 const del = require(path.join(__dirname, '..', '..', 'lib', 'delete'));
 
 

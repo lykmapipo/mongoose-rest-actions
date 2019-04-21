@@ -6,8 +6,7 @@ const path = require('path');
 const faker = require('faker');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const sinon = require('sinon');
-const expect = require('chai').expect;
+const { sinon, expect } = require('@lykmapipo/mongoose-test-helpers');
 
 const rootPath = path.join(__dirname, '..', '..');
 const libsPath = path.join(rootPath, 'lib');

@@ -5,7 +5,7 @@
 const path = require('path');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const expect = require('chai').expect;
+const { expect } = require('@lykmapipo/mongoose-test-helpers');
 const actions = require(path.join(__dirname, '..', '..'));
 
 
