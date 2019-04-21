@@ -1,140 +1,81 @@
 'use strict';
 
 
-//dependencies
-const path = require('path');
-const faker = require('faker');
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-const { sinon, expect } = require('@lykmapipo/mongoose-test-helpers');
+/* dependencies */
+const _ = require('lodash');
+const { include } = require('@lykmapipo/include');
+const {
+  sinon,
+  expect,
+  createTestModel,
+  mockModel,
+  mockInstance
+} = require('@lykmapipo/mongoose-test-helpers');
+const faker = require('@lykmapipo/mongoose-faker');
+const patch = include(__dirname, '..', '..', 'lib', 'patch');
 
-const rootPath = path.join(__dirname, '..', '..');
-const libsPath = path.join(rootPath, 'lib');
-const patch = require(path.join(libsPath, 'patch'));
 
-describe('unit#patch', () => {
+describe('patch', () => {
 
-  const PatchableSchema = new Schema({
-    name: {
-      type: String
-    }
+  it('should work using `patch` static method', done => {
+
+    const User = createTestModel({}, schema => {
+      schema.methods.beforePatch = (updates, done) => done();
+      schema.methods.afterPatch = (updates, done) => done();
+    }, patch, faker);
+    const user = User.fake();
+
+    const Mock = mockModel(User);
+    const mock = mockInstance(user);
+
+    const findById = Mock.expects('findById').yields(null, user);
+    const save = mock.expects('save').yields(null, user);
+    const beforePatch = sinon.spy(user, 'beforePatch');
+    const afterPatch = sinon.spy(user, 'afterPatch');
+
+    const updates = _.pick(User.fake(), 'name');
+    User.patch(user._id, updates, (error, updated) => {
+      Mock.verify();
+      Mock.restore();
+
+      mock.verify();
+      mock.restore();
+
+      expect(findById).to.have.been.calledOnce;
+      expect(findById).to.have.been.calledWith(user._id);
+      expect(save).to.have.been.calledOnce;
+      expect(beforePatch).to.have.been.calledOnce;
+      expect(afterPatch).to.have.been.calledOnce;
+
+      done(error, updated);
+    });
   });
 
-  PatchableSchema.methods.beforePatch = (updates, done) => {
-    done();
-  };
+  it('should work using `patch` instance method', done => {
 
-  PatchableSchema.methods.afterPatch = (updates, done) => {
-    done();
-  };
+    const User = createTestModel({}, schema => {
+      schema.methods.beforePatch = (updates, done) => done();
+      schema.methods.afterPatch = (updates, done) => done();
+    }, patch, faker);
+    const user = User.fake();
 
-  PatchableSchema.plugin(patch);
+    const mock = mockInstance(user);
 
-  const Patchable = mongoose.model('Patchable', PatchableSchema);
+    const save = mock.expects('save').yields(null, user);
+    const beforePatch = sinon.spy(user, 'beforePatch');
+    const afterPatch = sinon.spy(user, 'afterPatch');
 
-  describe('export', () => {
-    it('should be a function', () => {
-      expect(patch).to.be.a('function');
+    const updates = _.pick(User.fake(), 'name');
+    user.patch(updates, (error, updated) => {
+      mock.verify();
+      mock.restore();
+
+      expect(save).to.have.been.calledOnce;
+      expect(beforePatch).to.have.been.calledOnce;
+      expect(afterPatch).to.have.been.calledOnce;
+
+      done(error, updated);
     });
-
-    it('should have name patch', () => {
-      expect(patch.name).to.be.equal('patchPlugin');
-    });
-
-    it('should have length of 1', () => {
-      expect(patch.length).to.be.equal(1);
-    });
-  });
-
-  describe('instance#patch', () => {
-
-    const updates = {
-      name: faker.name.firstName()
-    };
-    const patchable = new Patchable({
-      name: faker.name.firstName()
-    });
-
-    let save;
-    let patch;
-    let beforePatch;
-    let afterPatch;
-
-    beforeEach(() => {
-      save = sinon.mock(patchable)
-        .expects('save').yields(null, patchable);
-      beforePatch = sinon.spy(patchable, 'beforePatch');
-      patch = sinon.spy(patchable, 'patch');
-      afterPatch = sinon.spy(patchable, 'afterPatch');
-    });
-
-    afterEach(() => {
-      patch.restore();
-      beforePatch.restore();
-      afterPatch.restore();
-      sinon.restore();
-    });
-
-    it('should be able to patch(update)', (done) => {
-      patchable.patch(updates, (error, updated) => {
-
-        expect(beforePatch).to.have.been.called;
-        expect(beforePatch).to.have.been.calledOnce;
-        expect(beforePatch).to.have.been.calledWith(updates);
-
-        expect(save).to.have.been.called;
-        expect(save).to.have.been.calledOnce;
-
-        expect(patch).to.have.been.called;
-        expect(patch).to.have.been.calledOnce;
-        expect(patch).to.have.been.calledWith(updates);
-
-        expect(afterPatch).to.have.been.called;
-        expect(afterPatch).to.have.been.calledOnce;
-        expect(afterPatch).to.have.been.calledWith(updates);
-
-        done(error, updated);
-
-      });
-
-    });
-
-  });
-
-
-  describe('static#patch', () => {
-
-    const updates = {
-      _id: new mongoose.Types.ObjectId(),
-      name: faker.name.firstName()
-    };
-    const patchable = new Patchable(updates);
-
-    let patch;
-
-    beforeEach(() => {
-      patch = sinon.mock(Patchable)
-        .expects('patch').yields(null, patchable);
-    });
-
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('should be able to patch(update)', (done) => {
-      Patchable
-        .patch(updates, (error, created) => {
-
-          expect(patch).to.have.been.called;
-          expect(patch).to.have.been.calledOnce;
-          expect(patch).to.have.been.calledWith(updates);
-
-          done(error, created);
-
-        });
-
-    });
-
   });
 
 });

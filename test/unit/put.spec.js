@@ -34,7 +34,7 @@ describe('put', () => {
     const afterPut = sinon.spy(user, 'afterPut');
 
     const updates = _.pick(User.fake(), 'name');
-    User.put(user._id, updates, (error, deleted) => {
+    User.put(user._id, updates, (error, updated) => {
       Mock.verify();
       Mock.restore();
 
@@ -47,7 +47,7 @@ describe('put', () => {
       expect(beforePut).to.have.been.calledOnce;
       expect(afterPut).to.have.been.calledOnce;
 
-      done(error, deleted);
+      done(error, updated);
     });
   });
 
@@ -66,7 +66,7 @@ describe('put', () => {
     const afterPut = sinon.spy(user, 'afterPut');
 
     const updates = _.pick(User.fake(), 'name');
-    user.put(updates, (error, deleted) => {
+    user.put(updates, (error, updated) => {
       mock.verify();
       mock.restore();
 
@@ -74,7 +74,7 @@ describe('put', () => {
       expect(beforePut).to.have.been.calledOnce;
       expect(afterPut).to.have.been.calledOnce;
 
-      done(error, deleted);
+      done(error, updated);
     });
   });
 
