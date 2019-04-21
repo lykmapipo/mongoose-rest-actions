@@ -1,90 +1,78 @@
 'use strict';
 
 
-//dependencies
-const path = require('path');
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-const expect = require('chai').expect;
+/* dependencies */
+const { include } = require('@lykmapipo/include');
+const { Schema } = require('@lykmapipo/mongoose-common');
+const {
+  expect,
+  createTestModel,
+} = require('@lykmapipo/mongoose-test-helpers');
+const actions = include(__dirname, '..', '..');
 
-const actions = require(path.join(__dirname, '..', '..'));
+describe('index', () => {
 
-describe('unit#index', () => {
-
-  const IndexableSchema = new Schema({
-    name: {
-      type: String,
-      fake: { generator: 'name', type: 'findName' }
-    },
-    address: {
-      type: String,
-      hide: true,
-      fake: { generator: 'street', type: 'streetAddress' }
-    },
-    password: {
-      type: String,
-      fake: { generator: 'internet', type: 'password' }
-    }
-  }, { timestamps: true });
-
-  IndexableSchema.plugin(actions);
-  const Indexable = mongoose.model('Indexable', IndexableSchema);
+  const User = createTestModel({
+    name: { type: String, fake: f => f.name.findName() },
+    address: { type: String, hide: true, fake: f => f.address.streetAddress() },
+    password: { type: String, fake: f => f.internet.password() }
+  }, actions);
 
   it('should be able to generate fake instance', () => {
-    expect(Indexable.fake).to.exist;
-    expect(Indexable.fake).to.be.a('function');
+    expect(User.fake).to.exist;
+    expect(User.fake).to.be.a('function');
 
-    const index = Indexable.fake();
-    expect(index).to.exist;
-    expect(index.name).to.exist;
-    expect(index.password).to.exist;
+    const user = User.fake();
+    expect(user).to.exist;
+    expect(user.name).to.exist;
+    expect(user.password).to.exist;
   });
 
   it('should be able to hide default properties', () => {
-    let index = Indexable.fake();
-    index = index.toJSON();
+    let user = User.fake();
+    user = user.toJSON();
 
-    expect(index).to.exist;
-    expect(index.name).to.exist;
-    expect(index.password).to.not.exist;
+    expect(user).to.exist;
+    expect(user.name).to.exist;
+    expect(user.password).to.not.exist;
   });
 
   it('should be able to hide default properties', () => {
-    let index = Indexable.fake();
-    index = index.toObject();
+    let user = User.fake();
+    user = user.toObject();
 
-    expect(index).to.exist;
-    expect(index.name).to.exist;
-    expect(index.password).to.not.exist;
+    expect(user).to.exist;
+    expect(user.name).to.exist;
+    expect(user.password).to.not.exist;
   });
 
   it('should be able to hide base on field options', () => {
-    let index = Indexable.fake();
-    index = index.toJSON();
+    let user = User.fake();
+    user = user.toJSON();
 
-    expect(index).to.exist;
-    expect(index.name).to.exist;
-    expect(index.address).to.not.exist;
+    expect(user).to.exist;
+    expect(user.name).to.exist;
+    expect(user.address).to.not.exist;
   });
 
   it('should be able to hide base on field options', () => {
-    let index = Indexable.fake();
-    index = index.toObject();
+    let user = User.fake();
+    user = user.toObject();
 
-    expect(index).to.exist;
-    expect(index.name).to.exist;
-    expect(index.address).to.not.exist;
+    expect(user).to.exist;
+    expect(user.name).to.exist;
+    expect(user.address).to.not.exist;
   });
 
   it('should add path shortcut to get schema field', () => {
-    expect(Indexable.path).to.exist;
-    expect(Indexable.path).to.be.a('function');
-    expect(Indexable.path.name).to.be.equal('path');
-    expect(Indexable.path.length).to.be.equal(1);
+    expect(User.path).to.exist;
+    expect(User.path).to.be.a('function');
+    expect(User.path.name).to.be.equal('path');
+    expect(User.path.length).to.be.equal(1);
   });
 
   it('should be able to get path', () => {
-    const name = Indexable.path('name');
+    const name = User.path('name');
     expect(name).to.exist;
     expect(name).to.be.instanceof(Schema.Types.String);
   });
