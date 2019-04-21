@@ -1,141 +1,81 @@
 'use strict';
 
 
-//dependencies
-const path = require('path');
-const faker = require('faker');
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-const { sinon, expect } = require('@lykmapipo/mongoose-test-helpers');
+/* dependencies */
+const _ = require('lodash');
+const { include } = require('@lykmapipo/include');
+const {
+  sinon,
+  expect,
+  createTestModel,
+  mockModel,
+  mockInstance
+} = require('@lykmapipo/mongoose-test-helpers');
+const faker = require('@lykmapipo/mongoose-faker');
+const put = include(__dirname, '..', '..', 'lib', 'put');
 
-const rootPath = path.join(__dirname, '..', '..');
-const libsPath = path.join(rootPath, 'lib');
-const put = require(path.join(libsPath, 'put'));
 
-describe('unit#put', () => {
+describe('put', () => {
 
-  const PutableSchema = new Schema({
-    name: {
-      type: String
-    }
+  it('should work using `put` static method', done => {
+
+    const User = createTestModel({}, schema => {
+      schema.methods.beforePut = (updates, done) => done();
+      schema.methods.afterPut = (updates, done) => done();
+    }, put, faker);
+    const user = User.fake();
+
+    const Mock = mockModel(User);
+    const mock = mockInstance(user);
+
+    const findById = Mock.expects('findById').yields(null, user);
+    const save = mock.expects('save').yields(null, user);
+    const beforePut = sinon.spy(user, 'beforePut');
+    const afterPut = sinon.spy(user, 'afterPut');
+
+    const updates = _.pick(User.fake(), 'name');
+    User.put(user._id, updates, (error, deleted) => {
+      Mock.verify();
+      Mock.restore();
+
+      mock.verify();
+      mock.restore();
+
+      expect(findById).to.have.been.calledOnce;
+      expect(findById).to.have.been.calledWith(user._id);
+      expect(save).to.have.been.calledOnce;
+      expect(beforePut).to.have.been.calledOnce;
+      expect(afterPut).to.have.been.calledOnce;
+
+      done(error, deleted);
+    });
   });
 
-  PutableSchema.methods.beforePut = (updates, done) => {
-    done();
-  };
+  it('should work using `put` instance method', done => {
 
-  PutableSchema.methods.afterPut = (updates, done) => {
-    done();
-  };
+    const User = createTestModel({}, schema => {
+      schema.methods.beforePut = (updates, done) => done();
+      schema.methods.afterPut = (updates, done) => done();
+    }, put, faker);
+    const user = User.fake();
 
-  PutableSchema.plugin(put);
+    const mock = mockInstance(user);
 
-  const Putable = mongoose.model('Putable', PutableSchema);
+    const save = mock.expects('save').yields(null, user);
+    const beforePut = sinon.spy(user, 'beforePut');
+    const afterPut = sinon.spy(user, 'afterPut');
 
-  describe('export', () => {
-    it('should be a function', () => {
-      expect(put).to.be.a('function');
+    const updates = _.pick(User.fake(), 'name');
+    user.put(updates, (error, deleted) => {
+      mock.verify();
+      mock.restore();
+
+      expect(save).to.have.been.calledOnce;
+      expect(beforePut).to.have.been.calledOnce;
+      expect(afterPut).to.have.been.calledOnce;
+
+      done(error, deleted);
     });
-
-    it('should have name put', () => {
-      expect(put.name).to.be.equal('putPlugin');
-    });
-
-    it('should have length of 1', () => {
-      expect(put.length).to.be.equal(1);
-    });
-  });
-
-  describe('instance#put', () => {
-
-    const updates = {
-      name: faker.name.firstName()
-    };
-    const putable = new Putable({
-      name: faker.name.firstName()
-    });
-
-    let save;
-    let put;
-    let beforePut;
-    let afterPut;
-
-    beforeEach(() => {
-      save =
-        sinon.mock(putable).expects('save').yields(null, putable);
-      put = sinon.spy(putable, 'put');
-      beforePut = sinon.spy(putable, 'beforePut');
-      afterPut = sinon.spy(putable, 'afterPut');
-    });
-
-    afterEach(() => {
-      put.restore();
-      beforePut.restore();
-      afterPut.restore();
-      sinon.restore();
-    });
-
-    it('should be able to put(update)', (done) => {
-      putable.put(updates, (error, updated) => {
-
-        expect(beforePut).to.have.been.called;
-        expect(beforePut).to.have.been.calledOnce;
-        expect(beforePut).to.have.been.calledWith(updates);
-
-        expect(save).to.have.been.called;
-        expect(save).to.have.been.calledOnce;
-
-        expect(put).to.have.been.called;
-        expect(put).to.have.been.calledOnce;
-        expect(put).to.have.been.calledWith(updates);
-
-
-        expect(afterPut).to.have.been.called;
-        expect(afterPut).to.have.been.calledOnce;
-        expect(afterPut).to.have.been.calledWith(updates);
-
-        done(error, updated);
-
-      });
-
-    });
-
-  });
-
-
-  describe('static#put', () => {
-
-    const updates = {
-      _id: new mongoose.Types.ObjectId(),
-      name: faker.name.firstName()
-    };
-    const putable = new Putable(updates);
-
-    let put;
-
-    beforeEach(() => {
-      put =
-        sinon.mock(Putable).expects('put').yields(null, putable);
-    });
-
-    afterEach(() => {
-      sinon.restore();
-    });
-
-    it('should be able to put(update)', (done) => {
-      Putable
-        .put(updates, (error, updated) => {
-
-          expect(put).to.have.been.called;
-          expect(put).to.have.been.calledOnce;
-          expect(put).to.have.been.calledWith(updates);
-
-          done(error, updated);
-
-        });
-
-    });
-
   });
 
 });
