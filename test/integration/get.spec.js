@@ -2,10 +2,10 @@
 
 /* dependencies */
 const _ = require('lodash');
-const { expect } = require('chai');
 const { include } = require('@lykmapipo/include');
 const { ObjectId } = require('@lykmapipo/mongoose-common');
 const {
+  expect,
   create,
   clear,
   createTestModel

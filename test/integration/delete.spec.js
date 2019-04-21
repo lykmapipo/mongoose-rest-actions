@@ -1,9 +1,9 @@
 'use strict';
 
 /* dependencies */
-const { expect } = require('chai');
 const { include } = require('@lykmapipo/include');
 const {
+  expect,
   clear,
   create,
   createTestModel
