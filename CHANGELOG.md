@@ -1,3 +1,11 @@
+#### 0.25.1 (2019-04-24)
+
+##### Chores
+
+* **dependencies:**
+  *  remove unused ([c9ba3709](https://github.com/lykmapipo/mongoose-rest-actions/commit/c9ba3709cb6a49341d395cda8207f16608e7e763))
+  *  force latest versions ([4c72c0b0](https://github.com/lykmapipo/mongoose-rest-actions/commit/4c72c0b0a45d5924e6c27e93b164c28f89b81c69))
+
 #### 0.25.0 (2019-04-21)
 
 ##### Chores
