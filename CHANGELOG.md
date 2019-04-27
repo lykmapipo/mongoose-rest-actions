@@ -1,3 +1,18 @@
+#### 0.25.2 (2019-04-27)
+
+##### Chores
+
+* **dependencies:**
+  *  force latest versions ([335e5ca3](https://github.com/lykmapipo/mongoose-rest-actions/commit/335e5ca3780af9174fbf4706263883d6dee870b5))
+  *  remove unused ([c9ba3709](https://github.com/lykmapipo/mongoose-rest-actions/commit/c9ba3709cb6a49341d395cda8207f16608e7e763))
+  *  force latest versions ([4c72c0b0](https://github.com/lykmapipo/mongoose-rest-actions/commit/4c72c0b0a45d5924e6c27e93b164c28f89b81c69))
+* **release:**  generate latest changelog & bump to v0.25.1 ([7c6b81c7](https://github.com/lykmapipo/mongoose-rest-actions/commit/7c6b81c724e2741f4d8d09f37a97b078653edb63))
+*  fix dependency security vulnerability ([c5370860](https://github.com/lykmapipo/mongoose-rest-actions/commit/c5370860145ae1c91b6cf7e988b9e0e8f1b40e16))
+
+##### Code Style Changes
+
+*  update JSDoc and fix typos ([ae7e79c6](https://github.com/lykmapipo/mongoose-rest-actions/commit/ae7e79c60917c9ec49c47e9ed26b78f9493eb8e2))
+
 #### 0.25.1 (2019-04-24)
 
 ##### Chores
