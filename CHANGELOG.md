@@ -1,3 +1,11 @@
+#### 0.25.3 (2019-05-01)
+
+##### Chores
+
+* **ci:**  force latest nodejs ([c4f357ed](https://github.com/lykmapipo/mongoose-rest-actions/commit/c4f357ed90a654a8239f5b13c4a89a83890b8350))
+* **.npmrc:**  prevent npm version to commit and tag version ([3a995d1b](https://github.com/lykmapipo/mongoose-rest-actions/commit/3a995d1babf0c3b4f61aa0eb27ba04d6003ef474))
+* **deps:**  force latest version & audit fix ([eba69bae](https://github.com/lykmapipo/mongoose-rest-actions/commit/eba69bae285034ac10d5bdb100c84006d57fc2de))
+
 #### 0.25.2 (2019-04-27)
 
 ##### Chores
