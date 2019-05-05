@@ -122,11 +122,11 @@ module.exports = exports = function restActions(schema, schemaOptns) {
 
 
   //rest actions plugin
-  del(schema, schemaOptions);
   get(schema, schemaOptions);
-  patch(schema, schemaOptions);
   post(schema, schemaOptions);
   put(schema, schemaOptions);
+  patch(schema, schemaOptions);
+  del(schema, schemaOptions);
 
 
   //lastly common plugins
