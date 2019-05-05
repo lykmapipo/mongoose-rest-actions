@@ -1,3 +1,18 @@
+#### 0.26.0 (2019-05-05)
+
+##### Chores
+
+* **deps:**  force latest versions & audit fixes ([7825170b](https://github.com/lykmapipo/mongoose-rest-actions/commit/7825170b0c729b7abcc76187a73b88ab2fd328f5))
+
+##### New Features
+
+*  allow static soft delete option ([20952127](https://github.com/lykmapipo/mongoose-rest-actions/commit/20952127b42c23cac3f71fb01c39d2da58765865))
+*  allow instance soft delete option ([22978ee0](https://github.com/lykmapipo/mongoose-rest-actions/commit/22978ee09ff0f56a4a8d5bc8f9ba2594cefeb835))
+
+##### Refactors
+
+* **plugin:**  reorder rest actions plugin on schema ([d0844323](https://github.com/lykmapipo/mongoose-rest-actions/commit/d0844323879b7342c429ee87638e694b6738de46))
+
 #### 0.25.4 (2019-05-01)
 
 ##### Chores
