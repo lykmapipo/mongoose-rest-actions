@@ -16,10 +16,11 @@ describe('delete', () => {
   const User = createTestModel({}, actions);
   let father = User.fake();
   let mother = User.fake();
+  let child = User.fake();
 
   before(done => clear(User, done));
 
-  before(done => create(father, mother, done));
+  before(done => create(father, mother, child, done));
 
   it('should work using `del` static method', done => {
     User.del(father._id, (error, deleted) => {
@@ -52,6 +53,16 @@ describe('delete', () => {
     user.del(error => {
       expect(error).to.not.exist;
       done();
+    });
+  });
+
+  it('should soft delete using `del` instance method', done => {
+    child.del({ soft: true }, (error, deleted) => {
+      expect(error).to.not.exist;
+      expect(deleted).to.exist;
+      expect(deleted._id).to.eql(child._id);
+      expect(deleted.deletedAt).to.exist;
+      done(error, deleted);
     });
   });
 
