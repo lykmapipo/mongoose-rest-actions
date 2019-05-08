@@ -54,6 +54,7 @@ describe('get', () => {
       expect(results.pages).to.exist;
       expect(results.pages).to.be.equal(4);
       expect(results.lastModified).to.exist;
+      expect(results.hasMore).to.exist;
       expect(_.maxBy(results.data, 'updatedAt').updatedAt)
         .to.be.at.most(results.lastModified);
       done(error, results);
@@ -78,6 +79,7 @@ describe('get', () => {
       expect(results.pages).to.exist;
       expect(results.pages).to.be.equal(2);
       expect(results.lastModified).to.exist;
+      expect(results.hasMore).to.exist;
       expect(_.maxBy(results.data, 'updatedAt').updatedAt)
         .to.be.at.most(results.lastModified);
       done(error, results);
@@ -102,6 +104,7 @@ describe('get', () => {
       expect(results.pages).to.exist;
       expect(results.pages).to.be.equal(1);
       expect(results.lastModified).to.exist;
+      expect(results.hasMore).to.exist;
       expect(_.maxBy(results.data, 'updatedAt').updatedAt)
         .to.be.at.most(results.lastModified);
       done(error, results);
@@ -126,6 +129,7 @@ describe('get', () => {
       expect(results.pages).to.exist;
       expect(results.pages).to.be.equal(1);
       expect(results.lastModified).to.exist;
+      expect(results.hasMore).to.exist;
       expect(_.maxBy(results.data, 'updatedAt').updatedAt)
         .to.be.at.most(results.lastModified);
       done(error, results);
@@ -155,6 +159,7 @@ describe('get', () => {
       expect(results.pages).to.exist;
       expect(results.pages).to.be.equal(1);
       expect(results.lastModified).to.exist;
+      expect(results.hasMore).to.exist;
       expect(_.maxBy(results.data, 'updatedAt').updatedAt)
         .to.be.at.most(results.lastModified);
       done(error, results);
@@ -195,6 +200,7 @@ describe('get', () => {
       expect(results.pages).to.exist;
       expect(results.pages).to.be.equal(0);
       expect(results.lastModified).to.exist;
+      expect(results.hasMore).to.exist;
       expect(results.lastModified).to.be.eql(lastModified);
       done(error, results);
     });
