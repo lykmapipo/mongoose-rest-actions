@@ -45,7 +45,7 @@
     }
   ],
   "devDependencies": {
-    "@lykmapipo/mongoose-test-helpers": ">=0.5.4",
+    "@lykmapipo/mongoose-test-helpers": ">=0.7.1",
     "grunt": "^1.0.4",
     "grunt-contrib-jshint": "^2.1.0",
     "grunt-contrib-watch": "^1.1.0",
@@ -69,7 +69,7 @@
     "inflection": ">=1.12.0",
     "lodash": ">=4.17.11",
     "mongoose-autopopulate": ">=0.9.1",
-    "mongoose-exists": ">=0.6.8",
+    "mongoose-exists": ">=0.7.0",
     "mongoose-hidden": ">=1.6.1",
     "mongoose-regex-search": ">=0.7.2"
   }
