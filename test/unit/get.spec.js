@@ -18,12 +18,17 @@ describe('get', () => {
 
   it('should work using `getById` static method', done => {
 
-    const User = createTestModel({}, get, faker);
+    const User = createTestModel({}, schema => {
+      schema.statics.beforeGetById = (done) => done();
+      schema.statics.afterGetById = (instance, done) => done();
+    }, get, faker);
     const user = User.fake();
 
     const Mock = mockModel(User);
     const findById = Mock.expects('findById');
     const exec = findById.chain('exec').yields(null, user);
+    const beforeGetById = sinon.spy(User, 'beforeGetById');
+    const afterGetById = sinon.spy(User, 'afterGetById');
 
     User.getById(user._id, (error, found) => {
       Mock.verify();
@@ -32,6 +37,8 @@ describe('get', () => {
       expect(findById).to.have.been.calledOnce;
       expect(findById).to.have.been.calledWith(user._id);
       expect(exec).to.have.been.calledOnce;
+      expect(beforeGetById).to.have.been.calledOnce;
+      expect(afterGetById).to.have.been.calledOnce;
 
       done(error, found);
     });
