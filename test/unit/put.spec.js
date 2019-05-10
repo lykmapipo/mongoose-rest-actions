@@ -11,7 +11,6 @@ const {
   mockModel,
   mockInstance
 } = require('@lykmapipo/mongoose-test-helpers');
-const faker = require('@lykmapipo/mongoose-faker');
 const put = include(__dirname, '..', '..', 'lib', 'put');
 
 
@@ -22,7 +21,7 @@ describe('put', () => {
     const User = createTestModel({}, schema => {
       schema.methods.beforePut = (updates, done) => done();
       schema.methods.afterPut = (updates, done) => done();
-    }, put, faker);
+    }, put);
     const user = User.fake();
 
     const Mock = mockModel(User);
@@ -58,7 +57,7 @@ describe('put', () => {
     const User = createTestModel({}, schema => {
       schema.methods.beforePut = (updates, done) => done();
       schema.methods.afterPut = (updates, done) => done();
-    }, put, faker);
+    }, put);
     const user = User.fake();
 
     const mock = mockInstance(user);

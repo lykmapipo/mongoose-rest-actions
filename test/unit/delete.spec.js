@@ -10,7 +10,6 @@ const {
   mockModel,
   mockInstance
 } = require('@lykmapipo/mongoose-test-helpers');
-const faker = require('@lykmapipo/mongoose-faker');
 const del = include(__dirname, '..', '..', 'lib', 'delete');
 
 
@@ -21,13 +20,14 @@ describe('delete', () => {
     const User = createTestModel({}, schema => {
       schema.methods.beforeDelete = done => done();
       schema.methods.afterDelete = done => done();
-    }, del, faker);
+    }, del);
     const user = User.fake();
 
     const Mock = mockModel(User);
     const mock = mockInstance(user);
 
-    const findById = Mock.expects('findById').yields(null, user);
+    const findById = Mock.expects('findById');
+    const exec = findById.chain('exec').yields(null, user);
     const remove = mock.expects('remove').yields(null, user);
     const beforeDelete = sinon.spy(user, 'beforeDelete');
     const afterDelete = sinon.spy(user, 'afterDelete');
@@ -41,6 +41,7 @@ describe('delete', () => {
 
       expect(findById).to.have.been.calledOnce;
       expect(findById).to.have.been.calledWith(user._id);
+      expect(exec).to.have.been.calledOnce;
       expect(remove).to.have.been.calledOnce;
       expect(beforeDelete).to.have.been.calledOnce;
       expect(afterDelete).to.have.been.calledOnce;
@@ -54,7 +55,7 @@ describe('delete', () => {
     const User = createTestModel({}, schema => {
       schema.methods.beforeDelete = done => done();
       schema.methods.afterDelete = done => done();
-    }, del, faker);
+    }, del);
     const user = User.fake();
 
     const mock = mockInstance(user);

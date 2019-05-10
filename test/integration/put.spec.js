@@ -48,6 +48,7 @@ describe('put', () => {
     Guardian.put(fake._id, {}, error => {
       expect(error).to.exist;
       expect(error.name).to.eql('DocumentNotFoundError');
+      expect(error.status).to.exist.and.be.equal(400);
       done();
     });
   });
