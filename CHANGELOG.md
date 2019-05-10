@@ -1,3 +1,38 @@
+#### 0.27.0 (2019-05-10)
+
+##### Chores
+
+* **deps:**
+  *  force latest version & audit fix ([4aa95fff](https://github.com/lykmapipo/mongoose-rest-actions/commit/4aa95fffb9460ab2c25609740c84c1cc5d07d644))
+  *  force latest version & audit fix ([f759d9b3](https://github.com/lykmapipo/mongoose-rest-actions/commit/f759d9b30c25ec33cb125b48ea5443c1d5a3522f))
+
+##### New Features
+
+* **get-by-id:**  add before and after getById static hooks ([279850d7](https://github.com/lykmapipo/mongoose-rest-actions/commit/279850d721281e53b12d24f3184da736886ff440))
+*  ignore _id & updatedAt updates on instance.put method ([5a645383](https://github.com/lykmapipo/mongoose-rest-actions/commit/5a6453831b6b15828ac901bb92ffc2a353b60b83))
+*  ignore instances on put static method ([85b08458](https://github.com/lykmapipo/mongoose-rest-actions/commit/85b084581688ae53906a886fc745a4f1cdf94fdc))
+*  add hasMore flag or list responses ([026d075f](https://github.com/lykmapipo/mongoose-rest-actions/commit/026d075f37b820162e3404a11acc671f12b8b26e))
+
+##### Other Changes
+
+* **get:**  use orFail when getById ([79616ac3](https://github.com/lykmapipo/mongoose-rest-actions/commit/79616ac3445ec2302200e2d92068a15c7bef4325))
+
+##### Refactors
+
+*  ensure error status & pre/post hooks executions ([c83496cf](https://github.com/lykmapipo/mongoose-rest-actions/commit/c83496cf2378ecdab6b93b449967400d2141708c))
+* **patch:**  support instance & refs as updates ([034b2f97](https://github.com/lykmapipo/mongoose-rest-actions/commit/034b2f97235a2d49df7378a162f3224d9c6011a1))
+* **put:**  honour instances as updates ([cb7e5106](https://github.com/lykmapipo/mongoose-rest-actions/commit/cb7e5106046ae3c900eff8f2ff515d068764e068))
+* **static-put:**  use orFail when finf existing ([6539b77d](https://github.com/lykmapipo/mongoose-rest-actions/commit/6539b77d9b2a3e65cc33378c99eca382d4f38ae1))
+
+##### Code Style Changes
+
+*  collapse jsdocs exceed 80 ruler ([7df13972](https://github.com/lykmapipo/mongoose-rest-actions/commit/7df139729b2773813ea4d32785680a66735b27fa))
+
+##### Tests
+
+*  spy invocation of exec on put and patch ([8ef6806f](https://github.com/lykmapipo/mongoose-rest-actions/commit/8ef6806f896fe1ba12aadd4330c87cf36555d053))
+*  fix put instances using model static put ([56cebb68](https://github.com/lykmapipo/mongoose-rest-actions/commit/56cebb682bc6ef5208fbb6e8666d6fe32fc9e59f))
+
 #### 0.26.0 (2019-05-05)
 
 ##### Chores
