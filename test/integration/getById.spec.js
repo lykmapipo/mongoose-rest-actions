@@ -63,8 +63,8 @@ describe('getById', () => {
       const guardian = Guardian.fake();
       Guardian.getById(guardian._id, error => {
         expect(error).to.exist;
-        expect(error.message).to.exist.and.be.equal('Not Found');
-        expect(error.status).to.exist.and.be.equal(404);
+        expect(error.name).to.exist.and.be.equal('DocumentNotFoundError');
+        // expect(error.status).to.exist.and.be.equal(404);
         done();
       });
     });

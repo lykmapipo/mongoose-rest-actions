@@ -28,7 +28,8 @@ describe('put', () => {
     const Mock = mockModel(User);
     const mock = mockInstance(user);
 
-    const findById = Mock.expects('findById').yields(null, user);
+    const findById = Mock.expects('findById');
+    const exec = findById.chain('exec').yields(null, user);
     const save = mock.expects('save').yields(null, user);
     const beforePut = sinon.spy(user, 'beforePut');
     const afterPut = sinon.spy(user, 'afterPut');
@@ -43,6 +44,7 @@ describe('put', () => {
 
       expect(findById).to.have.been.calledOnce;
       expect(findById).to.have.been.calledWith(user._id);
+      expect(exec).to.have.been.calledOnce;
       expect(save).to.have.been.calledOnce;
       expect(beforePut).to.have.been.calledOnce;
       expect(afterPut).to.have.been.calledOnce;
