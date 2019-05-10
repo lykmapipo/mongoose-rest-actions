@@ -12,7 +12,7 @@ const {
 } = require('@lykmapipo/mongoose-test-helpers');
 const actions = include(__dirname, '..', '..');
 
-describe.only('put', () => {
+describe('put', () => {
 
   const Guardian = createTestModel({
     email: { type: String, unique: true, fake: f => f.internet.email() }
