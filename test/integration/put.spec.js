@@ -40,7 +40,7 @@ describe.only('static put', () => {
     });
   });
 
-  it.only('should work with id and object as updates', done => {
+  it('should work with id and object as updates', done => {
     const updates = _.pick(Guardian.fake(), 'name');
     Guardian.put(father._id, updates, (error, updated) => {
       expect(error).to.not.exist;
@@ -53,7 +53,7 @@ describe.only('static put', () => {
     });
   });
 
-  it.only('should work with object as updates', done => {
+  it('should work with object as updates', done => {
     const updates = father.fakeOnly('name').toObject();
     Guardian.put(updates, (error, updated) => {
       expect(error).to.not.exist;
@@ -66,31 +66,28 @@ describe.only('static put', () => {
     });
   });
 
-  it.only('should work with id and instance as updates', done => {
+  it('should work with id and instance as updates', done => {
     const updates = father.fakeOnly('name');
     Guardian.put(father._id, updates, (error, updated) => {
       expect(error).to.not.exist;
       expect(updated).to.exist;
       expect(updated._id).to.exist.and.be.eql(father._id);
-      expect(updated.name).to.equal(updates.name);
-      expect(updated.email).to.equal(father.email);
-      expect(updated.createdAt).to.exist;
-      expect(updated.updatedAt).to.exist;
+      expect(updated.createdAt).to.exist.and.be.eql(father.createdAt);
+      expect(updated.updatedAt).to.exist.and.be.above(father.updatedAt);
+      expect(updated.name).to.be.eql(updates.name);
       done(error, updated);
     });
   });
 
-  it('should work with instance as updates', done => {
+  it.only('should work with instance as updates', done => {
     const updates = father.fakeOnly('name');
     Guardian.put(updates, (error, updated) => {
       expect(error).to.not.exist;
       expect(updated).to.exist;
       expect(updated._id).to.exist.and.be.eql(father._id);
-      expect(updated.name).to.equal(updates.name);
-      expect(updated.email).to.equal(father.email);
-      expect(updated.createdAt).to.exist;
-      expect(updated.updatedAt).to.exist;
-      father = updated;
+      expect(updated.createdAt).to.exist.and.be.eql(father.createdAt);
+      expect(updated.updatedAt).to.exist.and.be.above(father.updatedAt);
+      expect(updated.name).to.be.eql(updates.name);
       done(error, updated);
     });
   });
