@@ -20,7 +20,8 @@
     "stale",
     "fresh"
   ],
-  "main": "index.js",
+  "main": "lib/index.js",
+  "module":"es/index.js",
   "scripts": {
     "clean": "rimraf lib dist es umd",
     "prebuild": "npm test && npm run clean",
