@@ -1,26 +1,23 @@
-'use strict';
-
-
-/* dependencies */
-const { include } = require('@lykmapipo/include');
-const {
+import {
   sinon,
   expect,
   createTestModel,
   mockModel,
-  mockInstance
-} = require('@lykmapipo/mongoose-test-helpers');
-const del = include(__dirname, '..', '..', 'lib', 'delete');
-
+  mockInstance,
+} from '@lykmapipo/mongoose-test-helpers';
+import del from '../../src/delete';
 
 describe('delete', () => {
-
   it('should work using `del` static method', done => {
-
-    const User = createTestModel({}, schema => {
-      schema.methods.beforeDelete = done => done();
-      schema.methods.afterDelete = done => done();
-    }, del);
+    const User = createTestModel(
+      {},
+      Schema => {
+        const schema = Schema;
+        schema.methods.beforeDelete = doneCb => doneCb();
+        schema.methods.afterDelete = doneCb => doneCb();
+      },
+      del
+    );
     const user = User.fake();
 
     const Mock = mockModel(User);
@@ -51,11 +48,15 @@ describe('delete', () => {
   });
 
   it('should work using `del` instance method', done => {
-
-    const User = createTestModel({}, schema => {
-      schema.methods.beforeDelete = done => done();
-      schema.methods.afterDelete = done => done();
-    }, del);
+    const User = createTestModel(
+      {},
+      Schema => {
+        const schema = Schema;
+        schema.methods.beforeDelete = doneCb => doneCb();
+        schema.methods.afterDelete = doneCb => doneCb();
+      },
+      del
+    );
     const user = User.fake();
 
     const mock = mockInstance(user);
@@ -75,5 +76,4 @@ describe('delete', () => {
       done(error, deleted);
     });
   });
-
 });

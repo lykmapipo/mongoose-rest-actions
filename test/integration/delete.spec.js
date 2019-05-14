@@ -1,23 +1,17 @@
-'use strict';
-
-/* dependencies */
-const { include } = require('@lykmapipo/include');
-const {
+import {
   expect,
   clear,
   create,
-  createTestModel
-} = require('@lykmapipo/mongoose-test-helpers');
-const actions = include(__dirname, '..', '..');
-
+  createTestModel,
+} from '@lykmapipo/mongoose-test-helpers';
+import actions from '../../src';
 
 describe('delete', () => {
-
   const User = createTestModel({}, actions);
-  let father = User.fake();
-  let mother = User.fake();
-  let aunt = User.fake();
-  let child = User.fake();
+  const father = User.fake();
+  const mother = User.fake();
+  const aunt = User.fake();
+  const child = User.fake();
 
   before(done => clear(User, done));
 
@@ -79,5 +73,4 @@ describe('delete', () => {
   });
 
   after(done => clear(User, done));
-
 });

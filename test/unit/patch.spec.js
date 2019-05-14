@@ -1,27 +1,24 @@
-'use strict';
-
-
-/* dependencies */
-const _ = require('lodash');
-const { include } = require('@lykmapipo/include');
-const {
+import _ from 'lodash';
+import {
   sinon,
   expect,
   createTestModel,
   mockModel,
-  mockInstance
-} = require('@lykmapipo/mongoose-test-helpers');
-const patch = include(__dirname, '..', '..', 'lib', 'patch');
-
+  mockInstance,
+} from '@lykmapipo/mongoose-test-helpers';
+import patch from '../../src/patch';
 
 describe('patch', () => {
-
   it('should work using `patch` static method', done => {
-
-    const User = createTestModel({}, schema => {
-      schema.methods.beforePatch = (updates, done) => done();
-      schema.methods.afterPatch = (updates, done) => done();
-    }, patch);
+    const User = createTestModel(
+      {},
+      Schema => {
+        const schema = Schema;
+        schema.methods.beforePatch = (updates, doneCb) => doneCb();
+        schema.methods.afterPatch = (updates, doneCb) => doneCb();
+      },
+      patch
+    );
     const user = User.fake();
 
     const Mock = mockModel(User);
@@ -53,11 +50,15 @@ describe('patch', () => {
   });
 
   it('should work using `patch` instance method', done => {
-
-    const User = createTestModel({}, schema => {
-      schema.methods.beforePatch = (updates, done) => done();
-      schema.methods.afterPatch = (updates, done) => done();
-    }, patch);
+    const User = createTestModel(
+      {},
+      Schema => {
+        const schema = Schema;
+        schema.methods.beforePatch = (updates, doneCb) => doneCb();
+        schema.methods.afterPatch = (updates, doneCb) => doneCb();
+      },
+      patch
+    );
     const user = User.fake();
 
     const mock = mockInstance(user);
@@ -78,5 +79,4 @@ describe('patch', () => {
       done(error, updated);
     });
   });
-
 });

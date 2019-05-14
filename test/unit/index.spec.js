@@ -1,22 +1,20 @@
-'use strict';
-
-
-/* dependencies */
-const { include } = require('@lykmapipo/include');
-const { Schema } = require('@lykmapipo/mongoose-common');
-const {
-  expect,
-  createTestModel,
-} = require('@lykmapipo/mongoose-test-helpers');
-const actions = include(__dirname, '..', '..');
+import { Schema } from '@lykmapipo/mongoose-common';
+import { expect, createTestModel } from '@lykmapipo/mongoose-test-helpers';
+import actions from '../../src';
 
 describe('index', () => {
-
-  const User = createTestModel({
-    name: { type: String, fake: f => f.name.findName() },
-    address: { type: String, hide: true, fake: f => f.address.streetAddress() },
-    password: { type: String, fake: f => f.internet.password() }
-  }, actions);
+  const User = createTestModel(
+    {
+      name: { type: String, fake: f => f.name.findName() },
+      address: {
+        type: String,
+        hide: true,
+        fake: f => f.address.streetAddress(),
+      },
+      password: { type: String, fake: f => f.internet.password() },
+    },
+    actions
+  );
 
   it('should be able to generate fake instance', () => {
     expect(User.fake).to.exist;
@@ -76,5 +74,4 @@ describe('index', () => {
     expect(name).to.exist;
     expect(name).to.be.instanceof(Schema.Types.String);
   });
-
 });

@@ -1,26 +1,23 @@
-'use strict';
-
-
-/* dependencies */
-const { include } = require('@lykmapipo/include');
-const {
+import {
   sinon,
   expect,
   createTestModel,
-  mockModel
-} = require('@lykmapipo/mongoose-test-helpers');
-const searchable = require('mongoose-regex-search');
-const get = include(__dirname, '..', '..', 'lib', 'get');
-
+  mockModel,
+} from '@lykmapipo/mongoose-test-helpers';
+import searchable from 'mongoose-regex-search';
+import get from '../../src';
 
 describe('get', () => {
-
   it('should work using `getById` static method', done => {
-
-    const User = createTestModel({}, schema => {
-      schema.statics.beforeGetById = (done) => done();
-      schema.statics.afterGetById = (instance, done) => done();
-    }, get);
+    const User = createTestModel(
+      {},
+      Schema => {
+        const schema = Schema;
+        schema.statics.beforeGetById = doneCb => doneCb();
+        schema.statics.afterGetById = (instance, doneCb) => doneCb();
+      },
+      get
+    );
     const user = User.fake();
 
     const Mock = mockModel(User);
@@ -44,11 +41,16 @@ describe('get', () => {
   });
 
   it('should work using `get` static method', done => {
-
-    const User = createTestModel({}, schema => {
-      schema.statics.beforeGet = (options, done) => done();
-      schema.statics.afterGet = (options, results, done) => done();
-    }, searchable, get);
+    const User = createTestModel(
+      {},
+      Schema => {
+        const schema = Schema;
+        schema.statics.beforeGet = (options, doneCb) => doneCb();
+        schema.statics.afterGet = (options, results, doneCb) => doneCb();
+      },
+      searchable,
+      get
+    );
 
     const options = { page: 1, limit: 10 };
     const results = {
@@ -59,19 +61,18 @@ describe('get', () => {
       skip: 0,
       page: 1,
       pages: 10,
-      lastModified: new Date()
+      lastModified: new Date(),
     };
 
     const Mock = mockModel(User);
     const beforeGet = sinon.spy(User, 'beforeGet');
     const afterGet = sinon.spy(User, 'afterGet');
-    const find = Mock.expects('_get').yields(null, results);
-
+    const find = Mock.expects('getHelperFn').yields(null, results);
 
     User.get(options, (error, found) => {
       Mock.verify();
-      Mock.restore();
 
+      Mock.restore();
       expect(find).to.have.been.calledOnce;
       expect(beforeGet).to.have.been.calledOnce;
       expect(afterGet).to.have.been.calledOnce;
@@ -79,5 +80,4 @@ describe('get', () => {
       done(error, found);
     });
   });
-
 });

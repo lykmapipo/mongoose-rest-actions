@@ -1,32 +1,34 @@
-'use strict';
-
-/* dependencies */
-const _ = require('lodash');
-const { include } = require('@lykmapipo/include');
-const { ObjectId } = require('@lykmapipo/mongoose-common');
-const {
+import _ from 'lodash';
+import { ObjectId } from '@lykmapipo/mongoose-common';
+import {
   expect,
   create,
   clear,
-  createTestModel
-} = require('@lykmapipo/mongoose-test-helpers');
-const actions = include(__dirname, '..', '..');
+  createTestModel,
+} from '@lykmapipo/mongoose-test-helpers';
+import actions from '../../src';
 
 describe('get', () => {
+  const Guardian = createTestModel(
+    {
+      email: { type: String, unique: true, fake: f => f.internet.email() },
+      age: { type: Number, min: 30, fake: true },
+    },
+    actions
+  );
 
-  const Guardian = createTestModel({
-    email: { type: String, unique: true, fake: f => f.internet.email() },
-    age: { type: Number, min: 30, fake: true },
-  }, actions);
+  const Child = createTestModel(
+    {
+      email: { type: String, unique: true, fake: f => f.internet.email() },
+      age: { type: Number, min: 3, fake: true },
+      father: { type: ObjectId, ref: Guardian.modelName },
+    },
+    actions
+  );
 
-  const Child = createTestModel({
-    email: { type: String, unique: true, fake: f => f.internet.email() },
-    age: { type: Number, min: 3, fake: true },
-    father: { type: ObjectId, ref: Guardian.modelName }
-  }, actions);
-
-  let father = Guardian.fake();
-  let children = _.map(Child.fake(32), child => {
+  const father = Guardian.fake();
+  const children = _.map(Child.fake(32), kid => {
+    const child = kid;
     child.father = father;
     return child;
   });
@@ -55,8 +57,9 @@ describe('get', () => {
       expect(results.pages).to.be.equal(4);
       expect(results.lastModified).to.exist;
       expect(results.hasMore).to.exist;
-      expect(_.maxBy(results.data, 'updatedAt').updatedAt)
-        .to.be.at.most(results.lastModified);
+      expect(_.maxBy(results.data, 'updatedAt').updatedAt).to.be.at.most(
+        results.lastModified
+      );
       done(error, results);
     });
   });
@@ -80,8 +83,9 @@ describe('get', () => {
       expect(results.pages).to.be.equal(2);
       expect(results.lastModified).to.exist;
       expect(results.hasMore).to.exist;
-      expect(_.maxBy(results.data, 'updatedAt').updatedAt)
-        .to.be.at.most(results.lastModified);
+      expect(_.maxBy(results.data, 'updatedAt').updatedAt).to.be.at.most(
+        results.lastModified
+      );
       done(error, results);
     });
   });
@@ -105,8 +109,9 @@ describe('get', () => {
       expect(results.pages).to.be.equal(1);
       expect(results.lastModified).to.exist;
       expect(results.hasMore).to.exist;
-      expect(_.maxBy(results.data, 'updatedAt').updatedAt)
-        .to.be.at.most(results.lastModified);
+      expect(_.maxBy(results.data, 'updatedAt').updatedAt).to.be.at.most(
+        results.lastModified
+      );
       done(error, results);
     });
   });
@@ -130,8 +135,9 @@ describe('get', () => {
       expect(results.pages).to.be.equal(1);
       expect(results.lastModified).to.exist;
       expect(results.hasMore).to.exist;
-      expect(_.maxBy(results.data, 'updatedAt').updatedAt)
-        .to.be.at.most(results.lastModified);
+      expect(_.maxBy(results.data, 'updatedAt').updatedAt).to.be.at.most(
+        results.lastModified
+      );
       done(error, results);
     });
   });
@@ -140,8 +146,8 @@ describe('get', () => {
     const options = {
       filter: {
         q: children[0].name,
-        age: { $eq: children[0].age }
-      }
+        age: { $eq: children[0].age },
+      },
     };
     Child.get(options, (error, results) => {
       expect(error).to.not.exist;
@@ -160,8 +166,9 @@ describe('get', () => {
       expect(results.pages).to.be.equal(1);
       expect(results.lastModified).to.exist;
       expect(results.hasMore).to.exist;
-      expect(_.maxBy(results.data, 'updatedAt').updatedAt)
-        .to.be.at.most(results.lastModified);
+      expect(_.maxBy(results.data, 'updatedAt').updatedAt).to.be.at.most(
+        results.lastModified
+      );
       done(error, results);
     });
   });
@@ -173,10 +180,9 @@ describe('get', () => {
       expect(results).to.not.exist;
       expect(error.status).to.be.equal(400);
       expect(error.name).to.be.equal('MongoError');
-      expect(error.message)
-        .to.be.equal(
-          'Projection cannot have a mix of inclusion and exclusion.'
-        );
+      expect(error.message).to.be.equal(
+        'Projection cannot have a mix of inclusion and exclusion.'
+      );
       done();
     });
   });
@@ -207,5 +213,4 @@ describe('get', () => {
   });
 
   after(done => clear(Guardian, Child, done));
-
 });

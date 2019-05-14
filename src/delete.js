@@ -1,10 +1,5 @@
-'use strict';
-
-
-/* dependencies */
-const _ = require('lodash');
-const { waterfall } = require('async');
-
+import _ from 'lodash';
+import { waterfall } from 'async';
 
 /**
  * @module mongoose-rest-actions
@@ -30,10 +25,10 @@ const { waterfall } = require('async');
  *
  * app.delete('/users/:id', function(request, response, next){
  *
- *   //obtain id
+ *   // obtain id
  *   const _id = request.params.id;
  *
- *   //delete user
+ *   // delete user
  *   User
  *     .del(_id, function(error, deleted){
  *       ...handle error or reply
@@ -41,14 +36,13 @@ const { waterfall } = require('async');
  * });
  *
  */
-module.exports = exports = function deletePlugin(schema /*, schemaOptns*/ ) {
-
+function deletePlugin(Schema) {
+  const schema = Schema;
   /*
    *----------------------------------------------------------------------------
    * Instance
    *----------------------------------------------------------------------------
    */
-
 
   /**
    * @function
@@ -96,14 +90,14 @@ module.exports = exports = function deletePlugin(schema /*, schemaOptns*/ ) {
    *     ...
    *  });
    */
-  schema.methods.del = function del(options, done) {
-    // normalize arguments
+  schema.methods.del = function del(optns, callback) {
+    //  normalize arguments
     const defaults = { soft: false };
-    done = _.isFunction(options) ? options : done;
-    options = _.isFunction(options) ? defaults : _.merge(defaults, options);
+    const done = _.isFunction(optns) ? optns : callback;
+    const options = _.isFunction(optns) ? defaults : _.merge(defaults, optns);
 
-    waterfall([
-
+    waterfall(
+      [
         /**
          * @name beforeDelete
          * @function beforeDelete
@@ -113,21 +107,23 @@ module.exports = exports = function deletePlugin(schema /*, schemaOptns*/ ) {
          * @private
          */
         function beforeDelete(next) {
-          //obtain before hooks
-          const before = (this.beforeDelete || this.preDelete);
+          // obtain before hooks
+          const before = this.beforeDelete || this.preDelete;
 
-          //run hook(s)
+          // run hook(s)
           if (_.isFunction(before)) {
-            before.call(this, function (error, instance) {
-              next(error, instance || this);
-            }.bind(this));
+            before.call(
+              this,
+              function onBeforeDelete(error, instance) {
+                next(error, instance || this);
+              }.bind(this)
+            );
           }
-          //no hook
+          // no hook
           else {
-            //TODO use undefined
+            // TODO use undefined
             next(null, this);
           }
-
         }.bind(this),
 
         /**
@@ -139,14 +135,14 @@ module.exports = exports = function deletePlugin(schema /*, schemaOptns*/ ) {
          * @private
          */
         function doDelete(instance, next) {
-          //TODO throw error if already deleted
-          // soft delete
+          // TODO throw error if already deleted
+          //  soft delete
           const { soft } = options;
           if (soft) {
             const updates = { deletedAt: new Date() };
             instance.patch(updates, next);
           }
-          // hard deletes
+          //  hard deletes
           else {
             instance.remove(function afterRemove(error, deleted) {
               next(error, deleted);
@@ -163,23 +159,21 @@ module.exports = exports = function deletePlugin(schema /*, schemaOptns*/ ) {
          * @private
          */
         function afterDelete(instance, next) {
-          //obtain after hooks
-          const after = (instance.afterDelete || instance.postDelete);
+          // obtain after hooks
+          const after = instance.afterDelete || instance.postDelete;
 
-          //run hook(s)
+          // run hook(s)
           if (_.isFunction(after)) {
-            after.call(instance, function (error, instanced) {
+            after.call(instance, function onAfterDelete(error, instanced) {
               next(error, instanced || instance);
             });
           }
-          //no hook
+          // no hook
           else {
-            //TODO use undefined
+            // TODO use undefined
             next(null, instance);
           }
-
-        }
-
+        },
       ],
 
       /**
@@ -190,22 +184,21 @@ module.exports = exports = function deletePlugin(schema /*, schemaOptns*/ ) {
        * @param {Object} deleted model instance
        * @private
        */
-      function onceDelete(error, deleted) {
+      function onceDelete(err, deleted) {
+        const error = err;
         if (error) {
-          error.status = (error.status || 400);
+          error.status = error.status || 400;
         }
         done(error, deleted);
-      });
-
+      }
+    );
   };
-
 
   /*
    *----------------------------------------------------------------------------
    * Statics
    *----------------------------------------------------------------------------
    */
-
 
   /**
    * @function
@@ -228,39 +221,43 @@ module.exports = exports = function deletePlugin(schema /*, schemaOptns*/ ) {
    *       ...
    *   });
    */
-  schema.statics.del = function del(options, done) {
-    // normalize arguments
+  schema.statics.del = function del(optns, done) {
+    //  normalize arguments
     const defaults = { soft: false };
-    options = _.isPlainObject(options) ? options : { _id: options };
+    let options = _.isPlainObject(optns) ? optns : { _id: optns };
     options = _.merge(defaults, options);
 
     const { _id, soft } = options;
 
-    //ensure id
+    // ensure id
     if (!_id) {
-      let error = new Error('Missing Instance Id');
+      const error = new Error('Missing Instance Id');
       error.status = 400;
-      return done(error);
+      done(error);
     }
 
-    //continue with delete
-    waterfall([
+    // continue with delete
+    waterfall(
+      [
+        function findExisting(next) {
+          this.findById(_id)
+            .orFail()
+            .exec(next); // TODO use getById
+        }.bind(this),
 
-      function findExisting(next) {
-        this.findById(_id).orFail().exec(next); //TODO use getById
-      }.bind(this),
-
-      function afterFindExisting(instance, next) {
-        instance.del({ soft }, next);
+        function afterFindExisting(instance, next) {
+          instance.del({ soft }, next);
+        },
+      ],
+      function onceDelete(err, patched) {
+        const error = err;
+        if (error) {
+          error.status = error.status || 400;
+        }
+        done(error, patched);
       }
-
-    ], function onceDelete(error, patched) {
-      if (error) {
-        error.status = (error.status || 400);
-      }
-      done(error, patched);
-    });
-
+    );
   };
+}
 
-};
+export default deletePlugin;

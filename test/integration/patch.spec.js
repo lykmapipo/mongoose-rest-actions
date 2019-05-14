@@ -1,27 +1,28 @@
-'use strict';
-
-/* dependencies */
-const _ = require('lodash');
-const { include } = require('@lykmapipo/include');
-const { ObjectId } = require('@lykmapipo/mongoose-common');
-const {
+import _ from 'lodash';
+import { ObjectId } from '@lykmapipo/mongoose-common';
+import {
   expect,
   create,
   clear,
-  createTestModel
-} = require('@lykmapipo/mongoose-test-helpers');
-const actions = include(__dirname, '..', '..');
+  createTestModel,
+} from '@lykmapipo/mongoose-test-helpers';
+import actions from '../../src';
 
 describe('patch', () => {
+  const Guardian = createTestModel(
+    {
+      email: { type: String, unique: true, fake: f => f.internet.email() },
+    },
+    actions
+  );
 
-  const Guardian = createTestModel({
-    email: { type: String, unique: true, fake: f => f.internet.email() }
-  }, actions);
-
-  const Child = createTestModel({
-    email: { type: String, unique: true, fake: f => f.internet.email() },
-    father: { type: ObjectId, ref: Guardian.modelName }
-  }, actions);
+  const Child = createTestModel(
+    {
+      email: { type: String, unique: true, fake: f => f.internet.email() },
+      father: { type: ObjectId, ref: Guardian.modelName },
+    },
+    actions
+  );
 
   let father;
   let child;
@@ -151,9 +152,9 @@ describe('patch', () => {
     });
   });
 
-  // 
+  //
   // instances
-  // 
+  //
   it('should work on instance with updates', done => {
     const updates = _.pick(Guardian.fake(), 'name');
     father.patch(updates, (error, updated) => {
@@ -184,5 +185,4 @@ describe('patch', () => {
   });
 
   after(done => clear(Guardian, Child, done));
-
 });

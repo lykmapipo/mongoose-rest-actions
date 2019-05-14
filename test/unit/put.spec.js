@@ -1,27 +1,24 @@
-'use strict';
-
-
-/* dependencies */
-const _ = require('lodash');
-const { include } = require('@lykmapipo/include');
-const {
+import _ from 'lodash';
+import {
   sinon,
   expect,
   createTestModel,
   mockModel,
-  mockInstance
-} = require('@lykmapipo/mongoose-test-helpers');
-const put = include(__dirname, '..', '..', 'lib', 'put');
-
+  mockInstance,
+} from '@lykmapipo/mongoose-test-helpers';
+import put from '../../src/put';
 
 describe('put', () => {
-
   it('should work using `put` static method', done => {
-
-    const User = createTestModel({}, schema => {
-      schema.methods.beforePut = (updates, done) => done();
-      schema.methods.afterPut = (updates, done) => done();
-    }, put);
+    const User = createTestModel(
+      {},
+      Schema => {
+        const schema = Schema;
+        schema.methods.beforePut = (updates, doneCb) => doneCb();
+        schema.methods.afterPut = (updates, doneCb) => doneCb();
+      },
+      put
+    );
     const user = User.fake();
 
     const Mock = mockModel(User);
@@ -53,11 +50,15 @@ describe('put', () => {
   });
 
   it('should work using `put` instance method', done => {
-
-    const User = createTestModel({}, schema => {
-      schema.methods.beforePut = (updates, done) => done();
-      schema.methods.afterPut = (updates, done) => done();
-    }, put);
+    const User = createTestModel(
+      {},
+      Schema => {
+        const schema = Schema;
+        schema.methods.beforePut = (updates, doneCb) => doneCb();
+        schema.methods.afterPut = (updates, doneCb) => doneCb();
+      },
+      put
+    );
     const user = User.fake();
 
     const mock = mockInstance(user);
@@ -78,5 +79,4 @@ describe('put', () => {
       done(error, updated);
     });
   });
-
 });
