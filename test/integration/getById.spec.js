@@ -1,29 +1,30 @@
-'use strict';
-
-/* dependencies */
-const { include } = require('@lykmapipo/include');
-const { ObjectId } = require('@lykmapipo/mongoose-common');
-const {
+import { ObjectId } from '@lykmapipo/mongoose-common';
+import {
   expect,
   create,
   clear,
-  createTestModel
-} = require('@lykmapipo/mongoose-test-helpers');
-const actions = include(__dirname, '..', '..');
+  createTestModel,
+} from '@lykmapipo/mongoose-test-helpers';
+import actions from '../../src';
 
 describe('getById', () => {
+  const Guardian = createTestModel(
+    {
+      email: { type: String, unique: true, fake: f => f.internet.email() },
+    },
+    actions
+  );
 
-  const Guardian = createTestModel({
-    email: { type: String, unique: true, fake: f => f.internet.email() }
-  }, actions);
+  const Child = createTestModel(
+    {
+      email: { type: String, unique: true, fake: f => f.internet.email() },
+      father: { type: ObjectId, ref: Guardian.modelName },
+    },
+    actions
+  );
 
-  const Child = createTestModel({
-    email: { type: String, unique: true, fake: f => f.internet.email() },
-    father: { type: ObjectId, ref: Guardian.modelName }
-  }, actions);
-
-  let father = Guardian.fake();
-  let child = Child.fake();
+  const father = Guardian.fake();
+  const child = Child.fake();
   child.father = father;
 
   before(done => clear(Guardian, Child, done));
@@ -58,22 +59,21 @@ describe('getById', () => {
     });
   });
 
-  it('should fail using `getById` static method if instance not exist',
-    done => {
-      const guardian = Guardian.fake();
-      Guardian.getById(guardian._id, error => {
-        expect(error).to.exist;
-        expect(error.name).to.be.equal('DocumentNotFoundError');
-        expect(error.status).to.exist.and.be.equal(400);
-        done();
-      });
+  it('should fail using `getById` static method if instance not exist', done => {
+    const guardian = Guardian.fake();
+    Guardian.getById(guardian._id, error => {
+      expect(error).to.exist;
+      expect(error.name).to.be.equal('DocumentNotFoundError');
+      expect(error.status).to.exist.and.be.equal(400);
+      done();
     });
+  });
 
   it('should work with options using `getById` static method', done => {
     const options = {
       _id: child._id,
       select: 'name',
-      populate: [{ path: 'father', select: 'name' }]
+      populate: [{ path: 'father', select: 'name' }],
     };
     Child.getById(options, (error, found) => {
       expect(error).to.not.exist;
@@ -92,5 +92,4 @@ describe('getById', () => {
   });
 
   after(done => clear(Guardian, Child, done));
-
 });

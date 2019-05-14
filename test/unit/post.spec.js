@@ -1,25 +1,22 @@
-'use strict';
-
-
-/* dependencies */
-const { include } = require('@lykmapipo/include');
-const {
+import {
   sinon,
   expect,
   createTestModel,
-  mockInstance
-} = require('@lykmapipo/mongoose-test-helpers');
-const post = include(__dirname, '..', '..', 'lib', 'post');
-
+  mockInstance,
+} from '@lykmapipo/mongoose-test-helpers';
+import post from '../../src/post';
 
 describe('post', () => {
-
   it('should work using `post` static method', done => {
-
-    const User = createTestModel({}, schema => {
-      schema.methods.beforePost = done => done();
-      schema.methods.afterPost = done => done();
-    }, post);
+    const User = createTestModel(
+      {},
+      Schema => {
+        const schema = Schema;
+        schema.methods.beforePost = doneCb => doneCb();
+        schema.methods.afterPost = doneCb => doneCb();
+      },
+      post
+    );
     const user = User.fake();
 
     const mock = mockInstance(user);
@@ -41,11 +38,15 @@ describe('post', () => {
   });
 
   it('should work using `post` instance method', done => {
-
-    const User = createTestModel({}, schema => {
-      schema.methods.beforePost = done => done();
-      schema.methods.afterPost = done => done();
-    }, post);
+    const User = createTestModel(
+      {},
+      Schema => {
+        const schema = Schema;
+        schema.methods.beforePost = doneCb => doneCb();
+        schema.methods.afterPost = doneCb => doneCb();
+      },
+      post
+    );
     const user = User.fake();
 
     const mock = mockInstance(user);
@@ -65,5 +66,4 @@ describe('post', () => {
       done(error, created);
     });
   });
-
 });

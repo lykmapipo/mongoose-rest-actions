@@ -1,29 +1,30 @@
-'use strict';
-
-/* dependencies */
-const _ = require('lodash');
-const { include } = require('@lykmapipo/include');
-const { ObjectId } = require('@lykmapipo/mongoose-common');
-const {
+import _ from 'lodash';
+import { ObjectId } from '@lykmapipo/mongoose-common';
+import {
   expect,
   create,
   clear,
-  createTestModel
-} = require('@lykmapipo/mongoose-test-helpers');
-const actions = include(__dirname, '..', '..');
+  createTestModel,
+} from '@lykmapipo/mongoose-test-helpers';
+import actions from '../../src';
 
 describe('post', () => {
+  const Guardian = createTestModel(
+    {
+      email: { type: String, unique: true, fake: f => f.internet.email() },
+    },
+    actions
+  );
 
-  const Guardian = createTestModel({
-    email: { type: String, unique: true, fake: f => f.internet.email() }
-  }, actions);
+  const Child = createTestModel(
+    {
+      email: { type: String, unique: true, fake: f => f.internet.email() },
+      father: { type: ObjectId, ref: Guardian.modelName },
+    },
+    actions
+  );
 
-  const Child = createTestModel({
-    email: { type: String, unique: true, fake: f => f.internet.email() },
-    father: { type: ObjectId, ref: Guardian.modelName }
-  }, actions);
-
-  let father = Guardian.fake();
+  const father = Guardian.fake();
 
   before(done => clear(Guardian, Child, done));
 
@@ -144,5 +145,4 @@ describe('post', () => {
   });
 
   after(done => clear(Guardian, Child, done));
-
 });
