@@ -106,5 +106,27 @@
     "mongoose-exists": ">=0.7.1",
     "mongoose-hidden": ">=1.6.1",
     "mongoose-regex-search": ">=0.7.3"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "lint-staged": {
+    "src/**/*.js": [
+      "npm run lint",
+      "git add -A"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
   }
 }
