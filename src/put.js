@@ -1,15 +1,11 @@
-'use strict';
-
-
-/* dependencies */
-const _ = require('lodash');
-const { waterfall } = require('async');
-const { mergeObjects } = require('@lykmapipo/common');
-const { copyInstance, isInstance } = require('@lykmapipo/mongoose-common');
-
+import _ from 'lodash';
+import { waterfall } from 'async';
+import { mergeObjects } from '@lykmapipo/common';
+import { copyInstance, isInstance } from '@lykmapipo/mongoose-common';
 
 const updatesFor = (id, updates) => {
   // ignore self instance updates
+  // eslint-disable-next-line
   if (isInstance(updates) && updates._id === id) {
     return updates;
   }
@@ -17,7 +13,6 @@ const updatesFor = (id, updates) => {
   const changes = mergeObjects(copyInstance(updates), { _id: id });
   return changes;
 };
-
 
 /**
  * @function
@@ -42,13 +37,13 @@ const updatesFor = (id, updates) => {
  *
  * app.put('/users/:id', function(request, response, next){
  *
- *   //obtain user
+ *   // obtain user
  *   const updates = request.body;
  *
- *   //obtain id
+ *   // obtain id
  *   updates._id = request.params.id;
  *
- *   //put user
+ *   // put user
  *   User
  *     .put(updates, function(error, updated){
  *       ...handle error or reply
@@ -59,13 +54,13 @@ const updatesFor = (id, updates) => {
  *
  * app.put('/users/:id', function(request, response, next){
  *
- *   //obtain user
+ *   // obtain user
  *   const updates = request.body;
  *
- *   //obtain id
+ *   // obtain id
  *   const _id = request.params.id;
  *
- *   //put user
+ *   // put user
  *   User
  *     .put(_id, updates, function(error, updated){
  *       ...handle error or reply
@@ -73,14 +68,14 @@ const updatesFor = (id, updates) => {
  * });
  *
  */
-module.exports = exports = function putPlugin(schema /*, schemaOptns*/ ) {
+function putPlugin(Schema) {
+  const schema = Schema;
 
   /*
    *----------------------------------------------------------------------------
    * Instances
    *----------------------------------------------------------------------------
    */
-
 
   /**
    * @function
@@ -130,16 +125,16 @@ module.exports = exports = function putPlugin(schema /*, schemaOptns*/ ) {
    *  });
    */
   schema.methods.put = function put(updates, done) {
-    //normalize arguments
+    // normalize arguments
     const body = _.isFunction(updates) ? {} : updatesFor(null, updates);
     const cb = _.isFunction(updates) ? updates : done;
 
-    //remove unused
-    delete body._id;
+    // remove unused
+    delete body._id; // eslint-disable-line
     delete body.updatedAt;
 
-    waterfall([
-
+    waterfall(
+      [
         /**
          * @name beforePut
          * @function beforePut
@@ -149,22 +144,27 @@ module.exports = exports = function putPlugin(schema /*, schemaOptns*/ ) {
          * @private
          */
         function beforePut(next) {
-          //obtain before hooks
+          // obtain before hooks
           const before =
-            (this.beforePut || this.prePut ||
-              this.beforeUpdate || this.preUpdate);
+            this.beforePut ||
+            this.prePut ||
+            this.beforeUpdate ||
+            this.preUpdate;
 
-          //run hook(s)
+          // run hook(s)
           if (_.isFunction(before)) {
-            before.call(this, body, function (error, instance) {
-              next(error, instance || this);
-            }.bind(this));
+            before.call(
+              this,
+              body,
+              function onBeforePut(error, instance) {
+                next(error, instance || this);
+              }.bind(this)
+            );
           }
-          //no hook
+          // no hook
           else {
             next(null, this);
           }
-
         }.bind(this),
 
         /**
@@ -175,8 +175,9 @@ module.exports = exports = function putPlugin(schema /*, schemaOptns*/ ) {
          * @returns {instance|error}
          * @private
          */
-        function doPut(instance, next) {
-          //update & persist instance
+        function doPut(model, next) {
+          const instance = model;
+          // update & persist instance
           if (body && !_.isEmpty(body)) {
             instance.set(body);
           }
@@ -195,24 +196,24 @@ module.exports = exports = function putPlugin(schema /*, schemaOptns*/ ) {
          * @private
          */
         function afterPut(instance, next) {
-          //obtain after hooks
+          // obtain after hooks
           const after =
-            (instance.afterPut || instance.postPut ||
-              instance.afterUpdate || instance.postUpdate);
+            instance.afterPut ||
+            instance.postPut ||
+            instance.afterUpdate ||
+            instance.postUpdate;
 
-          //run hook(s)
+          // run hook(s)
           if (_.isFunction(after)) {
-            after.call(instance, body, function (error, instanced) {
+            after.call(instance, body, function onAfterPut(error, instanced) {
               next(error, instanced || instance);
             });
           }
-          //no hook
+          // no hook
           else {
             next(null, instance);
           }
-
-        }
-
+        },
       ],
 
       /**
@@ -223,22 +224,21 @@ module.exports = exports = function putPlugin(schema /*, schemaOptns*/ ) {
        * @param {Object} puted model instance
        * @private
        */
-      function oncePut(error, puted) {
+      function oncePut(err, puted) {
+        const error = err;
         if (error) {
-          error.status = (error.status || 400);
+          error.status = error.status || 400;
         }
         cb(error, puted);
-      });
-
+      }
+    );
   };
-
 
   /*
    *----------------------------------------------------------------------------
    * Statics
    *----------------------------------------------------------------------------
    */
-
 
   /**
    * @function
@@ -256,79 +256,84 @@ module.exports = exports = function putPlugin(schema /*, schemaOptns*/ ) {
    * @memberof putPlugin
    * @public
    * @example
-   * 
+   *
    * const User = mongoose.model('User');
    * User.put(id, updates, (error, updated) => { ... });
    * User.put({_id: ..., name: ...}, (error, updated) => { ... });
-   * 
+   *
    */
   schema.statics.put = function put(id, updates, done) {
-    // ref
+    //  ref
     const Model = this;
 
-    //normalize arguments
+    // normalize arguments
     let model = updates;
     let cb = done;
 
-    //handle 3 args
+    // handle 3 args
     if (arguments.length === 3) {
       model = updatesFor(id, updates);
       cb = done;
     }
 
-    //handle 2 args
+    // handle 2 args
     else if (arguments.length === 2) {
       model = updatesFor(_.get(id, '_id'), id);
       cb = updates;
     }
 
-    //handle 1 args
+    // handle 1 args
     else {
       cb = id;
-      let error = new Error('Illegal Arguments');
+      const error = new Error('Illegal Arguments');
       error.status = 400;
-      return cb(error);
+      cb(error);
     }
 
-    //ensure id
-    model._id = (model._id || model.id);
-    if (!model._id) {
-      let error = new Error('Missing Instance Id');
+    // ensure id
+    model._id = model._id || model.id; // eslint-disable-line
+    const modelId = model._id; // eslint-disable-line
+    if (!modelId) {
+      const error = new Error('Missing Instance Id');
       error.status = 400;
-      return cb(error);
+      cb(error);
     }
 
-    //continue with put
-    waterfall([
+    // continue with put
+    waterfall(
+      [
+        function findExisting(next) {
+          if (isInstance(model)) {
+            next(null, model);
+          } else {
+            Model.findById(modelId)
+              .orFail()
+              .exec(next);
+          }
+        },
 
-      function findExisting(next) {
-        if (isInstance(model)) {
-          next(null, model);
-        } else {
-          Model.findById(model._id).orFail().exec(next);
+        function afterFindExisting(instance, next) {
+          //  handle instance
+          if (isInstance(model)) {
+            model.put({ updatedAt: new Date() }, next);
+          }
+          //  handle updates
+          else {
+            delete model._id; // eslint-disable-line
+            delete model.id;
+            instance.put(model, next);
+          }
+        },
+      ],
+      function oncePut(err, updated) {
+        const error = err;
+        if (error) {
+          error.status = error.status || 400;
         }
-      },
-
-      function afterFindExisting(instance, next) {
-        // handle instance
-        if (isInstance(model)) {
-          model.put({ updatedAt: new Date() }, next);
-        }
-        // handle updates
-        else {
-          delete model._id;
-          delete model.id;
-          instance.put(model, next);
-        }
+        cb(error, updated);
       }
-
-    ], function oncePut(error, updated) {
-      if (error) {
-        error.status = (error.status || 400);
-      }
-      cb(error, updated);
-    });
-
+    );
   };
+}
 
-};
+export default putPlugin;

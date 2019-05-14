@@ -1,24 +1,18 @@
-'use strict';
+import _ from 'lodash';
+import { waterfall, parallel } from 'async';
 
-
-/* dependencies */
-const _ = require('lodash');
-const { waterfall, parallel } = require('async');
-
-
-//default get options
+/* default get options */
 const defaults = {
   filter: {},
   paginate: {
     limit: 10,
     skip: 0,
-    page: 1
+    page: 1,
   },
   populate: [],
   select: {},
-  sort: {}
+  sort: {},
 };
-
 
 /**
  * @module mongoose-rest-actions
@@ -44,10 +38,10 @@ const defaults = {
  *
  * app.get('/users', function(request, response, next){
  *
- *   //prepare options
+ *   // prepare options
  *   const options = { page: request.query.page, limit: request.query.limit}
  *
- *   //get users
+ *   // get users
  *   User
  *     .get(options, function(error, results){
  *       ...handle error or reply
@@ -56,10 +50,10 @@ const defaults = {
  *
  * app.get('/users/:id', function(request, response, next){
  *
- *   //obtain id
+ *   // obtain id
  *   const _id = request.params.id;
  *
- *   //get user
+ *   // get user
  *   User
  *     .getById(_id, function(error, user){
  *       ...handle error or reply
@@ -70,10 +64,10 @@ const defaults = {
  *
  * app.get('/users/:id', function(request, response, next){
  *
- *   //obtain id
+ *   // obtain id
  *   const options = {_id : request.params.id, select: 'name -age'};
  *
- *   //get user
+ *   // get user
  *   User
  *     .getById(options, function(error, user){
  *       ...handle error or reply
@@ -81,19 +75,22 @@ const defaults = {
  * });
  *
  */
-module.exports = exports = function getPlugin(schema, schemaOptns) {
-
-  //normalize options
-  const schemaOptions = _.merge({}, {
-    root: 'data'
-  }, schemaOptns);
+function getPlugin(Schema, schemaOptns) {
+  const schema = Schema;
+  // normalize options
+  const schemaOptions = _.merge(
+    {},
+    {
+      root: 'data',
+    },
+    schemaOptns
+  );
 
   /*
    *----------------------------------------------------------------------------
    * Statics
    *----------------------------------------------------------------------------
    */
-
 
   /**
    * @name getById
@@ -121,119 +118,119 @@ module.exports = exports = function getPlugin(schema, schemaOptns) {
    *   });
    */
   schema.statics.getById = function getById(optns, done) {
-
-    //normalize options
+    // normalize options
     let options = _.isFunction(optns) ? {} : optns;
     const cb = _.isFunction(optns) ? optns : done;
-    options = _.isPlainObject(options) ? options : {
-      _id: options
-    };
-    options._id = options._id || options.id;
+    options = _.isPlainObject(options)
+      ? options
+      : {
+          _id: options,
+        };
+    options._id = options._id || options.id; // eslint-disable-line
+    const optionsId = options._id; // eslint-disable-line
     delete options.id;
 
-    //ensure id
-    if (!options._id) {
-      let error = new Error('Missing Instance Id');
+    // ensure id
+    if (!optionsId) {
+      const error = new Error('Missing Instance Id');
       error.status = 400;
-      return cb(error);
+      cb(error);
     }
 
-    //continue with retrieving data 
-    waterfall([
+    // continue with retrieving data
+    waterfall(
+      [
+        /**
+         * @function
+         * @name beforeGetById
+         * @description perform pre getById logics
+         * @param {Function} next a callback to invoke after beforeGetById
+         * @returns {null|undefined|error}
+         * @private
+         */
+        function beforeGetById(next) {
+          // obtain before hooks
+          const before = this.beforeGetById || this.preGetById;
 
-      /**
-       * @function
-       * @name beforeGetById
-       * @description perform pre getById logics
-       * @param {Function} next a callback to invoke after beforeGetById
-       * @returns {null|undefined|error}
-       * @private
-       */
-      function beforeGetById(next) {
-        //obtain before hooks
-        const before = (this.beforeGetById || this.preGetById);
+          // run hook(s)
+          if (_.isFunction(before)) {
+            before.call(this, function onBeforeGetById(error) {
+              next(error);
+            });
+          }
+          // no hook
+          else {
+            next();
+          }
+        }.bind(this),
 
-        //run hook(s)
-        if (_.isFunction(before)) {
-          before.call(this, function (error) {
-            next(error);
-          }.bind(this));
+        /**
+         * @function
+         * @name doGetById
+         * @description obtain instance by id
+         * @param {Function} next a callback to invoke after getById
+         * @returns {instance|error}
+         * @private
+         */
+        function doGetById(next) {
+          // prepare find query
+          const findQuery = this.findById(optionsId);
+
+          // if select
+          if (options.select) {
+            findQuery.select(options.select);
+          }
+
+          // if populate
+          if (options.populate) {
+            const populate = _.compact([].concat(options.populate));
+            _.forEach(populate, populateOption => {
+              findQuery.populate(populateOption);
+            });
+          }
+
+          findQuery.orFail().exec(next); // TODO get cached
+        }.bind(this),
+
+        /**
+         * @function
+         * @name afterGetById
+         * @description perform after getById logics
+         * @param {Function} next a callback to invoke after afterGetById
+         * @returns {instance|error}
+         * @private
+         */
+        function afterGetById(instance, next) {
+          // obtain after hooks
+          const after = this.afterGetById || this.postGetById;
+
+          // run hook(s)
+          if (_.isFunction(after)) {
+            after
+              .call(this, instance, function onAfterGetById(error, instanced) {
+                next(error, instanced || instance);
+              })
+              .bind(this);
+          }
+          // no hook
+          else {
+            next(null, instance);
+          }
+        }.bind(this),
+      ],
+      function onceGetById(err, found) {
+        const error = err;
+        if (error) {
+          error.status = error.status || 400;
         }
-        //no hook
-        else {
-          next();
-        }
-
-      }.bind(this),
-
-      /**
-       * @function
-       * @name doGetById
-       * @description obtain instance by id
-       * @param {Function} next a callback to invoke after getById
-       * @returns {instance|error}
-       * @private
-       */
-      function doGetById(next) {
-
-        //prepare find query
-        const findQuery = this.findById(options._id);
-
-        //if select
-        if (options.select) {
-          findQuery.select(options.select);
-        }
-
-        //if populate
-        if (options.populate) {
-          const populate = _.compact([].concat(options.populate));
-          _.forEach(populate, function (populateOption) {
-            findQuery.populate(populateOption);
-          });
-        }
-
-        findQuery.orFail().exec(next); //TODO get cached
-
-      }.bind(this),
-
-      /**
-       * @function
-       * @name afterGetById
-       * @description perform after getById logics
-       * @param {Function} next a callback to invoke after afterGetById
-       * @returns {instance|error}
-       * @private
-       */
-      function afterGetById(instance, next) {
-        //obtain after hooks
-        const after = (this.afterGetById || this.postGetById);
-
-        //run hook(s)
-        if (_.isFunction(after)) {
-          after.call(this, instance, function (error, instanced) {
-            next(error, instanced || instance);
-          }).bind(this);
-        }
-        //no hook
-        else {
-          next(null, instance);
-        }
-
-      }.bind(this)
-
-    ], function onceGetById(error, found) {
-      if (error) {
-        error.status = (error.status || 400);
+        cb(error, found);
       }
-      cb(error, found);
-    });
-
+    );
   };
-
 
   /**
    * @function
-   * @name _get
+   * @name getHelperFn
    * @description count and find existing model(s) based on specified options
    * @param {Object} [optns={}]
    * @param {Object|String} [optns.filter] valid mongoose query criteria
@@ -248,7 +245,7 @@ module.exports = exports = function getPlugin(schema, schemaOptns) {
    * @param {Date} [optns.headers.ifModifiedSince] if modified since option
    * @returns {Object} results
    * @returns {Object[]} [results.data] array of documents
-   * @returns {Number} [results.total] total number of documents in collection 
+   * @returns {Number} [results.total] total number of documents in collection
    * that match a query
    * @returns {Number} [results.size]  length of current page documents
    * @returns {Number} [results.limit] limit that was used
@@ -267,20 +264,19 @@ module.exports = exports = function getPlugin(schema, schemaOptns) {
    * const User = mongoose.model('User');
    *
    * User
-   *   ._get(function(error, deleted){
+   *   .getHelperFn(function(error, deleted){
    *       ...
    *   });
    *
    * or
    *
    * User
-   *   ._get({page: 1}, function(error, deleted){
+   *   .getHelperFn({page: 1}, function(error, deleted){
    *       ...
    *   });
    */
-  schema.statics._get = function _get(optns, done) {
-
-    //normalize options & callback
+  schema.statics.getHelperFn = function getHelperFn(optns, done) {
+    // normalize options & callback
     const cb = _.isFunction(optns) ? optns : done;
 
     let options = _.isFunction(optns) ? {} : optns;
@@ -288,52 +284,54 @@ module.exports = exports = function getPlugin(schema, schemaOptns) {
     options = _.merge({}, options.paginate, options);
     delete options.paginate;
 
-    //obtain query criteria
-    let filter = (options.query || options.criteria || options.filter);
+    // obtain query criteria
+    let filter = options.query || options.criteria || options.filter;
 
-    //obtain limit
-    let limit = (options.limit || 10);
+    // obtain limit
+    let limit = options.limit || 10;
     limit = limit > 0 ? limit : 10;
 
-    //obtain skip
-    let skip = (options.skip || options.offset || 0);
+    // obtain skip
+    let skip = options.skip || options.offset || 0;
     skip = skip > 0 ? skip : 0;
 
-    //obtain page
-    let page = (options.page || options.page);
+    // obtain page
+    const page = options.page || options.page;
 
-    let populate = _.compact([].concat(options.populate));
-    let select = (options.select || {});
-    let sort = (options.sort || {});
-    let headers = (options.headers || {});
+    const populate = _.compact([].concat(options.populate));
+    const select = options.select || {};
+    const sort = options.sort || {};
+    const headers = options.headers || {};
 
-    //extend headers with if-modified-since condition
-    const UPDATED_AT_FIELD = this.UPDATED_AT_FIELD;
+    // extend headers with if-modified-since condition
+    const { UPDATED_AT_FIELD } = this;
     if (headers.ifModifiedSince) {
       const ifModifiedSince = new Date(headers.ifModifiedSince);
       filter = _.merge({}, filter, {
         [UPDATED_AT_FIELD]: {
-          $gt: ifModifiedSince
-        }
+          $gt: ifModifiedSince,
+        },
       });
     }
 
-
-    //initialize queries
-    const q = filter.q;
+    // initialize queries
+    const { q } = filter;
     const conditions = _.omit(filter, 'q');
     const findQuery = this.search(q, conditions);
-    const countQuery =
-      this.search(q, conditions).setOptions({
-        autopopulate: false
-      });
-    let lastModifiedQuery = this.findOne({}, {
-        [UPDATED_AT_FIELD]: 1
-      }, {
-        autopopulate: false
-      }) //dont populate
+    const countQuery = this.search(q, conditions).setOptions({
+      autopopulate: false,
+    });
+    const lastModifiedQuery = this.findOne(
+      {},
+      {
+        [UPDATED_AT_FIELD]: 1,
+      },
+      {
+        autopopulate: false,
+      }
+    ) // dont populate
       .sort({
-        [UPDATED_AT_FIELD]: -1
+        [UPDATED_AT_FIELD]: -1,
       });
 
     if (page && page > 0) {
@@ -357,74 +355,72 @@ module.exports = exports = function getPlugin(schema, schemaOptns) {
     }
 
     if (populate) {
-      _.forEach(populate, function (populateOption) {
+      _.forEach(populate, populateOption => {
         findQuery.populate(populateOption);
       });
     }
 
-    parallel({
+    parallel(
+      {
+        count: function countMatched(next) {
+          countQuery.countDocuments().exec(next); // TODO get cached
+        },
 
-      count: function countMatched(next) {
-        countQuery.countDocuments().exec(next); //TODO get cached
+        data: function paginateMatched(next) {
+          findQuery.exec(next); // TODO get cached
+        },
+
+        lastModified: function findLatestModified(next) {
+          lastModifiedQuery.exec(next);
+        },
       },
+      function next(err, results) {
+        const error = err;
+        let mergedResults;
 
-      data: function paginateMatched(next) {
-        findQuery.exec(next); //TODO get cached
-      },
+        if (!error && results) {
+          // prepare results
+          const defaultsResults = {
+            data: [],
+            total: 0,
+            size: 0,
+            pages: 0,
+            lastModified: undefined,
+          };
+          mergedResults = _.merge({}, defaultsResults, results);
 
-      lastModified: function findLatestModified(next) {
-        lastModifiedQuery.exec(next);
+          // obtain latest modified date
+          const lastModified = mergedResults.lastModified
+            ? mergedResults.lastModified[UPDATED_AT_FIELD]
+            : undefined;
+
+          // compute pages
+          const pages = Math.ceil(mergedResults.count / limit);
+
+          // refine results
+          mergedResults = {
+            [schemaOptions.root]: results.data,
+            total: results.count,
+            size: results.data.length,
+            limit,
+            skip,
+            page,
+            pages,
+            lastModified,
+            hasMore: page > pages,
+          };
+        }
+
+        // ensure error status
+        if (error) {
+          error.status = error.status || 400;
+          mergedResults = undefined;
+        }
+
+        cb(error, mergedResults); // TODO cache
       }
-
-    }, function (error, results) {
-
-      if (!error && results) {
-        //prepare results
-        const defaults = {
-          data: [],
-          total: 0,
-          size: 0,
-          pages: 0,
-          lastModified: undefined
-        };
-        results = _.merge({}, defaults, results);
-
-        //obtain latest modified date
-        const lastModified = (
-          results.lastModified ?
-          results.lastModified[UPDATED_AT_FIELD] :
-          undefined
-        );
-
-        //compute pages
-        const pages = Math.ceil(results.count / limit);
-
-        //refine results
-        results = {
-          [schemaOptions.root]: results.data,
-          total: results.count,
-          size: results.data.length,
-          limit: limit,
-          skip: skip,
-          page: page,
-          pages: pages,
-          lastModified: lastModified,
-          hasMore: page > pages
-        };
-      }
-
-      //ensure error status
-      if (error) {
-        error.status = (error.status || 400);
-        results = undefined;
-      }
-
-      cb(error, results); //TODO cache
-
-    });
-
+    );
   };
-
 
   /**
    * @function
@@ -441,7 +437,7 @@ module.exports = exports = function getPlugin(schema, schemaOptns) {
    * @param {Number} [optns.paginate.limit=10] valid query limit option
    * @returns {Object} results
    * @returns {Object[]} [results.data] array of documents
-   * @returns {Number} [results.total] total number of documents in collection 
+   * @returns {Number} [results.total] total number of documents in collection
    * that match a query
    * @returns {Number} [results.size]  length of current page documents
    * @returns {Number} [results.limit] limit that was used
@@ -472,86 +468,87 @@ module.exports = exports = function getPlugin(schema, schemaOptns) {
    *   });
    */
   schema.statics.get = function get(optns, done) {
-
-    //normalize options & callback
+    // normalize options & callback
     const cb = _.isFunction(optns) ? optns : done;
 
-    //normalize options
+    // normalize options
     const options = _.isFunction(optns) ? {} : optns;
     delete options.headers;
 
-    waterfall([
-      /**
-       * @function
-       * @name beforeGet
-       * @description perform pre get logics
-       * @param {Function} next a callback to invoke after beforeGet
-       * @returns {null|undefined|error}
-       * @private
-       */
-      function beforeGet(next) {
-        //obtain before hooks
-        const before = (this.beforeGet || this.preGet);
+    waterfall(
+      [
+        /**
+         * @function
+         * @name beforeGet
+         * @description perform pre get logics
+         * @param {Function} next a callback to invoke after beforeGet
+         * @returns {null|undefined|error}
+         * @private
+         */
+        function beforeGet(next) {
+          // obtain before hooks
+          const before = this.beforeGet || this.preGet;
 
-        //run hook(s)
-        if (_.isFunction(before)) {
-          before.call(this, options, function (error) {
-            next(error);
-          }.bind(this));
+          // run hook(s)
+          if (_.isFunction(before)) {
+            before.call(this, options, function onBeforeGet(error) {
+              next(error);
+            });
+          }
+          // no hook
+          else {
+            next();
+          }
+        }.bind(this),
+
+        /**
+         * @function
+         * @name doGet
+         * @description query data
+         * @param {Function} next a callback to invoke after query data(get)
+         * @returns {instance|error}
+         * @private
+         */
+        function doGet(next) {
+          this.getHelperFn(options, next);
+        }.bind(this),
+
+        /**
+         * @function
+         * @name afterGet
+         * @description perform after query data logics
+         * @param {Function} next a callback to invoke after doGet
+         * @returns {context|error}
+         * @private
+         */
+        function afterGet(results, next) {
+          // obtain hooks
+          const after = this.afterGet || this.postGet;
+
+          // run hook(s)
+          if (_.isFunction(after)) {
+            after.call(this, options, results, function onAfterGet(
+              error,
+              resulted
+            ) {
+              next(error, resulted || results);
+            });
+          }
+          // no hook
+          else {
+            next(null, results);
+          }
+        }.bind(this),
+      ],
+      function onceGet(err, got) {
+        const error = err;
+        if (error) {
+          error.status = error.status || 400;
         }
-        //no hook
-        else {
-          next();
-        }
-
-      }.bind(this),
-
-      /**
-       * @function
-       * @name doGet
-       * @description query data
-       * @param {Function} next a callback to invoke after query data(get)
-       * @returns {instance|error}
-       * @private
-       */
-      function doGet(next) {
-        this._get(options, next);
-      }.bind(this),
-
-      /**
-       * @function
-       * @name afterGet
-       * @description perform after query data logics
-       * @param {Function} next a callback to invoke after doGet
-       * @returns {context|error}
-       * @private
-       */
-      function afterGet(results, next) {
-        //obtain hooks
-        const after = (this.afterGet || this.postGet);
-
-        //run hook(s)
-        if (_.isFunction(after)) {
-          after.call(this, options, results, function (error, resulted) {
-            next(error, resulted || results);
-          });
-        }
-        //no hook
-        else {
-          next(null, results);
-        }
-
-      }.bind(this)
-
-    ], function onceGet(error, got) {
-      if (error) {
-        error.status = (error.status || 400);
+        cb(error, got);
       }
-      cb(error, got);
-    });
-
+    );
   };
-
 
   /**
    * @function
@@ -570,7 +567,7 @@ module.exports = exports = function getPlugin(schema, schemaOptns) {
    * @param {Date} [optns.headers.ifModifiedSince] if modified since option
    * @returns {Object} results
    * @returns {Object[]} [results.data] array of documents
-   * @returns {Number} [results.total] total number of documents in collection 
+   * @returns {Number} [results.total] total number of documents in collection
    * that match a query
    * @returns {Number} [results.size]  length of current page documents
    * @returns {Number} [results.limit] limit that was used
@@ -600,11 +597,10 @@ module.exports = exports = function getPlugin(schema, schemaOptns) {
    *       ...
    *   });
    */
-  schema.statics.fresh = function fresh() {
-
-    //query
-    this._get.apply(this, arguments);
-
+  schema.statics.fresh = function fresh(...args) {
+    // query
+    this.getHelperFn(...args);
   };
+}
 
-};
+export default getPlugin;

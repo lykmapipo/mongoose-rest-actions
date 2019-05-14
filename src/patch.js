@@ -1,19 +1,15 @@
-'use strict';
-
-
-/* dependencies */
-const _ = require('lodash');
-const { waterfall } = require('async');
-const { mergeObjects } = require('@lykmapipo/common');
-const { copyInstance, isInstance } = require('@lykmapipo/mongoose-common');
-
+import _ from 'lodash';
+import { waterfall } from 'async';
+import { mergeObjects } from '@lykmapipo/common';
+import { copyInstance, isInstance } from '@lykmapipo/mongoose-common';
 
 const updatesFor = (id, updates) => {
-  // ignore self instance updates
+  //  ignore self instance updates
+  // eslint-disable-next-line
   if (isInstance(updates) && updates._id === id) {
     return updates;
   }
-  // compute updates
+  //  compute updates
   const changes = mergeObjects(copyInstance(updates), { _id: id });
   return changes;
 };
@@ -41,13 +37,13 @@ const updatesFor = (id, updates) => {
  *
  * app.patch('/users/:id', function(request, response, next){
  *
- *   //obtain user
+ *   // obtain user
  *   const updates = request.body;
  *
- *   //obtain id
+ *   // obtain id
  *   updates._id = request.params.id;
  *
- *   //patch user
+ *   // patch user
  *   User
  *     .patch(updates, function(error, updated){
  *       ...handle error or reply
@@ -58,13 +54,13 @@ const updatesFor = (id, updates) => {
  *
  * app.patch('/users/:id', function(request, response, next){
  *
- *   //obtain user
+ *   // obtain user
  *   const updates = request.body;
  *
- *   //obtain id
+ *   // obtain id
  *   const _id = request.params.id;
  *
- *   //patch user
+ *   // patch user
  *   User
  *     .patch(_id, updates, function(error, updated){
  *       ...handle error or reply
@@ -72,14 +68,13 @@ const updatesFor = (id, updates) => {
  * });
  *
  */
-module.exports = exports = function patchPlugin(schema /*, schemaOptns*/ ) {
-
+function patchPlugin(Schema) {
+  const schema = Schema;
   /*
    *----------------------------------------------------------------------------
    * Instances
    *----------------------------------------------------------------------------
    */
-
 
   /**
    * @name patch
@@ -129,17 +124,16 @@ module.exports = exports = function patchPlugin(schema /*, schemaOptns*/ ) {
    *  });
    */
   schema.methods.patch = function patch(updates, done) {
-
-    //normalize arguments
+    // normalize arguments
     const body = _.isFunction(updates) ? {} : updatesFor(null, updates);
     const cb = _.isFunction(updates) ? updates : done;
 
-    //remove unused
-    delete body._id;
+    // remove unused
+    delete body._id; // eslint-disable-line
     delete body.updatedAt;
 
-    waterfall([
-
+    waterfall(
+      [
         /**
          * @function
          * @name beforePatch
@@ -149,22 +143,27 @@ module.exports = exports = function patchPlugin(schema /*, schemaOptns*/ ) {
          * @private
          */
         function beforePatch(next) {
-          //obtain before hooks
+          // obtain before hooks
           const before =
-            (this.beforePatch || this.prePatch ||
-              this.beforeUpdate || this.preUpdate);
+            this.beforePatch ||
+            this.prePatch ||
+            this.beforeUpdate ||
+            this.preUpdate;
 
-          //run hook(s)
+          // run hook(s)
           if (_.isFunction(before)) {
-            before.call(this, body, function (error, instance) {
-              next(error, instance || this);
-            }.bind(this));
+            before.call(
+              this,
+              body,
+              function onBeforePatch(error, instance) {
+                next(error, instance || this);
+              }.bind(this)
+            );
           }
-          //no hook
+          // no hook
           else {
             next(null, this);
           }
-
         }.bind(this),
 
         /**
@@ -175,8 +174,9 @@ module.exports = exports = function patchPlugin(schema /*, schemaOptns*/ ) {
          * @returns {instance|error}
          * @private
          */
-        function doPatch(instance, next) {
-          //update & persist instance
+        function doPatch(model, next) {
+          const instance = model;
+          // update & persist instance
           if (body && !_.isEmpty(body)) {
             instance.set(body);
           }
@@ -195,24 +195,24 @@ module.exports = exports = function patchPlugin(schema /*, schemaOptns*/ ) {
          * @private
          */
         function afterPatch(instance, next) {
-          //obtain after hooks
+          // obtain after hooks
           const after =
-            (instance.afterPatch || instance.postPatch ||
-              instance.afterUpdate || instance.postUpdate);
+            instance.afterPatch ||
+            instance.postPatch ||
+            instance.afterUpdate ||
+            instance.postUpdate;
 
-          //run hook(s)
+          // run hook(s)
           if (_.isFunction(after)) {
-            after.call(instance, body, function (error, instanced) {
+            after.call(instance, body, function onAfterPatch(error, instanced) {
               next(error, instanced || instance);
             });
           }
-          //no hook
+          // no hook
           else {
             next(null, instance);
           }
-
-        }
-
+        },
       ],
 
       /**
@@ -223,22 +223,21 @@ module.exports = exports = function patchPlugin(schema /*, schemaOptns*/ ) {
        * @param {Object} patched model instance
        * @private
        */
-      function oncePatch(error, patched) {
+      function oncePatch(err, patched) {
+        const error = err;
         if (error) {
-          error.status = (error.status || 400);
+          error.status = error.status || 400;
         }
         cb(error, patched);
-      });
-
+      }
+    );
   };
-
 
   /*
    *----------------------------------------------------------------------------
    * Statics
    *----------------------------------------------------------------------------
    */
-
 
   /**
    * @function
@@ -267,70 +266,74 @@ module.exports = exports = function patchPlugin(schema /*, schemaOptns*/ ) {
     // ref
     const Model = this;
 
-    //normalize arguments
+    // normalize arguments
     let model = updates;
     let cb = done;
 
-    //handle 3 args
+    // handle 3 args
     if (arguments.length === 3) {
       model = updatesFor(id, updates);
       cb = done;
     }
 
-    //handle 2 args
+    // handle 2 args
     else if (arguments.length === 2) {
       model = updatesFor(_.get(id, '_id'), id);
       cb = updates;
     }
 
-    //handle 1 args
+    // handle 1 args
     else {
       cb = id;
-      let error = new Error('Illegal Arguments');
+      const error = new Error('Illegal Arguments');
       error.status = 400;
-      return cb(error);
+      cb(error);
     }
 
-    //ensure id
-    model._id = (model._id || model.id);
-    if (!model._id) {
-      let error = new Error('Missing Instance Id');
+    // ensure id
+    model._id = model._id || model.id; // eslint-disable-line
+    const modelId = model._id; // eslint-disable-line
+    if (!modelId) {
+      const error = new Error('Missing Instance Id');
       error.status = 400;
-      return cb(error);
+      cb(error);
     }
 
+    // continue with patch
+    waterfall(
+      [
+        function findExisting(next) {
+          if (isInstance(model)) {
+            next(null, model);
+          } else {
+            Model.findById(modelId)
+              .orFail()
+              .exec(next);
+          }
+        },
 
-    //continue with patch
-    waterfall([
-
-      function findExisting(next) {
-        if (isInstance(model)) {
-          next(null, model);
-        } else {
-          Model.findById(model._id).orFail().exec(next);
+        function afterFindExisting(instance, next) {
+          //  handle instance
+          if (isInstance(model)) {
+            model.patch({ updatedAt: new Date() }, next);
+          }
+          //  handle updates
+          else {
+            delete model._id; // eslint-disable-line
+            delete model.id;
+            instance.patch(model, next);
+          }
+        },
+      ],
+      function oncePatch(err, updated) {
+        const error = err;
+        if (error) {
+          error.status = error.status || 400;
         }
-      },
-
-      function afterFindExisting(instance, next) {
-        // handle instance
-        if (isInstance(model)) {
-          model.patch({ updatedAt: new Date() }, next);
-        }
-        // handle updates
-        else {
-          delete model._id;
-          delete model.id;
-          instance.patch(model, next);
-        }
+        cb(error, updated);
       }
-
-    ], function oncePatch(error, updated) {
-      if (error) {
-        error.status = (error.status || 400);
-      }
-      cb(error, updated);
-    });
-
+    );
   };
+}
 
-};
+export default patchPlugin;

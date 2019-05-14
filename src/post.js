@@ -1,11 +1,6 @@
-'use strict';
-
-
-/* dependencies */
-const _ = require('lodash');
-const async = require('async');
-const { isInstance, copyInstance } = require('@lykmapipo/mongoose-common');
-
+import _ from 'lodash';
+import async from 'async';
+import { isInstance, copyInstance } from '@lykmapipo/mongoose-common';
 
 /**
  * @function
@@ -19,7 +14,7 @@ const { isInstance, copyInstance } = require('@lykmapipo/mongoose-common');
  * @author lally elias<lallyelias87@gmail.com>
  * @example
  *
- * const mongoose = require('mongoose');
+ * const mongoose from 'mongoose');
  * const actions = require('mongoose-rest-actions');
  * mongoose.plugin(actions);
  *
@@ -30,10 +25,10 @@ const { isInstance, copyInstance } = require('@lykmapipo/mongoose-common');
  *
  * app.post('/users', function(request, response, next){
  *
- *   //obtain user
+ *   // obtain user
  *   const body = request.body;
  *
- *   //create user
+ *   // create user
  *   User
  *     .post(body, function(error, created){
  *       ...handle error or reply
@@ -41,14 +36,13 @@ const { isInstance, copyInstance } = require('@lykmapipo/mongoose-common');
  * });
  *
  */
-module.exports = exports = function postPlugin(schema /*, schemaOptns*/ ) {
-
+function postPlugin(Schema) {
+  const schema = Schema;
   /*
    *----------------------------------------------------------------------------
    * Instances
    *----------------------------------------------------------------------------
    */
-
 
   /**
    * @function
@@ -97,10 +91,8 @@ module.exports = exports = function postPlugin(schema /*, schemaOptns*/ ) {
    *   });
    */
   schema.methods.post = function post(done) {
-
-    async.waterfall([
-
-
+    async.waterfall(
+      [
         /**
          * @function
          * @name beforePost
@@ -110,24 +102,24 @@ module.exports = exports = function postPlugin(schema /*, schemaOptns*/ ) {
          * @private
          */
         function beforePost(next) {
-          //obtain before hooks
+          // obtain before hooks
           const before =
-            (this.beforePost || this.prePost ||
-              this.beforeSave || this.preSave);
+            this.beforePost || this.prePost || this.beforeSave || this.preSave;
 
-          //run hook(s)
+          // run hook(s)
           if (_.isFunction(before)) {
-            before.call(this, function (error, instance) {
-              next(error, instance || this);
-            }.bind(this));
+            before.call(
+              this,
+              function onBeforePost(error, instance) {
+                next(error, instance || this);
+              }.bind(this)
+            );
           }
-          //no hook
+          // no hook
           else {
             next(null, this);
           }
-
         }.bind(this),
-
 
         /**
          * @function
@@ -143,7 +135,6 @@ module.exports = exports = function postPlugin(schema /*, schemaOptns*/ ) {
           });
         },
 
-
         /**
          * @function
          * @name afterPost
@@ -153,25 +144,25 @@ module.exports = exports = function postPlugin(schema /*, schemaOptns*/ ) {
          * @private
          */
         function afterPost(instance, next) {
-          //obtain after hooks
+          // obtain after hooks
           const after =
-            (instance.afterPost || instance.postPost ||
-              instance.afterSave || instance.postSave);
+            instance.afterPost ||
+            instance.postPost ||
+            instance.afterSave ||
+            instance.postSave;
 
-          //run hook(s)
+          // run hook(s)
           if (_.isFunction(after)) {
-            after.call(instance, function (error, instanced) {
+            after.call(instance, function onAfterPost(error, instanced) {
               next(error, instanced || instance);
             });
           }
-          //no hook
+          // no hook
           else {
             next(null, instance);
           }
-
-        }
+        },
       ],
-
 
       /**
        * @function
@@ -180,22 +171,21 @@ module.exports = exports = function postPlugin(schema /*, schemaOptns*/ ) {
        * @param {Object} saved model instance
        * @private
        */
-      function oncePost(error, saved) {
+      function oncePost(err, saved) {
+        const error = err;
         if (error) {
-          error.status = (error.status || 400);
+          error.status = error.status || 400;
         }
         done(error, saved);
-      });
-
+      }
+    );
   };
-
 
   /*
    *----------------------------------------------------------------------------
    * Statics
    *----------------------------------------------------------------------------
    */
-
 
   /**
    * @function
@@ -218,17 +208,12 @@ module.exports = exports = function postPlugin(schema /*, schemaOptns*/ ) {
    *   });
    */
   schema.statics.post = function post(body, done) {
+    // instantiate model
+    const instance = isInstance(body) ? body : new this(copyInstance(body));
 
-    //instantiate model
-    const instance = (
-      isInstance(body) ?
-      body :
-      new this(copyInstance(body))
-    );
-
-    //persist model
+    // persist model
     instance.post(done);
-
   };
+}
 
-};
+export default postPlugin;
