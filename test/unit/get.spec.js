@@ -43,6 +43,38 @@ describe('get', () => {
     });
   });
 
+  it('should work using `getById` static method with filter', done => {
+
+    const User = createTestModel({}, schema => {
+      schema.statics.beforeGetById = (done) => done();
+      schema.statics.afterGetById = (instance, done) => done();
+    }, get);
+    const user = User.fake();
+
+    const Mock = mockModel(User);
+    const findById = Mock.expects('findById');
+    const where = findById.chain('where');
+    const exec = findById.chain('exec').yields(null, user);
+    const beforeGetById = sinon.spy(User, 'beforeGetById');
+    const afterGetById = sinon.spy(User, 'afterGetById');
+
+    const options = { _id: user._id, filter: { name: user.name } };
+    User.getById(options, (error, found) => {
+      Mock.verify();
+      Mock.restore();
+
+      expect(findById).to.have.been.calledOnce;
+      expect(findById).to.have.been.calledWith(user._id);
+      expect(where).to.have.been.calledOnce;
+      expect(where).to.have.been.calledWith(options.filter);
+      expect(exec).to.have.been.calledOnce;
+      expect(beforeGetById).to.have.been.calledOnce;
+      expect(afterGetById).to.have.been.calledOnce;
+
+      done(error, found);
+    });
+  });
+
   it('should work using `get` static method', done => {
 
     const User = createTestModel({}, schema => {
