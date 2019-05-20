@@ -1,3 +1,26 @@
+#### 0.28.0 (2019-05-20)
+
+##### Chores
+
+* **deps:**  force latest versions & audit fix ([14edc7d3](https://github.com/lykmapipo/mongoose-rest-actions/commit/14edc7d36c23991003a41d7fe64355c4df7bc4b6))
+
+##### New Features
+
+* **put:**  add support to filter ([da2d4728](https://github.com/lykmapipo/mongoose-rest-actions/commit/da2d4728b10352f39f9dee15d27af0faeafc1c75))
+* **delete:**  add support to filter ([d099ee1e](https://github.com/lykmapipo/mongoose-rest-actions/commit/d099ee1e5e2f63af0f80ce6a4ecadb32b3320ed9))
+* **get-by-id:**  add support to filter ([f8ce3d36](https://github.com/lykmapipo/mongoose-rest-actions/commit/f8ce3d36f5b86a04685e0e9d6d55d3452871847f))
+
+##### Bug Fixes
+
+*  correct hasMore computation using pages > page ([8f68ac02](https://github.com/lykmapipo/mongoose-rest-actions/commit/8f68ac0211ce868e80b7a51c9d46cc6c337385ee))
+
+##### Tests
+
+*  debug and test put with filter options ([2b02beb9](https://github.com/lykmapipo/mongoose-rest-actions/commit/2b02beb94b1aafa7d370a693bf0eb8bcf766832f))
+*  debug and test patch with filter options ([a2eb7e6b](https://github.com/lykmapipo/mongoose-rest-actions/commit/a2eb7e6b8092ae771ec5880bfcbe5ebc27a4607c))
+*  debug and test delete with filter options ([9ff300db](https://github.com/lykmapipo/mongoose-rest-actions/commit/9ff300dbc9a1abbfe4de119ca78e52bedf38ea41))
+*  debug and test getById with filter options ([825d33c2](https://github.com/lykmapipo/mongoose-rest-actions/commit/825d33c24c8a21ce649840645b158d29bcc30a0d))
+
 #### 0.27.2 (2019-05-12)
 
 ##### Chores
