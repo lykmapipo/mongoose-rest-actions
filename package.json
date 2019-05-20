@@ -54,10 +54,10 @@
     "jshint": "^2.10.2",
     "jshint-stylish": "^2.2.1",
     "mocha": "^6.1.4",
-    "mongoose": ">=5.5.7"
+    "mongoose": ">=5.5.9"
   },
   "peerDependencies": {
-    "mongoose": ">=5.5.7"
+    "mongoose": ">=5.5.9"
   },
   "dependencies": {
     "@lykmapipo/common": ">=0.17.4",
@@ -66,7 +66,7 @@
     "@lykmapipo/mongoose-common": ">=0.23.0",
     "@lykmapipo/mongoose-faker": ">=0.9.4",
     "@lykmapipo/mongoose-taggable": ">=0.4.3",
-    "async": ">=2.6.2",
+    "async": ">=3.0.0",
     "inflection": ">=1.12.0",
     "lodash": ">=4.17.11",
     "mongoose-autopopulate": ">=0.9.1",
