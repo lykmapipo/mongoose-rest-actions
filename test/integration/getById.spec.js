@@ -91,6 +91,29 @@ describe('getById', () => {
     });
   });
 
+  it('should work with filter options using `getById` static method', done => {
+    const options = {
+      _id: child._id,
+      filter: { name: child.name },
+      select: 'name',
+      populate: [{ path: 'father', select: 'name' }]
+    };
+    Child.getById(options, (error, found) => {
+      expect(error).to.not.exist;
+      expect(found).to.exist;
+      expect(found._id).to.exist.and.be.eql(child._id);
+      expect(found.name).to.equal(child.name);
+      expect(found.email).to.not.exist;
+      expect(found.createdAt).not.exist;
+      expect(found.updatedAt).not.exist;
+      expect(found.father).to.exist;
+      expect(found.father._id).to.exist.and.be.eql(father._id);
+      expect(found.father.name).to.exist.and.to.equal(father.name);
+      expect(found.father.email).to.not.exist;
+      done(error, found);
+    });
+  });
+
   after(done => clear(Guardian, Child, done));
 
 });
