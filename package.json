@@ -1,6 +1,6 @@
 {
   "name": "mongoose-rest-actions",
-  "version": "0.28.10",
+  "version": "0.28.11",
   "description": "mongoose rest actions on top of express",
   "keywords": [
     "lykmapipo",
