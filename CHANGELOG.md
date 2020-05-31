@@ -1,3 +1,9 @@
+#### 0.30.0 (2020-05-31)
+
+##### Refactors
+
+*  merge updates on put & patch ([cac53d3d](https://github.com/lykmapipo/mongoose-rest-actions/commit/cac53d3ddd4cb2e9c69f088c04091f3d97500fb1))
+
 #### 0.29.24 (2020-05-20)
 
 ##### Chores
