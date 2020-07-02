@@ -1,3 +1,9 @@
+#### 0.30.3 (2020-07-02)
+
+##### Chores
+
+* **deps:**  force latest version & audit fix ([af243d48](https://github.com/lykmapipo/mongoose-rest-actions/commit/af243d4853dc5bc43817d33706cc6d2f496731b9))
+
 #### 0.30.2 (2020-06-26)
 
 ##### Chores
